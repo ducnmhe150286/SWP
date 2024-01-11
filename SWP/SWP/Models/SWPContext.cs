@@ -45,8 +45,6 @@ namespace SWP.Models
             {
                 entity.ToTable("Blog");
 
-                entity.Property(e => e.BlogId).ValueGeneratedNever();
-
                 entity.Property(e => e.CreateDate).HasColumnType("datetime");
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(255);
@@ -54,13 +52,16 @@ namespace SWP.Models
                 entity.Property(e => e.Image).HasMaxLength(255);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(255);
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Blogs)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_Blog_User");
             });
 
             modelBuilder.Entity<Brand>(entity =>
             {
                 entity.ToTable("Brand");
-
-                entity.Property(e => e.BrandId).ValueGeneratedNever();
 
                 entity.Property(e => e.BrandName).HasMaxLength(255);
 
@@ -75,8 +76,6 @@ namespace SWP.Models
             {
                 entity.ToTable("Category");
 
-                entity.Property(e => e.CategoryId).ValueGeneratedNever();
-
                 entity.Property(e => e.CategoryName).HasMaxLength(255);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(255);
@@ -89,8 +88,6 @@ namespace SWP.Models
             modelBuilder.Entity<Color>(entity =>
             {
                 entity.ToTable("Color");
-
-                entity.Property(e => e.ColorId).ValueGeneratedNever();
 
                 entity.Property(e => e.ColorName).HasMaxLength(255);
 
@@ -105,22 +102,23 @@ namespace SWP.Models
             {
                 entity.ToTable("FeedBack");
 
-                entity.Property(e => e.FeedBackId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("FeedBackID");
+                entity.Property(e => e.FeedBackId).HasColumnName("FeedBackID");
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(255);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(255);
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.FeedBacks)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_FeedBack_User");
             });
 
             modelBuilder.Entity<Order>(entity =>
             {
                 entity.ToTable("Order");
-
-                entity.Property(e => e.OrderId).HasMaxLength(50);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(255);
 
@@ -144,9 +142,7 @@ namespace SWP.Models
 
             modelBuilder.Entity<Orderdetail>(entity =>
             {
-                entity.HasKey(e => new { e.OrderId, e.DetailId });
-
-                entity.Property(e => e.OrderId).HasMaxLength(50);
+                entity.HasNoKey();
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(255);
 
@@ -154,18 +150,19 @@ namespace SWP.Models
 
                 entity.Property(e => e.Discount).HasColumnType("decimal(18, 2)");
 
+                entity.Property(e => e.OrderId).ValueGeneratedOnAdd();
+
                 entity.Property(e => e.TotalPrice).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.UpdateBy).HasMaxLength(255);
 
                 entity.HasOne(d => d.Detail)
-                    .WithMany(p => p.Orderdetails)
+                    .WithMany()
                     .HasForeignKey(d => d.DetailId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Orderdetails_ProductDetail");
 
                 entity.HasOne(d => d.Order)
-                    .WithMany(p => p.Orderdetails)
+                    .WithMany()
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Orderdetails_Order");
@@ -173,8 +170,6 @@ namespace SWP.Models
 
             modelBuilder.Entity<Product>(entity =>
             {
-                entity.Property(e => e.ProductId).ValueGeneratedNever();
-
                 entity.Property(e => e.CreatedBy).HasMaxLength(255);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
@@ -188,22 +183,22 @@ namespace SWP.Models
                 entity.HasOne(d => d.Brand)
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.BrandId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Products_Brand");
 
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.CategoryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Products_Category");
             });
 
             modelBuilder.Entity<ProductDetail>(entity =>
             {
                 entity.HasKey(e => e.DetailId)
-                    .HasName("PK__ProductD__135C316DC838F79D");
+                    .HasName("PK__ProductD__135C316D80D9C867");
 
                 entity.ToTable("ProductDetail");
-
-                entity.Property(e => e.DetailId).ValueGeneratedNever();
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(255);
 
@@ -231,11 +226,11 @@ namespace SWP.Models
             {
                 entity.ToTable("ProductImage");
 
-                entity.Property(e => e.ProductImageId).ValueGeneratedNever();
-
                 entity.Property(e => e.CreateDate).HasColumnType("datetime");
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(255);
+
+                entity.Property(e => e.ProductId).HasColumnName("ProductID");
 
                 entity.Property(e => e.UpdateBy).HasMaxLength(255);
 
@@ -248,8 +243,6 @@ namespace SWP.Models
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.ToTable("Role");
-
-                entity.Property(e => e.RoleId).ValueGeneratedNever();
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(255);
 
@@ -264,7 +257,7 @@ namespace SWP.Models
             {
                 entity.ToTable("Size");
 
-                entity.Property(e => e.SizeId).ValueGeneratedNever();
+                entity.Property(e => e.SizeId).HasColumnName("SizeID");
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(255);
 
@@ -279,8 +272,6 @@ namespace SWP.Models
             {
                 entity.ToTable("User");
 
-                entity.Property(e => e.UserId).ValueGeneratedNever();
-
                 entity.Property(e => e.Address).HasMaxLength(255);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(255);
@@ -289,7 +280,9 @@ namespace SWP.Models
 
                 entity.Property(e => e.Email).HasMaxLength(255);
 
-                entity.Property(e => e.FirstName).HasMaxLength(50);
+                entity.Property(e => e.FirstName)
+                    .HasMaxLength(10)
+                    .IsFixedLength();
 
                 entity.Property(e => e.Image).HasMaxLength(255);
 
@@ -304,6 +297,7 @@ namespace SWP.Models
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.Users)
                     .HasForeignKey(d => d.RoleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_User_Role");
             });
 

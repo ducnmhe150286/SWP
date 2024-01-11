@@ -5,11 +5,6 @@ namespace SWP.Models
 {
     public partial class ProductDetail
     {
-        public ProductDetail()
-        {
-            Orderdetails = new HashSet<Orderdetail>();
-        }
-
         public int DetailId { get; set; }
         public int? ProductId { get; set; }
         public int? SizeId { get; set; }
@@ -23,6 +18,5 @@ namespace SWP.Models
         public virtual Color? Color { get; set; }
         public virtual Product? Product { get; set; }
         public virtual Size? Size { get; set; }
-        public virtual ICollection<Orderdetail> Orderdetails { get; set; }
     }
 }

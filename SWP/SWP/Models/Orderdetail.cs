@@ -5,8 +5,8 @@ namespace SWP.Models
 {
     public partial class Orderdetail
     {
-        public string OrderId { get; set; } = null!;
-        public int DetailId { get; set; }
+        public int OrderId { get; set; }
+        public int? DetailId { get; set; }
         public int? Quantity { get; set; }
         public decimal? TotalPrice { get; set; }
         public decimal? Discount { get; set; }
@@ -15,7 +15,7 @@ namespace SWP.Models
         public string? UpdateBy { get; set; }
         public DateTime? CreatedDate { get; set; }
 
-        public virtual ProductDetail Detail { get; set; } = null!;
+        public virtual ProductDetail? Detail { get; set; }
         public virtual Order Order { get; set; } = null!;
     }
 }

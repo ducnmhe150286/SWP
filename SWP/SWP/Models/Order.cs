@@ -5,12 +5,7 @@ namespace SWP.Models
 {
     public partial class Order
     {
-        public Order()
-        {
-            Orderdetails = new HashSet<Orderdetail>();
-        }
-
-        public string OrderId { get; set; } = null!;
+        public int OrderId { get; set; }
         public int? UserId { get; set; }
         public string? CustomerName { get; set; }
         public DateTime? CreatedDate { get; set; }
@@ -22,6 +17,5 @@ namespace SWP.Models
         public string? UpdatedBy { get; set; }
 
         public virtual User? User { get; set; }
-        public virtual ICollection<Orderdetail> Orderdetails { get; set; }
     }
 }
