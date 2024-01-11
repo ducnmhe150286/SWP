@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SWP.Dao;
 using SWP.Models;
 using System.Diagnostics;
 
@@ -7,9 +8,11 @@ namespace SWP.Controllers
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
+		public UsersDao usersDao;
 
 		public HomeController(ILogger<HomeController> logger)
 		{
+			usersDao = new UsersDao();
 			_logger = logger;
 		}
 
