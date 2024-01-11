@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@inject IHttpContextAccessor HttpContextAccessor;
+@addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -9,6 +13,10 @@
     <link rel="stylesheet" href="~/SWP.styles.css" asp-append-version="true" />
 </head>
 <body>
+    @{
+        string user = HttpContextAccessor.HttpContext.Session.GetString("USER_EMAIL") ?? "";
+        int role = HttpContextAccessor.HttpContext.Session.GetInt32("USER_ROLE") ?? 0;
+    }
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -25,7 +33,20 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        
+                       
                     </ul>
+                    <div class="navbar-nav ml-auto pr-100">
+                        @if(role!=0){
+                            <p>xin chào , @user - </p>
+                            <a asp-controller="Auth" asp-action="Logout">Logout</a>
+                        }
+                        else
+                        {
+                            <a href="/auth">Login</a>
+                        }
+
+                    </div>
                 </div>
             </div>
         </nav>
