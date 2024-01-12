@@ -1,4 +1,5 @@
-﻿using SWP.Models;
+﻿using SWP.Dto;
+using SWP.Models;
 
 namespace SWP.Dao
 {
@@ -29,5 +30,27 @@ namespace SWP.Dao
             
         }
 
+        public User Register(RegisterModel registerModel)
+        {
+            try
+            {
+                var user = new User();
+                user.Email = registerModel.Email;
+                user.Password = registerModel.Password;
+                user.PhoneNumber = registerModel.PhoneNumber;
+                user.FirstName = registerModel.FirstName;
+                user.LastName = registerModel.LastName;
+
+                context.Users.Add(user);
+                context.SaveChanges();
+                return user;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
     }
 }

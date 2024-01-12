@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SWP.Dao;
+using SWP.Dto;
 
 namespace SWP.Controllers
 {
@@ -13,9 +14,6 @@ namespace SWP.Controllers
             this.userDao = new UsersDao();
         }
 
-
-       
-     
        public IActionResult Index(string email,string password)
         {
             if (string.IsNullOrEmpty(email))
@@ -42,6 +40,17 @@ namespace SWP.Controllers
         {
             HttpContext.Session.Clear();
             return RedirectToAction("Index");
+        }
+
+        public IActionResult Register()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Register(RegisterModel registerModel)
+        {
+            userDao.Register(registerModel);
+            return View();
         }
     }
 }
