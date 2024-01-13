@@ -280,21 +280,41 @@ namespace SWP.Models
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
+<<<<<<< HEAD
                 entity.Property(e => e.FullName).HasMaxLength(255);
 
                 entity.Property(e => e.Image).HasMaxLength(255);
 
+=======
+                entity.Property(e => e.Email).HasMaxLength(255);
+
+                entity.Property(e => e.FirstName)
+                    .HasMaxLength(10)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Image).HasMaxLength(255);
+
+                entity.Property(e => e.LastName).HasMaxLength(255);
+
+>>>>>>> c09f0ed6b88c85d62bff0afead57f050c8427e04
                 entity.Property(e => e.Password).HasMaxLength(255);
 
                 entity.Property(e => e.PhoneNumber).HasMaxLength(20);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(255);
 
+<<<<<<< HEAD
                 entity.Property(e => e.UserName).HasMaxLength(255);
 
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.Users)
                     .HasForeignKey(d => d.RoleId)
+=======
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.Users)
+                    .HasForeignKey(d => d.RoleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+>>>>>>> c09f0ed6b88c85d62bff0afead57f050c8427e04
                     .HasConstraintName("FK_User_Role");
             });
 
