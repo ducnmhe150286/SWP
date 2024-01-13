@@ -1,0 +1,12 @@
+# Bỏ qua tất cả các tệp *.log
+*.log
+
+# Bỏ qua thư mục build/
+build/
+
+# Bỏ qua tất cả các tệp có đuôi .tmp
+*.tmp
+
+# Bỏ qua thư mục temp/ và thư mục logs/
+temp/
+logs/
