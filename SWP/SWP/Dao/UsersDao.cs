@@ -30,7 +30,7 @@ namespace SWP.Dao
             
         }
 
-        public User Register(RegisterModel registerModel)
+        public bool Register(RegisterModel registerModel)
         {
             try
             {
@@ -40,10 +40,16 @@ namespace SWP.Dao
                 user.PhoneNumber = registerModel.PhoneNumber;
                 user.FirstName = registerModel.FirstName;
                 user.LastName = registerModel.LastName;
-
+                user.RoleId = 2;
+                user.CreatedDate = DateTime.Now;
+                var check = context.Users.FirstOrDefault(x=>x.Email == registerModel.Email);
+                if(check != null)
+                {
+                    return false;
+                }
                 context.Users.Add(user);
                 context.SaveChanges();
-                return user;
+                return true;
             }
             catch (Exception)
             {

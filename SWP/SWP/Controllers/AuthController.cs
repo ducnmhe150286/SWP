@@ -14,23 +14,23 @@ namespace SWP.Controllers
             this.userDao = new UsersDao();
         }
 
-       public IActionResult Index(string email,string password)
+        public IActionResult Index(string email, string password)
         {
             if (string.IsNullOrEmpty(email))
             {
                 return View();
             }
-            var user=userDao.login(email,password);
-            if(user == null)
+            var user = userDao.login(email, password);
+            if (user == null)
             {
                 ViewData["error"] = "Mat khau hoac email sai";
             }
             else
-            { 
-                int role=(int)user.RoleId;
+            {
+                int role = (int)user.RoleId;
                 HttpContext.Session.SetString("USER_EMAIL", user.Email);
                 HttpContext.Session.SetInt32("USER_ROLE", role);
-
+                HttpContext.Session.SetString("USER_NAME", user.FirstName +" "+ user.LastName);
                 return Redirect("/Home");
             }
             return View();
@@ -49,7 +49,23 @@ namespace SWP.Controllers
         [HttpPost]
         public IActionResult Register(RegisterModel registerModel)
         {
-            userDao.Register(registerModel);
+            if (!ModelState.IsValid && ModelState == null)
+            {
+                registerModel.ModelState = ModelState;
+                return View("register", registerModel);
+            }
+
+            var check = userDao.Register(registerModel);
+
+            if (check == false)
+            {
+                ViewData["message"] = "Email đã tồn tại";
+            }
+            else
+            {
+                ViewData["message1"] = "Đăng ký thành công.";
+            }
+
             return View();
         }
     }
