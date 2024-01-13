@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\SWP\\SWP\\SWP\\SWP.csproj": {}
+    "D:\\SWP2024\\SWP\\SWP\\SWP\\SWP.csproj": {}
   },
   "projects": {
-    "D:\\SWP\\SWP\\SWP\\SWP.csproj": {
+    "D:\\SWP2024\\SWP\\SWP\\SWP\\SWP.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\SWP\\SWP\\SWP\\SWP.csproj",
+        "projectUniqueName": "D:\\SWP2024\\SWP\\SWP\\SWP\\SWP.csproj",
         "projectName": "SWP",
-        "projectPath": "D:\\SWP\\SWP\\SWP\\SWP.csproj",
+        "projectPath": "D:\\SWP2024\\SWP\\SWP\\SWP\\SWP.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\SWP\\SWP\\SWP\\obj\\",
+        "outputPath": "D:\\SWP2024\\SWP\\SWP\\SWP\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -39,6 +39,22 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.0.26, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[6.0.26, )"
+            },
+            "Microsoft.Extensions.Configuration.Json": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
