@@ -1,0 +1,108 @@
+﻿@using SWP.Models;
+
+<html>
+<head>
+    <!-- Thêm link Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.19.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        .center-text {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="row">
+        <div class="col-8">
+            <h3>Sản Phẩm Đăng Bán</h3>
+
+        </div>
+        <div class="col-4">
+            <div class="d-flex justify-content-end">
+                <a class="btn btn-success ml-auto" href="@Url.Action("CreateProduct", "Products")">Thêm mới</a>
+            </div>
+        </div>
+
+    </div>
+
+    <div style="display:flex;">
+        <div>
+
+            <p>Danh sách các sản phẩm đang đăng bán để theo dõi và quản lý</p>
+            
+            <table class="table table-bordered table-responsive w-100">
+                <thead class="text-center">
+                    <tr>
+                        <th>Hình ảnh</th> 
+                        <th>Tên sản phẩm</th>
+                        <th>Mô tả</th>
+                        <th>Thương hiệu</th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
+                        <th>Danh mục</th>
+                        <th>Giảm giá</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th>Người tạo</th>
+                        <th>Người cập nhật</th>
+                        <th>Action</th> <!-- Thêm cột Action -->
+                    </tr>
+                </thead>
+                <tbody class ="text-center">
+                    @foreach (Product item in ViewBag.Products)
+                    {
+                        <tr>
+                            <td>
+                                @if (item.ProductImages != null && item.ProductImages.Any())
+                                {
+                                    @foreach (var image in item.ProductImages)
+                                    {
+                                        <img src="@image.Path" alt="Image" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
+                                        <br />
+                                    }
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
+                            <td>@item.ProductName</td>
+                            <td>@item.Description</td>
+                            <td>@item.Brand.BrandName</td>
+                            <td>@item.Price</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.Category.CategoryName</td>
+                            <td>@item.IsSale</td>
+                            <td>@item.Status</td>
+                            <td>@(item.CreatedDate.HasValue ? item.CreatedDate.Value.ToString("dd/MM/yyyy") : "")</td>
+                            <td>@item.CreatedBy</td>
+                            <td>@item.UpdateBy</td>
+                            <td>
+                                <a href="@Url.Action("EditProduct", "Products", new { id = item.ProductId })" class="btn btn-primary mb-1">
+                                    <span class="bi bi-pencil">Sửa</span>
+                                </a>
+                                <a href="#" class="btn btn-danger" onclick="confirmDelete(@item.ProductId)">
+                                    <span class="bi bi-trash">Xóa</span>
+                                </a>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function confirmDelete(productId) {
+            var isConfirmed = confirm("Bạn có chắc muốn xóa sản phẩm này?");
+            if (isConfirmed) {
+                window.location.href = "@Url.Action("DeleteProduct", "Products")?id=" + productId;
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

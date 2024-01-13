@@ -11,6 +11,7 @@ namespace SWP.Models
         public DateTime? CreateDate { get; set; }
         public string? CreatedBy { get; set; }
         public string? UpdateBy { get; set; }
+        public string? Path { get; set; }
 
         public virtual Product? Product { get; set; }
     }
