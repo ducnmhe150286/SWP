@@ -15,6 +15,7 @@
 <body>
     @{
         string user = HttpContextAccessor.HttpContext.Session.GetString("USER_EMAIL") ?? "";
+        string userName = HttpContextAccessor.HttpContext.Session.GetString("USER_NAME") ?? "";
         int role = HttpContextAccessor.HttpContext.Session.GetInt32("USER_ROLE") ?? 0;
     }
     <header>
@@ -38,7 +39,7 @@
                     </ul>
                     <div class="navbar-nav ml-auto pr-100">
                         @if(role!=0){
-                            <p>xin chào , @user - </p>
+                            <p>Xin chào , @userName - </p>
                             <a asp-controller="Auth" asp-action="Logout">Logout</a>
                         }
                         else
