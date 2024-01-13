@@ -1,5 +1,8 @@
-﻿using SWP.Dto;
+﻿using Microsoft.AspNetCore.Identity;
+using SWP.Dto;
 using SWP.Models;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace SWP.Dao
 {
@@ -15,13 +18,27 @@ namespace SWP.Dao
         {
             try
             {
-                var data = context.Users.FirstOrDefault(x=>x.Email == email && x.Password == password);
-                if(data == null)
+                var data = context.Users.FirstOrDefault(x => x.Email == email && x.Password == password);
+                if (data == null)
                 {
                     return null;
                 }
-                return data;
-            }
+                return data;           
+            //var user = context.Users.FirstOrDefault(x => x.Email == email);
+            //if (user == null)
+            //{
+            //    return null;
+            //}
+            //string hashedInputPassword = HashPassword(password);
+
+            //if (hashedInputPassword == user.Password)
+            //{
+
+            //    return user;
+            //}
+
+            //return null; 
+        }
             catch (Exception)
             {
 
@@ -37,6 +54,7 @@ namespace SWP.Dao
                 var user = new User();
                 user.Email = registerModel.Email;
                 user.Password = registerModel.Password;
+                //user.Password = HashPassword(registerModel.Password);
                 user.PhoneNumber = registerModel.PhoneNumber;
                 user.FirstName = registerModel.FirstName;
                 user.LastName = registerModel.LastName;
@@ -58,5 +76,15 @@ namespace SWP.Dao
             }
 
         }
+        public static string HashPassword(string password)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+            }
+        }
+
+        
     }
 }
