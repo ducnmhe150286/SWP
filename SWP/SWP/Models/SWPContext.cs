@@ -290,6 +290,14 @@ namespace SWP.Models
 
                 entity.Property(e => e.LastName).HasMaxLength(255);
 
+                entity.Property(e => e.Otp)
+                    .HasMaxLength(50)
+                    .HasColumnName("otp");
+
+                entity.Property(e => e.OtpExpired)
+                    .HasColumnType("datetime")
+                    .HasColumnName("otp_expired");
+
                 entity.Property(e => e.Password).HasMaxLength(255);
 
                 entity.Property(e => e.PhoneNumber).HasMaxLength(20);

@@ -257,6 +257,8 @@ CREATE TABLE [dbo].[User](
 	[CreatedBy] [nvarchar](255) NULL,
 	[UpdatedBy] [nvarchar](255) NULL,
 	[Image] [nvarchar](255) NULL,
+	[otp] [nvarchar](50) NULL,
+	[otp_expired] [Datetime] NULL
  CONSTRAINT [PK__User__1788CC4C49576765] PRIMARY KEY CLUSTERED 
 (
 	[UserId] ASC
