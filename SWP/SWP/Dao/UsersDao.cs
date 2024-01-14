@@ -196,5 +196,83 @@ namespace SWP.Dao
             }
 
         }
+        public static List<User> GetAllUser()
+        {
+            try
+            {
+                using(var connection = new SWPContext())
+                {
+                    var list = connection.Users.ToList();
+                    return list;
+                }
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+            
+        }
+        public static User GetUserById(int id)
+        {
+            try
+            {
+                using(var connection = new SWPContext())
+                {
+                    var user = connection.Users.Where(x => x.UserId== id).FirstOrDefault();
+                    return user;
+                }
+            }catch(Exception ex)
+            {
+                return null;
+            }
+        }
+        public static void SaveUser(User user)
+        {
+            try
+            {
+                using(var context = new SWPContext())
+                {
+                    context.Users.Add(user);
+                    context.SaveChanges();
+                }
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public static void UpdateUser(User user)
+        {
+            try
+            {
+                using (var context = new SWPContext())
+                {
+                    context.Entry<User>(user).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public static void DeleteUser(User user)
+        {
+            try
+            {
+                using (var context = new SWPContext())
+                {
+                   var p1 = context.Users.SingleOrDefault(c=> c.UserId == user.UserId);
+                    context.Users.Remove(p1);
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        
+
     }
 }
