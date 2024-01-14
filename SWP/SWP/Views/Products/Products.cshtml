@@ -31,7 +31,58 @@
         <div>
 
             <p>Danh sách các sản phẩm đang đăng bán để theo dõi và quản lý</p>
-            
+            <form action="@Url.Action("Products", "Products")" method="get">
+
+            <div class="row mb-3">
+              
+                <div class="col-2 mt-3">
+                        <label for="statusFilter" class="form-label">Trạng thái:</label>
+                        <select id="statusFilter" name="statusFilter" class="form-select">
+                            <option value="" >Tất cả</option>
+                            <option value="1" selected="@(ViewBag.StatusFilter == 1)">Hoạt động</option>
+                            <option value="2" selected="@(ViewBag.StatusFilter == 2)">Hết hàng</option>
+                            <option value="0" selected="@(ViewBag.StatusFilter == 0)">Ngừng hoạt động</option>
+                            </select>
+                    </select>
+                </div>
+                <div class="col-2 mt-3">
+                    <label for="categoryFilter" class="form-label">Danh mục:</label>
+                        <select id="categoryFilter" name="categoryFilter" class="form-select">
+                            <option value="" >Tất cả</option>
+                        @foreach (var category in ViewBag.Categories)
+                        {
+                                <option value="@category.CategoryId" selected="@(category.CategoryId == ViewBag.CategoryFilter)">@category.CategoryName</option>
+                                
+                        }
+                    </select>
+                </div>
+                <div class="col-2 mt-3">
+                    <label for="brandFilter" class="form-label">Thương hiệu:</label>
+                        <select id="brandFilter" name="brandFilter" class="form-select">
+                            <option value="" >Tất cả</option>
+                        @foreach (var brand in ViewBag.Brands)
+                        {
+                                <option value="@brand.BrandId" selected="@(brand.BrandId == ViewBag.brandFilter)">@brand.BrandName</option>
+                        }
+                    </select>
+                </div>
+                    <div class="col-4 mt-3">
+                        <label for="searchString" class="form-label">Tìm kiếm:</label>
+                        <div class="row">
+                            <div class="col-8">
+                                <input type="text" id="searchString" name="searchString" class="form-control" placeholder="Nhập từ khóa..." value="@ViewData["SearchString"]">
+                            </div>
+                            <div class="col-4">
+                                <button type="submit" class=" mt-1 btn btn-primary btn-sm">Tìm kiếm</button>
+
+                            </div>
+                        </div>
+
+                    </div>
+                  
+            </div>
+            </form>
+           
             <table class="table table-bordered table-responsive w-100">
                 <thead class="text-center">
                     <tr>
@@ -42,8 +93,9 @@
                         <th>Giá</th>
                         <th>Số lượng</th>
                         <th>Danh mục</th>
-                        <th>Giảm giá</th>
-                        <th>Trạng thái</th>
+@*                        <th>Giảm giá</th>
+*@                        
+                    <th>Trạng thái</th>
                         <th>Ngày tạo</th>
                         <th>Người tạo</th>
                         <th>Người cập nhật</th>
@@ -74,8 +126,30 @@
                             <td>@item.Price</td>
                             <td>@item.Quantity</td>
                             <td>@item.Category.CategoryName</td>
-                            <td>@item.IsSale</td>
-                            <td>@item.Status</td>
+@*                            <td>@item.IsSale</td>
+                        *@
+                            <td>
+                                @{
+                                    string statusText = "";
+                                    switch (item.Status)
+                                    {
+                                        case 1:
+                                            statusText = "Hoạt động";
+                                            break;
+                                        case 2:
+                                            statusText = "Hết hàng";
+                                            break;
+                                        case 0:
+                                            statusText = "Ngừng hoạt động";
+                                            break;
+                                        default:
+                                            statusText = "Không xác định";
+                                            break;
+                                    }
+                                    @statusText
+                                }
+                            </td>
+
                             <td>@(item.CreatedDate.HasValue ? item.CreatedDate.Value.ToString("dd/MM/yyyy") : "")</td>
                             <td>@item.CreatedBy</td>
                             <td>@item.UpdateBy</td>
