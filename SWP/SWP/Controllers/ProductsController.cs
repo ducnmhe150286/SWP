@@ -9,18 +9,36 @@ namespace SWP.Controllers
     public class ProductsController : Controller
     {
         [Route("products/list")]
-        public IActionResult Products()
+        public IActionResult Products(string searchString, int? statusFilter, int? categoryFilter, int? brandFilter)
         {
             using (var context = new SWPContext())
             {
+                var brands = context.Brands.ToList();
+                var categories = context.Categories.ToList();
                 var productList = context.Products
                     .Include(p => p.Brand)
                     .Include(p => p.Category)
                     .Include(p => p.ProductImages)
-                    .ToList();
-
+                    .Where(p =>
+                    (string.IsNullOrEmpty(searchString) ||
+                    p.ProductName.Contains(searchString) ||
+                    p.Brand.BrandName.Contains(searchString) ||
+                    p.Category.CategoryName.Contains(searchString)) &&
+                    (!statusFilter.HasValue || p.Status == statusFilter) &&
+                    (!categoryFilter.HasValue || p.CategoryId == categoryFilter) &&
+                    (!brandFilter.HasValue || p.BrandId == brandFilter)
+                )
+                .ToList();
+                ViewBag.Categories = categories;
+                ViewBag.Brands = brands;
                 ViewBag.Products = productList;
                 ViewData["Products"] = productList;
+                ViewData["SearchString"] = searchString;
+                ViewBag.StatusFilter = statusFilter;
+                ViewBag.CategoryFilter = categoryFilter;
+                ViewBag.BrandFilter = brandFilter;
+
+
             }
             return View();
         }
