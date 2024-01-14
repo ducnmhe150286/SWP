@@ -171,6 +171,7 @@ CREATE TABLE [dbo].[ProductImage](
 	[CreateDate] [datetime] NULL,
 	[CreatedBy] [nvarchar](255) NULL,
 	[UpdateBy] [nvarchar](255) NULL,
+	[Path] [nvarchar](max) NULL,
  CONSTRAINT [PK__ProductI__07B2B1B895F9D470] PRIMARY KEY CLUSTERED 
 (
 	[ProductImageId] ASC
