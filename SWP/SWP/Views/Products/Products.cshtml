@@ -1,0 +1,182 @@
+﻿@using SWP.Models;
+
+<html>
+<head>
+    <!-- Thêm link Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.19.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        .center-text {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="row">
+        <div class="col-8">
+            <h3>Sản Phẩm Đăng Bán</h3>
+
+        </div>
+        <div class="col-4">
+            <div class="d-flex justify-content-end">
+                <a class="btn btn-success ml-auto" href="@Url.Action("CreateProduct", "Products")">Thêm mới</a>
+            </div>
+        </div>
+
+    </div>
+
+    <div style="display:flex;">
+        <div>
+
+            <p>Danh sách các sản phẩm đang đăng bán để theo dõi và quản lý</p>
+            <form action="@Url.Action("Products", "Products")" method="get">
+
+            <div class="row mb-3">
+              
+                <div class="col-2 mt-3">
+                        <label for="statusFilter" class="form-label">Trạng thái:</label>
+                        <select id="statusFilter" name="statusFilter" class="form-select">
+                            <option value="" >Tất cả</option>
+                            <option value="1" selected="@(ViewBag.StatusFilter == 1)">Hoạt động</option>
+                            <option value="2" selected="@(ViewBag.StatusFilter == 2)">Hết hàng</option>
+                            <option value="0" selected="@(ViewBag.StatusFilter == 0)">Ngừng hoạt động</option>
+                            </select>
+                    </select>
+                </div>
+                <div class="col-2 mt-3">
+                    <label for="categoryFilter" class="form-label">Danh mục:</label>
+                        <select id="categoryFilter" name="categoryFilter" class="form-select">
+                            <option value="" >Tất cả</option>
+                        @foreach (var category in ViewBag.Categories)
+                        {
+                                <option value="@category.CategoryId" selected="@(category.CategoryId == ViewBag.CategoryFilter)">@category.CategoryName</option>
+                                
+                        }
+                    </select>
+                </div>
+                <div class="col-2 mt-3">
+                    <label for="brandFilter" class="form-label">Thương hiệu:</label>
+                        <select id="brandFilter" name="brandFilter" class="form-select">
+                            <option value="" >Tất cả</option>
+                        @foreach (var brand in ViewBag.Brands)
+                        {
+                                <option value="@brand.BrandId" selected="@(brand.BrandId == ViewBag.brandFilter)">@brand.BrandName</option>
+                        }
+                    </select>
+                </div>
+                    <div class="col-4 mt-3">
+                        <label for="searchString" class="form-label">Tìm kiếm:</label>
+                        <div class="row">
+                            <div class="col-8">
+                                <input type="text" id="searchString" name="searchString" class="form-control" placeholder="Nhập từ khóa..." value="@ViewData["SearchString"]">
+                            </div>
+                            <div class="col-4">
+                                <button type="submit" class=" mt-1 btn btn-primary btn-sm">Tìm kiếm</button>
+
+                            </div>
+                        </div>
+
+                    </div>
+                  
+            </div>
+            </form>
+           
+            <table class="table table-bordered table-responsive w-100">
+                <thead class="text-center">
+                    <tr>
+                        <th>Hình ảnh</th> 
+                        <th>Tên sản phẩm</th>
+                        <th>Mô tả</th>
+                        <th>Thương hiệu</th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
+                        <th>Danh mục</th>
+@*                        <th>Giảm giá</th>
+*@                        
+                    <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th>Người tạo</th>
+                        <th>Người cập nhật</th>
+                        <th>Action</th> <!-- Thêm cột Action -->
+                    </tr>
+                </thead>
+                <tbody class ="text-center">
+                    @foreach (Product item in ViewBag.Products)
+                    {
+                        <tr>
+                            <td>
+                                @if (item.ProductImages != null && item.ProductImages.Any())
+                                {
+                                    @foreach (var image in item.ProductImages)
+                                    {
+                                        <img src="@image.Path" alt="Image" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
+                                        <br />
+                                    }
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
+                            <td>@item.ProductName</td>
+                            <td>@item.Description</td>
+                            <td>@item.Brand.BrandName</td>
+                            <td>@item.Price</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.Category.CategoryName</td>
+@*                            <td>@item.IsSale</td>
+                        *@
+                            <td>
+                                @{
+                                    string statusText = "";
+                                    switch (item.Status)
+                                    {
+                                        case 1:
+                                            statusText = "Hoạt động";
+                                            break;
+                                        case 2:
+                                            statusText = "Hết hàng";
+                                            break;
+                                        case 0:
+                                            statusText = "Ngừng hoạt động";
+                                            break;
+                                        default:
+                                            statusText = "Không xác định";
+                                            break;
+                                    }
+                                    @statusText
+                                }
+                            </td>
+
+                            <td>@(item.CreatedDate.HasValue ? item.CreatedDate.Value.ToString("dd/MM/yyyy") : "")</td>
+                            <td>@item.CreatedBy</td>
+                            <td>@item.UpdateBy</td>
+                            <td>
+                                <a href="@Url.Action("EditProduct", "Products", new { id = item.ProductId })" class="btn btn-primary mb-1">
+                                    <span class="bi bi-pencil">Sửa</span>
+                                </a>
+                                <a href="#" class="btn btn-danger" onclick="confirmDelete(@item.ProductId)">
+                                    <span class="bi bi-trash">Xóa</span>
+                                </a>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function confirmDelete(productId) {
+            var isConfirmed = confirm("Bạn có chắc muốn xóa sản phẩm này?");
+            if (isConfirmed) {
+                window.location.href = "@Url.Action("DeleteProduct", "Products")?id=" + productId;
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
