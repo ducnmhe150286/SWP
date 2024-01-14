@@ -18,7 +18,7 @@ namespace SWP.Dto
         public string ConfirmPassword { get; set; }
 
         [Required(ErrorMessage = "SĐT không được để trống!")]
-        [RegularExpression(@"^\d{10}$", ErrorMessage = "SĐT không đúng!")]
+        [RegularExpression(@"^(09|08|03)+([0-9]{8})\b", ErrorMessage = "SĐT không đúng định dạng!")]
         public string PhoneNumber { get; set; }
 
         [Required(ErrorMessage = "Tên không được để trống!")]
@@ -29,6 +29,6 @@ namespace SWP.Dto
         [MaxLength(30, ErrorMessage = "Không được vượt quá 30 ký tự!")]
         public string LastName { get; set; }
 
-        public ModelStateDictionary ModelState { get; set; }
+        public int? RoleId { get; set; }
     }
 }

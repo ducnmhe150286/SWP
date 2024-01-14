@@ -1,4 +1,6 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using SWP.Dao;
+using SWP.Models;
 
 namespace SWP
 {
@@ -19,6 +21,28 @@ namespace SWP
             builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddHttpContextAccessor();
             var app = builder.Build();
+            using (var scope = app.Services.CreateScope())
+            {
+                var service = scope.ServiceProvider;
+                var context = new SWPContext();
+                UsersDao usersDao = new UsersDao();
+                if (context.Users.FirstOrDefault(x=>x.Email.Equals("admin@gmail.com"))==null)
+                {
+                    Dto.RegisterModel registerModel = new Dto.RegisterModel
+                    {
+                        Email = "admin@gmail.com",
+                        Password = "Admin123@",
+                        FirstName = "Admin",
+                        LastName = "Shop",
+                        PhoneNumber = "0912345678",
+                        RoleId = 1
+                    };
+
+                    usersDao.Register(registerModel);
+                }
+            }
+            
+			
 
 			// Configure the HTTP request pipeline.
 			if (!app.Environment.IsDevelopment())

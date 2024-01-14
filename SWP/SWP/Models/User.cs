@@ -26,6 +26,8 @@ namespace SWP.Models
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
         public string? Image { get; set; }
+        public string? Otp { get; set; }
+        public DateTime? OtpExpired { get; set; }
 
         public virtual Role Role { get; set; } = null!;
         public virtual ICollection<Blog> Blogs { get; set; }
