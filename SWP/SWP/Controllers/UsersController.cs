@@ -1,88 +1,201 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using RestSharp;
+using SWP.Dto.Request.Users;
 using SWP.Models;
+using System.Collections.Generic;
 
 namespace SWP.Controllers
 {
+   
     public class UsersController : Controller
     {
-        private readonly SWPContext _context;
+     
+        private readonly HttpClient client = null;
+        private readonly IConfiguration configuration;
+        private string ApiPort = "";
+        private readonly INotyfService _toastNotification;
 
-        public UsersController(SWPContext context)
+        public UsersController( IConfiguration configuration, INotyfService toastNotification)
         {
-            _context = context;
+           
+            client= new HttpClient();
+            var contenType = new MediaTypeWithQualityHeaderValue("application/json");
+            this.configuration = configuration;
+            _toastNotification = toastNotification;
+            ApiPort = configuration.GetSection(ApiPort).Value;
         }
 
+        public async Task<UserRequest> GetCurrentUser()
+        {
+            var user = HttpContext.Session.GetString("currentuser");
+            if(user!= null)
+            {
+                var currentUser = JsonConvert.DeserializeObject<UserRequest>(user);
+                return currentUser;
+            }
+            return null;
+        }
+
+        public async Task<List<User>> GetUsers()
+        {
+            var user = GetCurrentUser().Result;
+            if(user.RoleId == 1)
+            {
+                try
+                {
+                    var token = HttpContext.Session.GetString("AuthToken");
+                    var tokenAuth = "Bearer" + token;
+
+                    RestClient client = new RestClient(ApiPort);
+                    var requestUrl = new RestRequest($"api/Users", RestSharp.Method.Get);
+                    requestUrl.AddHeader("content-type", "application/json");
+                    requestUrl.AddParameter("Authorization", tokenAuth.Replace("\"",""), ParameterType.HttpHeader);
+                    var response = await client.ExecuteAsync(requestUrl);
+                    var products = JsonConvert.DeserializeObject<List<User>>(response.Content);
+                    if(products != null)
+                    {
+                        return products;
+                    }
+                }catch (Exception ex)
+                {
+                    throw;
+                }
+              
+            }
+            return null;
+        }
+
+        public async Task<List<Role>> GetRoles()
+        {
+            try
+            {
+                
+                RestClient client = new RestClient(ApiPort);
+                var requestUrl = new RestRequest($"api/Users", RestSharp.Method.Get);
+                requestUrl.AddHeader("content-type", "application/json");
+                var response = await client.ExecuteAsync(requestUrl);
+                var roles = JsonConvert.DeserializeObject<List<Role>>(response.Content);
+                return roles;
+                
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
         // GET: Users
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int currentPage)
         {
-            var sWPContext = _context.Users.Include(u => u.Role);
-            return View(await sWPContext.ToListAsync());
-        }
-
-        // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Users == null)
+           var user = GetCurrentUser().Result;
+            if (user.RoleId == 1)
             {
-                return NotFound();
+                var session = HttpContext.Session.GetString("currentuser");
+                if(session != null)
+                {
+                    var currentUser = JsonConvert.DeserializeObject<User>(session);
+                    ViewData["Name"] = currentUser.LastName;
+                    ViewData["Role"] = currentUser.RoleId;
+                }
+
+                var users = GetUsers().Result;
+                if(user != null)
+                {
+                    ViewData["NumberofPages"] = users.Count / 6;
+                    users = users.Skip( 6 +currentPage).Take(6).ToList();
+                    ViewData["currentPage"] = currentPage;
+                    return View(users);
+                }
             }
-
-            var user = await _context.Users
-                .Include(u => u.Role)
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
-        }
-
-        // GET: Users/Create
-        public IActionResult Create()
-        {
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleId");
+            _toastNotification.Error("Ban khong co quyen truy cap trang nay");
             return View();
         }
 
-        // POST: Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,RoleId,Email,Password,Address,PhoneNumber,FirstName,LastName,Gender,Status,CreatedDate,CreatedBy,UpdatedBy,Image,Otp,OtpExpired")] User user)
+        // GET: Users/Details/5
+        public async Task<IActionResult> Details(int userId)
         {
-            if (ModelState.IsValid)
+            var session = HttpContext.Session.GetString("currentuser");
+            if (session != null)
             {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var currentUser = JsonConvert.DeserializeObject<User>(session);
+                ViewData["Name"] = currentUser.LastName;
+                ViewData["Role"] = currentUser.RoleId;
+
+                var token = HttpContext.Session.GetString("AuthToken");
+                var tokenAuth = "Bearer" + token;
+
+                RestClient client = new RestClient(ApiPort);
+                var requestUrl = new RestRequest($"api/Users", RestSharp.Method.Get);
+                requestUrl.AddHeader("content-type", "application/json");
+                requestUrl.AddParameter("Authorization", tokenAuth.Replace("\"", ""), ParameterType.HttpHeader);
+                var response = await client.ExecuteAsync(requestUrl);
+                var userid = JsonConvert.DeserializeObject<User>(response.Content);
+                if (userid != null)
+                {
+                    return View(userid);
+                }
             }
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleId", user.RoleId);
-            return View(user);
+            var user = GetCurrentUser().Result;
+            if (user.RoleId == 1)
+            {
+              
+                    var token = HttpContext.Session.GetString("AuthToken");
+                    var tokenAuth = "Bearer" + token;
+
+                    RestClient client = new RestClient(ApiPort);
+                    var requestUrl = new RestRequest($"api/Users", RestSharp.Method.Get);
+                    requestUrl.AddHeader("content-type", "application/json");
+                    requestUrl.AddParameter("Authorization", tokenAuth.Replace("\"", ""), ParameterType.HttpHeader);
+                    var response = await client.ExecuteAsync(requestUrl);
+                    var userid = JsonConvert.DeserializeObject<User>(response.Content);
+                    if (userid != null)
+                    {
+                        return View(userid);
+                }
+                
+            }
+            _toastNotification.Error("Ban khong co quyen truy cap trang nay");
+            return View();
         }
 
-        // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Users == null)
-            {
-                return NotFound();
-            }
 
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+
+        // GET: Users/Edit/5
+        public async Task<IActionResult> Edit(int userId)
+        {
+            var session = HttpContext.Session.GetString("currentuser");
+            if (session != null)
             {
-                return NotFound();
+                var currentUser = JsonConvert.DeserializeObject<User>(session);
+                ViewData["Name"] = currentUser.LastName;
+                ViewData["Role"] = currentUser.RoleId;
+
+                var token = HttpContext.Session.GetString("AuthToken");
+                var tokenAuth = "Bearer" + token;
+
+                RestClient client = new RestClient(ApiPort);
+                var requestUrl = new RestRequest($"api/Users", RestSharp.Method.Get);
+                requestUrl.AddHeader("content-type", "application/json");
+                requestUrl.AddParameter("Authorization", tokenAuth.Replace("\"", ""), ParameterType.HttpHeader);
+                var response = await client.ExecuteAsync(requestUrl);
+                var user = JsonConvert.DeserializeObject<User>(response.Content);
+                if (user != null)
+                {
+                    var listRole = GetRoles();
+                    ViewData["RoleId"] = new SelectList(listRole.Result.ToList(), "RoleId", "RoleName");
+                    return View(user);
+                }
             }
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleId", user.RoleId);
-            return View(user);
+            _toastNotification.Error("Ban khong co quyen truy cap trang nay");
+            return View();
         }
 
         // POST: Users/Edit/5
@@ -90,54 +203,54 @@ namespace SWP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,RoleId,Email,Password,Address,PhoneNumber,FirstName,LastName,Gender,Status,CreatedDate,CreatedBy,UpdatedBy,Image,Otp,OtpExpired")] User user)
+       /* public async Task<IActionResult> Edit(int userId,List<IFormFile> files, [Bind("UserId,RoleId,Email,Password,Address,PhoneNumber,FirstName,LastName,Gender,Status,CreatedDate,CreatedBy,UpdatedBy,Image,Otp,OtpExpired")] User user)
         {
-            if (id != user.UserId)
+            var filePaths = new List<string>();
+            if (files.Count > 0)
             {
-                return NotFound();
-            }
+                long size = files.Sum(f => f.Length);
 
-            if (ModelState.IsValid)
-            {
-                try
+                foreach(var formFile in files)
                 {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserExists(user.UserId))
+                    if(formFile.Length > 0)
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
+                        var fileName = formFile.FileName;
+                        var filePath = Path.Combine(Dictionary.GetCurrentDirectory(), "wwwroot", "image");
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleId", user.RoleId);
-            return View(user);
-        }
+        }*/
 
         // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Users == null)
+            var user = GetCurrentUser().Result;
+            if (user.RoleId == 1)
             {
-                return NotFound();
-            }
 
-            var user = await _context.Users
-                .Include(u => u.Role)
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
+                var token = HttpContext.Session.GetString("AuthToken");
+                var tokenAuth = "Bearer" + token;
+                try
+                {
+                    RestClient client = new RestClient(ApiPort);
+                    var requestUrl = new RestRequest($"api/Users", RestSharp.Method.Get);
+                    requestUrl.AddHeader("content-type", "application/json");
+                    requestUrl.AddParameter("Authorization", tokenAuth.Replace("\"", ""), ParameterType.HttpHeader);
+                    var response = await client.ExecuteAsync(requestUrl);
+                    if(response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                    {
+                        _toastNotification.Success("Delete user success!");
+                        return RedirectToAction("Index", "User");
+                    }
+                }catch (Exception ex) {
+                    throw;
+                }
 
-            return View(user);
+               
+
+            }
+            _toastNotification.Error("Xoa nguoi dung that bai");
+            return RedirectToAction("Index", "User");
         }
 
         // POST: Users/Delete/5
@@ -145,23 +258,9 @@ namespace SWP.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Users == null)
-            {
-                return Problem("Entity set 'SWPContext.Users'  is null.");
-            }
-            var user = await _context.Users.FindAsync(id);
-            if (user != null)
-            {
-                _context.Users.Remove(user);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return View();
         }
 
-        private bool UserExists(int id)
-        {
-          return (_context.Users?.Any(e => e.UserId == id)).GetValueOrDefault();
-        }
+       
     }
 }

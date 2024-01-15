@@ -244,6 +244,8 @@ namespace SWP.Models
             {
                 entity.ToTable("Role");
 
+                entity.Property(e => e.RoleId).ValueGeneratedNever();
+
                 entity.Property(e => e.CreatedBy).HasMaxLength(255);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
