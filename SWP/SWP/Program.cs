@@ -19,6 +19,7 @@ namespace SWP
                 options.Cookie.IsEssential = true;
             });
             builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddSingleton<UsersDao>();
             builder.Services.AddHttpContextAccessor();
             var app = builder.Build();
             using (var scope = app.Services.CreateScope())
@@ -63,7 +64,7 @@ namespace SWP
 
             app.MapControllerRoute(
 				name: "default",
-				pattern: "{controller=Home}/{action=Index}/{id?}");
+				pattern: "{controller=Users}/{action=Index}/{id?}");
 
 			app.Run();
 		}
