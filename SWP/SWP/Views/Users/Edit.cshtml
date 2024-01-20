@@ -16,24 +16,32 @@
                                         <h3 class="mb-5 text-uppercase">Update user</h3>
                                         <input type="hidden" asp-for="UserId" value="@Model.UserId" />
                                         <div class="form-outline mb-4">
-                                            <input asp-for="Email" type="text" id="Email" class="form-control form-control-lg" value="@Model.Email" />
                                             <label class="form-label">User Name</label>
+                                            <input asp-for="Email" type="text" id="Email" class="form-control form-control-lg" value="@Model.Email" />
+                                            
                                         </div>
 
                                         <div class="form-outline mb-4">
+                                            <label class="form-label">First Name</label>
+                                            <input asp-for="FirstName" type="text" id="FirstName" class="form-control form-control-lg" value="@Model.FirstName" />
+                                            
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label">Last Name</label>
                                             <input asp-for="LastName" type="text" id="LastName" class="form-control form-control-lg" value="@Model.LastName" />
-                                            <label class="form-label">Full Name</label>
+                                            
                                         </div>
 
                                         <div class="form-outline mb-4">
-                                            <input asp-for="Password" type="text" id="Password" class="form-control form-control-lg" value="@Model.Password" />
                                             <label class="form-label">Password</label>
+                                            <input asp-for="Password" type="text" id="Password" class="form-control form-control-lg" value="@Model.Password" />
+                                           
                                         </div>
 
                                         <div class="form-outline mb-4">
                                             <div>
                                                 <input type="text" asp-for="Image" class="form-control mt-2" readonly value="@Model.Image">
-                                                <input class="form-control form-control-lg" id="formFileLg" name="files" type="file" multiple />
+                                               @* <input class="form-control form-control-lg" id="formFileLg" name="files" type="file" multiple />*@
                                                 <div class="small text-muted mt-2">
                                                     Upload image product or any other relevant file. Max file
                                                     size 50 MB
@@ -48,14 +56,14 @@
                                         </div>
 
                                         <div class="form-outline mb-4">
-                                            <input asp-for="Address" type="text" id="Address" class="form-control form-control-lg" value="@Model.Address" />
                                             <label class="form-label">Address</label>
+                                            <input asp-for="Address" type="text" id="Address" class="form-control form-control-lg" value="@Model.Address" />
                                         </div>
 
                                      
                                         <div class="form-outline mb-4">
-                                            <input asp-for="Email" type="text" id="Email" class="form-control form-control-lg" value="@Model.Email" />
                                             <label class="form-label">Email</label>
+                                            <input asp-for="Email" type="text" id="Email" class="form-control form-control-lg" value="@Model.Email" />
                                         </div>
 
                                         <div class="d-md-flex justify-content-start align-items-center mb-4 py-2">
@@ -78,9 +86,9 @@
                                             <div class="col-md-6 mb-4">
 
                                                 <select class="form-control form-control-lg" asp-for="RoleId">
-                                                    @foreach (var item in ViewBag.RoleId)
+                                                    @foreach (var item in ViewBag.Role)
                                                     {
-                                                        <option value="@item.Value" selected="@item.Selected">@item.Text</option>
+                                                        <option value="@item.RoleId">@item.RoleName</option>
                                                     }
                                                 </select>
                                                 <div>
@@ -94,16 +102,15 @@
                                         </div>
 
                                         <div class="form-outline mb-4">
-                                            <input type="text" asp-for="PhoneNumber" class="form-control form-control-lg" value="@Model.PhoneNumber" />
                                             <label class="form-label" for="form3Example9">Phone</label>
+                                            <input type="text" asp-for="PhoneNumber" class="form-control form-control-lg" value="@Model.PhoneNumber" />
                                         </div>
-
 
 
 
                                         <div class="d-flex justify-content-end pt-3">
                                             <button type="button" class="btn btn-light btn-lg">Reset all</button>
-                                            <input type="submit" value="Update" class="btn btn-success btn-lg" />
+                                            <input type="submit" value="Save" class="btn btn-success btn-lg" />
                                         </div>
                                     </div>
 
