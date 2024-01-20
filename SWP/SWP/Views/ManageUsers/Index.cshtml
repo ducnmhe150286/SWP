@@ -1,0 +1,138 @@
+﻿@model List<User>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+@{
+    int i = 0;
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-uppercase mb-0">Quản lý người dùng</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table no-wrap user-table mb-0">
+                        <div class="alert alert-success" role="alert">
+                            @TempData["MESS_NOTE"]
+                        </div>
+                        <thead>
+                            <tr>
+                                <th scope="col" class="border-0 text-uppercase font-medium pl-4">Stt</th>
+                                <th scope="col" class="border-0 text-uppercase font-medium">Tên</th>
+                                <th scope="col" class="border-0 text-uppercase font-medium">Email</th>
+                                <th scope="col" class="border-0 text-uppercase font-medium">SĐT</th>
+                                <th scope="col" class="border-0 text-uppercase font-medium">Ngày Tạo</th>
+                                <th scope="col" class="border-0 text-uppercase font-medium">Trạng Thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                i++;
+                                <tr>
+                                    <td class="pl-4">@i</td>
+                                    <td>
+                                        <h5 class="font-medium mb-0">@item.FirstName @item.LastName</h5>
+
+                                    </td>
+                                    <td>
+                                        <span class="text-muted">@item.Email</span><br>
+
+                                    </td>
+                                    <td>
+                                        <span class="text-muted">@item.PhoneNumber</span><br>
+
+                                    </td>
+                                    <td>
+                                        <span class="text-muted">@item.CreatedDate</span><br>
+
+                                    </td>
+                                    <td>
+                                        @if (item.Status == 1)
+                                        {
+                                            <span class="text-muted">Hoạt động</span>
+                                            <br>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Bị chặn</span>
+                                            <br>
+                                        }
+
+                                    </td>
+
+                                    <td>
+                                        <button type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="showUserDetails('@item.UserId')"><i class="fa fa-edit"></i> </button>
+                                        @if (item.Status == 1)
+                                        {
+                                            <a type="button" asp-controller="ManageUsers" asp-action="GetUserBlock" asp-route-id="@item.UserId" asp-route-block="@item.Status" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class=" fa fa-ban"></i> </a>
+                                        }
+                                        else
+                                        {
+                                            <a type="button" asp-controller="ManageUsers" asp-action="GetUserBlock" asp-route-id="@item.UserId" asp-route-block="@item.Status" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class=" fa fa-unlock"></i> </a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thông tin người dùng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="userDetailsContainer">
+                   
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showUserDetails(userId) {
+        
+        var userDetailsHtml = '<p>Thông tin chi tiết của người dùng có ID ' + userId + '</p>';
+        debugger;
+        console.log(userId);
+        $.ajax({
+            type: 'GET',
+            url: '/ManageUsers/GetUserDetails', 
+            data: { userId: userId },
+            success: function (data) {
+                
+                console.log(data);
+                var userDetailsHtml = `
+                        <p><strong>Email:</strong> ${data.email}</p>
+                        <p><strong>SĐT:</strong> ${data.phoneNumber}</p>
+                        <p><strong>Tên:</strong> ${data.firstName.trim()} ${data.lastName.trim()}</p>
+                        <p><strong>Trạng thái:</strong> ${data.status === 1 ? 'Hoạt động' : 'Bị chặn'}</p>
+                        <p><strong>Ngày tạo:</strong> ${new Date(data.createdDate).toLocaleString()}</p>
+
+                `;
+
+                document.getElementById('userDetailsContainer').innerHTML = userDetailsHtml;
+
+
+                $('#exampleModal').modal('show');
+            },
+            error: function (error) {
+                alert('Lỗi khi lấy thông tin người dùng:', error);
+            }
+        });
+        
+    }
+</script>
