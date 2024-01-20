@@ -24,6 +24,7 @@ namespace SWP
             builder.Services.AddSingleton<UsersDao>();
             builder.Services.AddHttpContextAccessor();
             var app = builder.Build();
+
             using (var scope = app.Services.CreateScope())
             {
                 var service = scope.ServiceProvider;

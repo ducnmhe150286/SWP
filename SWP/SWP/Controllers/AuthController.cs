@@ -9,10 +9,11 @@ namespace SWP.Controllers
     public class AuthController : Controller
     {
         public UsersDao userDao;
-
-        public AuthController()
+		public ManageUsersDao usersManage;
+		public AuthController()
         {
             this.userDao = new UsersDao();
+            this.usersManage = new ManageUsersDao();
         }
 
         public IActionResult Index(string email, string password)
@@ -30,9 +31,15 @@ namespace SWP.Controllers
             {
                 int role = (int)user.RoleId;
                 HttpContext.Session.SetString("USER_EMAIL", user.Email);
+                //HttpContext.Session.SetString("USER_EMAIL", );
                 HttpContext.Session.SetInt32("USER_ROLE", role);
                 HttpContext.Session.SetString("USER_NAME", user.FirstName +" "+ user.LastName);
+                if (role == 1)
+                {
+					return Redirect("/ManageUsers");
+				}
                 return Redirect("/Home");
+
             }
             return View();
         }
