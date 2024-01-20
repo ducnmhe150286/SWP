@@ -36,7 +36,7 @@ namespace SWP.Controllers
                 HttpContext.Session.SetString("USER_NAME", user.FirstName +" "+ user.LastName);
                 if (role == 1)
                 {
-					return Redirect("/ManageUsers");
+					return Redirect("/ProfileUsers");
 				}
                 return Redirect("/Home");
 
