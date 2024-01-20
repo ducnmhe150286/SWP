@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SWP.Dto;
 using SWP.Models;
 
 namespace SWP.Dao
@@ -37,7 +38,47 @@ namespace SWP.Dao
                 return null;
             }
         }
-		public string BlockUser(int? id,int? block,string updateby)
+
+        public User getUserByEmail(string email)
+        {
+            try
+            {
+                var data = context.Users.FirstOrDefault(x => x.Email == email);
+                return data;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+        }
+
+        public User updateProfile(UserProfileModel userProfile,string email)
+        {
+            try
+            {
+                var data = context.Users.FirstOrDefault(x => x.Email == email);
+                if(data == null)
+                {
+                    return null;
+                }
+                data.FirstName = userProfile.FirstName;
+                data.LastName = userProfile.LastName;
+                data.PhoneNumber = userProfile.PhoneNumber;
+                data.Address = userProfile.Address;
+                data.Gender = userProfile.Gender;
+                data.UpdatedBy = email;
+                context.SaveChanges();
+                return data;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+        }
+
+        public string BlockUser(int? id,int? block,string updateby)
 		{
 			try
 			{
