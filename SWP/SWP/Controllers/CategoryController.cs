@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWP.Models;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace SWP.Controllers
 {
@@ -34,6 +35,13 @@ namespace SWP.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (!IsValidName(newCategory.CategoryName))
+                {
+                    ModelState.AddModelError("CategoryName", "Tên danh mục chỉ được chứa chữ cái.");
+                    // Xử lý lỗi nếu cần thiết
+                    return View(newCategory);
+                }
+
                 using (var context = new SWPContext())
                 {
                     // Lấy tên người dùng hiện tại, bạn cần cập nhật logic lấy tên người dùng theo cách của bạn
@@ -63,6 +71,12 @@ namespace SWP.Controllers
 
             // Nếu có lỗi, hiển thị lại trang AddCategory với thông tin nhập trước đó
             return View(newCategory);
+        }
+
+        private bool IsValidName(string name)
+        {
+            // Kiểm tra xem tên chỉ chứa chữ cái
+            return !string.IsNullOrWhiteSpace(name) && Regex.IsMatch(name, "^[a-zA-Zà-ỹẠ-Ỹ\\s]+$");
         }
         [HttpPost]
         public IActionResult Delete(int id)
