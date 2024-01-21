@@ -45,11 +45,13 @@ namespace SWP.Controllers
             var users = GetUsers().Result.ToList();
             if (users != null)
             {
+                int startIndex = 6 * currentPage + 1;
                 ViewData["NumberOfPages"] = users.Count / 6;
 
                 users = users.Skip(6 * currentPage).Take(6).ToList();
 
                 ViewData["currentPage"] = currentPage;
+                ViewData["startIndex"] = startIndex;
                 return View(users);
             }
             return View();
@@ -60,6 +62,7 @@ namespace SWP.Controllers
             var users = GetUsers().Result.ToList();
             if (users != null)
             {
+                int startIndex = 6 * currentPage + 1;
                 ViewData["NumberOfPages"] = users.Count / 6;
                 if(search!= null || search.Equals("\\s+"))
                 {
@@ -70,6 +73,7 @@ namespace SWP.Controllers
                 users = users.Skip(6 * currentPage).Take(6).ToList();
 
                 ViewData["currentPage"] = currentPage;
+                ViewData["startIndex"] = startIndex;
                 return View(users);
             }
             return View();
