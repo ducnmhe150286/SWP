@@ -43,7 +43,7 @@
                     </ul>
                     <div class="navbar-nav ml-auto pr-100">
                         @if(role!=0){
-                            <p>Xin chào ,<a asp-controller="ProfileUsers">@userName</a>  - </p>
+                            <p>Xin chào ,<a asp-controller="ProfileUsers" asp-action="Index">@userName</a>  - </p>
                             <a asp-controller="Auth" asp-action="Logout">Logout</a>
                         }
                         else

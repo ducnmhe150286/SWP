@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWP.Dto;
 using SWP.Models;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace SWP.Dao
 {
@@ -77,7 +79,62 @@ namespace SWP.Dao
                 return null;
             }
         }
+        public bool checkAddImage(string image, string email)
+        {
+            try
+            {
+                var data = context.Users.FirstOrDefault(x => x.Email == email);
+                if (data == null)
+                {
+                    return false;
+                }
+               
+                data.Image = image;
+                context.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
 
+                return false;
+            }
+        }
+
+        public string changePassWord(ChangePassWordModel passWordModel,string email)
+        {
+            try
+            {
+
+                var data = context.Users.FirstOrDefault(x => x.Email == email);
+                if(data.Password!= HashPassword(passWordModel.Password))
+                {
+                    return "Mật khẩu cũ không dúng";
+                }
+                if (data == null)
+                {
+                    return "Email không tồn tại!";
+                }
+                string hashedInputPassword = HashPassword(passWordModel.NewPassword);
+                data.Password = hashedInputPassword;
+                context.SaveChanges();
+
+                return "";
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+        public static string HashPassword(string password)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+            }
+        }
         public string BlockUser(int? id,int? block,string updateby)
 		{
 			try
