@@ -36,6 +36,7 @@ namespace SWP.Controllers
                 return RedirectToAction("Error");
             }
             var user = usersManage.updateProfile(userProfile, email);
+            HttpContext.Session.SetString("USER_NAME", user.FirstName + " " + user.LastName);
             return Redirect("Index");
         }
      
