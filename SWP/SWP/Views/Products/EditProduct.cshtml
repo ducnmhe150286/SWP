@@ -89,12 +89,59 @@
 
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label asp-for="ProductImages" class="form-label">Ảnh sản phẩm</label>
-                            <input asp-for="ProductImages" type="file" class="form-control"  />
-                            <span asp-validation-for="ProductImages" class="text-danger"></span>
-                        </div>
-                        <input asp-for="ProductId" value=@ViewBag.Product.ProductId type="hidden" class=" form-control" />
+                       <div class="mb-3">
+                            <div class="mb-3">
+                                @if (ViewBag.Product.ProductImages != null)
+                                {
+                                    foreach (var image in ViewBag.Product.ProductImages)
+                                    {
+                                        <div class="row">
+                                            <div class="col-3">
+
+                                            </div>
+                                            <div class="col-9">
+
+                                            </div>
+
+                                        </div>
+                                        <label class="form-label">Ảnh sản phẩm</label>
+
+                                        <!-- Display the image -->
+                                        <img src="/Images/@image.Path" alt="Image" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
+
+                                        <!-- Hidden input to store the path (for display purposes) -->
+                                        <input type="text" class="form-control" value="@image.Path" readonly style="display: none;" />
+
+                                        <!-- Button to trigger file input -->
+                                        <button type="button" class=" ms-2 btn btn-primary" onclick="showFileInput(this)">Sửa ảnh</button>
+
+                                        <!-- Input file (initially hidden) -->
+                                        <input name="imageFiles" type="file" class="form-control mt-3" style="display: none;" />
+
+                                        <span name="imageFiles" class="text-danger"></span>
+                                    }
+                                }
+                            </div>
+
+                            <script>
+                                function showFileInput(button) {
+                                    // Get the sibling file input
+                                    var fileInput = button.nextElementSibling;
+
+                                    // Show/hide the file input
+                                    if (fileInput.style.display === 'none') {
+                                        fileInput.style.display = 'block';
+                                    } else {
+                                        fileInput.style.display = 'none';
+                                    }
+                                }
+                            </script>
+
+
+
+                            <input asp-for="ProductId" value="@ViewBag.Product.ProductId" type="hidden" class="form-control" />
+
+
                         <div class="mb-3 text-end">
                             <button type="submit" class=" btn btn-primary">Cập nhật</button>
                         </div>
