@@ -48,8 +48,9 @@
                         </li>
                     </ul>
                     <div class="navbar-nav ml-auto pr-100">
-                        @if(role!=0){
-                            <p>Xin chào , @user - </p>
+                        @if (role != 0)
+                        {
+                            <p>Xin chào ,<a asp-controller="ProfileUsers" asp-action="Index">@userName</a>  - </p>
                             <a asp-controller="Auth" asp-action="Logout">Logout</a>
                         }
                         else
@@ -68,11 +69,11 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - SWP - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+    @*<footer class="border-top footer text-muted">
+    <div class="container">
+    &copy; 2024 - SWP - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </div>
+    </footer>*@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

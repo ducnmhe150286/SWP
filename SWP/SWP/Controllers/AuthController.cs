@@ -9,10 +9,11 @@ namespace SWP.Controllers
     public class AuthController : Controller
     {
         public UsersDao userDao;
-
-        public AuthController()
+		public ManageUsersDao usersManage;
+		public AuthController()
         {
             this.userDao = new UsersDao();
+            this.usersManage = new ManageUsersDao();
         }
 
         public IActionResult Index(string email, string password)
@@ -30,9 +31,15 @@ namespace SWP.Controllers
             {
                 int role = (int)user.RoleId;
                 HttpContext.Session.SetString("USER_EMAIL", user.Email);
+                //HttpContext.Session.SetString("USER_EMAIL", );
                 HttpContext.Session.SetInt32("USER_ROLE", role);
                 HttpContext.Session.SetString("USER_NAME", user.FirstName +" "+ user.LastName);
+                if (role == 1)
+                {
+					return Redirect("/ProfileUsers");
+				}
                 return Redirect("/Home");
+
             }
             return View();
         }
@@ -79,13 +86,13 @@ namespace SWP.Controllers
         }
 
         [HttpPost]
-        public IActionResult ForgotPassword(string email)
+        public async Task<IActionResult> ForgotPassword(string email)
         {
             try
             {
-                var output = userDao.ForgotPassword(email);
+                var output =await userDao.ForgotPassword(email);
                 HttpContext.Session.SetString("USER_EMAIL", email);
-                if(output != (object)"")
+                if(output !=true)
                 {
                     ViewData["message"] = "Email không tồn tại!";
                     return View();

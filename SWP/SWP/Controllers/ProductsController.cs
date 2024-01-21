@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SWP.Dao;
 using SWP.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,11 +9,22 @@ namespace SWP.Controllers
 {
     public class ProductsController : Controller
     {
+        public ManageUsersDao usersManage;
+        public ProductsController()
+        {
+            usersManage = new ManageUsersDao();
+        }
         [Route("products/list")]
         public IActionResult Products(string searchString, int? statusFilter, int? categoryFilter, int? brandFilter)
         {
             using (var context = new SWPContext())
             {
+                string email = HttpContext.Session.GetString("USER_EMAIL");
+
+                if (usersManage.CheckAdmin(email) == false)
+                {
+                    return RedirectToAction("Error");
+                }
                 var brands = context.Brands.ToList();
                 var categories = context.Categories.ToList();
                 var productList = context.Products
