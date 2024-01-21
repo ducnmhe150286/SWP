@@ -21,82 +21,129 @@ namespace SWP.Controllers
     {
         
         private readonly UsersDao usersDao;
+        private readonly RoleDao roleDao;
 
         public UsersController( UsersDao usersDao)
         {
             usersDao = new UsersDao();
            
         }
+        public async Task<List<Role>> GetAllRoles()
+        { 
+            var role = RoleDao.GetAllRoles();
+            return role;
+        }
 
-       
         public async Task<List<User>> GetUsers()
         {
            
             var user = UsersDao.GetAllUser();
             return user ;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int currentPage)
         {
-            return View(GetUsers().Result.ToList());
+            var users = GetUsers().Result.ToList();
+            if (users != null)
+            {
+                int startIndex = 6 * currentPage + 1;
+                ViewData["NumberOfPages"] = users.Count / 6;
+
+                // Filter out users with Id equal to 1
+                users = users.Where(x => x.RoleId != 1).Skip(6 * currentPage).Take(6).ToList();
+
+                ViewData["currentPage"] = currentPage;
+                ViewData["startIndex"] = startIndex;
+                return View(users);
+            }
+            return View();
         }
-        /* public async Task<List<Role>> GetRoles()
-         {
 
-         }
-         // GET: Users
+        [HttpPost]
+        public async Task<IActionResult> Index(int currentPage, string search)
+        {
+            var users = GetUsers().Result.ToList();
+            if (users != null)
+            {
+                int startIndex = 6 * currentPage + 1;
+                ViewData["NumberOfPages"] = users.Count / 6;
 
+                if (search != null && !search.Equals("\\s+"))
+                {
+                    // Filter out users with Id equal to 1 and match the search criteria
+                    users = users.Where(x => x.RoleId != 1 &&
+                        (x.FirstName.ToLower().Contains(search.ToLower()) ||
+                         x.LastName.ToLower().Contains(search.ToLower()) ||
+                         x.PhoneNumber.Contains(search))).ToList();
+                }
+                else
+                {
+                    // Filter out users with Id equal to 1
+                    users = users.Where(x => x.RoleId != 1).ToList();
+                }
 
-         // GET: Users/Details/5
-         public async Task<IActionResult> Details(int userId)
-         {
+                users = users.Skip(6 * currentPage).Take(6).ToList();
 
-         }
+                ViewData["currentPage"] = currentPage;
+                ViewData["startIndex"] = startIndex;
+                return View(users);
+            }
+            return View();
+        }
 
+        public async Task<IActionResult> Details(int userId)
+        {
+            var users = UsersDao.GetUserById(userId);
+            var roles = RoleDao.GetAllRoles();
 
+            // Lấy roleName tương ứng với user
+            string roleName = roles.FirstOrDefault(r => r.RoleId == users.RoleId)?.RoleName;
 
-         // GET: Users/Edit/5
-         public async Task<IActionResult> Edit(int userId)
-         {
+            ViewBag.RoleName = roleName;
+            return View(users);
+        }
+        public async Task<IActionResult> Edit(int userId)
+        {
+            var users = UsersDao.GetUserById(userId);
+            ViewBag.Role = RoleDao.GetAllRoles();
+            ViewBag.Status = UsersDao.GetAllUser();
+            return View(users);
+        }
 
-         }
-
-         // POST: Users/Edit/5
-         // To protect from overposting attacks, enable the specific properties you want to bind to.
-         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-         [HttpPost]
-         [ValidateAntiForgeryToken]
-        *//* public async Task<IActionResult> Edit(int userId,List<IFormFile> files, [Bind("UserId,RoleId,Email,Password,Address,PhoneNumber,FirstName,LastName,Gender,Status,CreatedDate,CreatedBy,UpdatedBy,Image,Otp,OtpExpired")] User user)
-         {
-             var filePaths = new List<string>();
-             if (files.Count > 0)
-             {
-                 long size = files.Sum(f => f.Length);
-
-                 foreach(var formFile in files)
-                 {
-                     if(formFile.Length > 0)
-                     {
-                         var fileName = formFile.FileName;
-                         var filePath = Path.Combine(Dictionary.GetCurrentDirectory(), "wwwroot", "image");
-                     }
-                 }
-             }
-         }*//*
-
-         // GET: Users/Delete/5
-         public async Task<IActionResult> Delete(int? id)
-         {
-
-         }
-
-         // POST: Users/Delete/5
-         [HttpPost, ActionName("Delete")]
-         [ValidateAntiForgeryToken]
-         public async Task<IActionResult> DeleteConfirmed(int id)
-         {
-             return View();
-         }
- */
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(int userId, [Bind("UserId,Password,FirstName,LastName,Image,Address,Gender,Email,PhoneNumber,RoleId,Status")] UserRequest request)
+        {
+            var users = UsersDao.GetUserById(userId);
+            if (users != null)
+            {
+                users.UserId= userId;
+                users.Address = request.Address;
+                users.PhoneNumber= request.PhoneNumber;
+                users.LastName = request.LastName;
+                users.FirstName = request.FirstName;
+                users.Email = request.Email;
+                users.RoleId = request.RoleId;
+                users.Password= request.Password;
+                users.Image= request.Image;
+                users.Gender= request.Gender;
+                users.Status= request.Status;
+                UsersDao.UpdateUser(users);
+            }
+           
+            return RedirectToAction("Index");
+        }
+       
+        public IActionResult Delete(int userId)
+        {
+            
+            var userid = UsersDao.GetUserById(userId);
+            if (userid != null)
+            {
+               UsersDao.DeleteUser(userid);
+            }
+            return RedirectToAction("Index");
+        }
+        
 
     }
 }

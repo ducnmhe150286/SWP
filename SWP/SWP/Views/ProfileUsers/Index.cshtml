@@ -1,0 +1,136 @@
+﻿@model User;
+@using SWP.Dto;
+<div class="container bootstrap snippet">
+    <div class="row">
+        <div class="col-sm-10"><h1>@Model.FirstName @Model.LastName</h1></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <form class="form" asp-controller="ProfileUsers" asp-action="UploadFile" method="post" enctype="multipart/form-data" id="uploadForm">
+                <div class="text-center">
+                    @if (Model.Image != null)
+                    {
+                        <img id="avatarImage" src="/uploads/@Model.Image" class="avatar img-circle img-thumbnail" alt="avatar">
+                    }
+                    else
+                    {
+                        <img id="avatarImage" src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail" alt="avatar">
+                    }
+
+                    <input type="file" name="file" id="fileInput" class="text-center center-block file-upload" style="display: none;">
+
+                    <input type="submit" value="Tải lên" style="display: none;">
+                </div>
+                <hr><br>
+            </form>
+            @if (TempData["MESS_NOTE"] != null)
+            {
+                <div id="alertMessage" class="alert alert-success" role="alert">
+                    @TempData["MESS_NOTE"]
+                </div>
+
+                <script>
+                    setTimeout(function () {
+                        $('#alertMessage').fadeOut('slow');
+                    }, 5000);
+                </script>
+            }
+
+
+        </div>
+        <div class="col-sm-9">
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="home">
+                    <hr>
+                    <form class="form" asp-controller="ProfileUsers" asp-action="UpdateProfile" method="post" id="registrationForm">
+                        <div class="form-group">
+
+                            <div class="col-xs-6">
+                                <label for="firstName"><h4>Họ</h4></label>
+                                <input type="text" value="@Model.FirstName.Trim()" class="form-control" name="firstName" id="first_name" placeholder="Họ" title="Nhập họ của bạn.">
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+                            <div class="col-xs-6">
+                                <label for="lastName"><h4>Tên</h4></label>
+                                <input type="text" value="@Model.LastName" class="form-control" name="lastName" id="last_name" placeholder="Tên" title="Nhập tên của bạn.">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+
+                            <div class="col-xs-6">
+                                <label for="phoneNumber"><h4>Số điện thoại</h4></label>
+                                <input type="text" value="@Model.PhoneNumber" class="form-control" name="phoneNumber" id="phone" placeholder="nhập số điện thoại" title="Nhập số điện thoại.">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <label><h4>Giới tính</h4></label><br>
+                                <label class="radio-inline">
+                                    <input type="radio" name="gender" value="true" @(Model.Gender == true ? "checked" : "")> Nam
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="gender" value="false" @(Model.Gender == false ? "checked" : "")> Nữ
+                                </label>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+
+                            <div class="col-xs-6">
+                                <label for="email"><h4>Email</h4></label>
+                                <input type="email" value="@Model.Email" class="form-control" name="email" id="email" placeholder="you@email.com" title="nhập email của bạn." readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+                            <div class="col-xs-6">
+                                <label for="address"><h4>Địa chỉ</h4></label>
+                                <input type="text" value="@Model.Address" class="form-control" name="address" id="address" placeholder="Nhập địa chỉ vào đây" title="Nhập địa chỉ">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <br>
+                                <button class="btn btn-lg btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Lưu</button>
+                                <a asp-controller="ProfileUsers" asp-action="ChangePassword" class="btn btn-lg btn-success" type="button"><i class="glyphicon glyphicon-ok-sign"></i> Đổi mật khẩu</a>
+                            </div>
+                        </div>
+                    </form>
+
+                    <hr>
+
+                </div><!--/tab-pane-->
+
+
+            </div><!--/tab-pane-->
+        </div><!--/tab-content-->
+
+    </div><!--/col-9-->
+</div><!--/row-->
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    // Sự kiện click trên ảnh sẽ kích hoạt sự kiện click trên nút file
+    $('#avatarImage').click(function () {
+        $('#fileInput').click();
+    });
+
+    // Bắt sự kiện khi nút file thay đổi giá trị
+    $('#fileInput').change(function () {
+        // Kích hoạt sự kiện submit của form
+        $('#uploadForm').submit();
+    });
+
+
+    
+</script>
+
