@@ -86,13 +86,13 @@ namespace SWP.Controllers
         }
 
         [HttpPost]
-        public IActionResult ForgotPassword(string email)
+        public async Task<IActionResult> ForgotPassword(string email)
         {
             try
             {
-                var output = userDao.ForgotPassword(email);
+                var output =await userDao.ForgotPassword(email);
                 HttpContext.Session.SetString("USER_EMAIL", email);
-                if(output != (object)"")
+                if(output !=true)
                 {
                     ViewData["message"] = "Email không tồn tại!";
                     return View();

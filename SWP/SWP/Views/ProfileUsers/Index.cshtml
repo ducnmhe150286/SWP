@@ -1,15 +1,41 @@
-﻿@model User
+﻿@model User;
+@using SWP.Dto;
 <div class="container bootstrap snippet">
     <div class="row">
         <div class="col-sm-10"><h1>@Model.FirstName @Model.LastName</h1></div>
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="text-center">
-                <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail" alt="avatar">
-                <h6>Upload a different photo...</h6>
-                <input type="file" class="text-center center-block file-upload">
-            </div></hr><br>
+            <form class="form" asp-controller="ProfileUsers" asp-action="UploadFile" method="post" enctype="multipart/form-data" id="uploadForm">
+                <div class="text-center">
+                    @if (Model.Image != null)
+                    {
+                        <img id="avatarImage" src="/uploads/@Model.Image" class="avatar img-circle img-thumbnail" alt="avatar">
+                    }
+                    else
+                    {
+                        <img id="avatarImage" src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail" alt="avatar">
+                    }
+
+                    <input type="file" name="file" id="fileInput" class="text-center center-block file-upload" style="display: none;">
+
+                    <input type="submit" value="Tải lên" style="display: none;">
+                </div>
+                <hr><br>
+            </form>
+            @if (TempData["MESS_NOTE"] != null)
+            {
+                <div id="alertMessage" class="alert alert-success" role="alert">
+                    @TempData["MESS_NOTE"]
+                </div>
+
+                <script>
+                    setTimeout(function () {
+                        $('#alertMessage').fadeOut('slow');
+                    }, 5000);
+                </script>
+            }
+
 
         </div>
         <div class="col-sm-9">
@@ -48,9 +74,9 @@
                                     <input type="radio" name="gender" value="true" @(Model.Gender == true ? "checked" : "")> Nam
                                 </label>
                                 <label class="radio-inline">
-                                    <input type="radio" name="gender" value="false"@(Model.Gender == false ? "checked" : "")> Nữ
+                                    <input type="radio" name="gender" value="false" @(Model.Gender == false ? "checked" : "")> Nữ
                                 </label>
-                                
+
                             </div>
                         </div>
 
@@ -73,7 +99,7 @@
                             <div class="col-xs-12">
                                 <br>
                                 <button class="btn btn-lg btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Lưu</button>
-                                <button class="btn btn-lg btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Đổi mật khẩu</button>
+                                <a asp-controller="ProfileUsers" asp-action="ChangePassword" class="btn btn-lg btn-success" type="button"><i class="glyphicon glyphicon-ok-sign"></i> Đổi mật khẩu</a>
                             </div>
                         </div>
                     </form>
@@ -88,3 +114,23 @@
 
     </div><!--/col-9-->
 </div><!--/row-->
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    // Sự kiện click trên ảnh sẽ kích hoạt sự kiện click trên nút file
+    $('#avatarImage').click(function () {
+        $('#fileInput').click();
+    });
+
+    // Bắt sự kiện khi nút file thay đổi giá trị
+    $('#fileInput').change(function () {
+        // Kích hoạt sự kiện submit của form
+        $('#uploadForm').submit();
+    });
+
+
+    
+</script>
+

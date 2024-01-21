@@ -89,7 +89,7 @@ namespace SWP.Dao
             }
         }
 
-        public async Task<string> ForgotPassword(string email)
+        public async Task<bool> ForgotPassword(string email)
         {
             try
             {
@@ -98,14 +98,14 @@ namespace SWP.Dao
 
                 if(data == null)
                 {
-                    return "Email không tồn tại!";
+                    return false;
                 }
                 data.Otp = otp;
                 data.OtpExpired = DateTime.Now.AddMinutes(5);
                 context.SaveChanges();
 
                 await SendEmailAsync(email, "Mã xác nhận", $"<p>Mã xác nhận của bạn - <b>{otp}</b>.</p>");
-                return "";
+                return true;
             }
             catch (Exception)
             {
@@ -150,7 +150,8 @@ namespace SWP.Dao
                 {
                     return "Email không tồn tại!";
                 }
-                data.Password = password;
+                string hashedInputPassword = HashPassword(password);
+                data.Password = hashedInputPassword;
                 context.SaveChanges();
 
                 return "";
