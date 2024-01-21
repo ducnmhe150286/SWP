@@ -9,14 +9,21 @@ namespace SWP.Controllers
 {
     public class ProductsController : Controller
     {
-        public ManageUsersDao usersManage;
-        public ProductsController()
+        private readonly IWebHostEnvironment _webHostEnvironment;
+
+        public ProductsController(IWebHostEnvironment webHostEnvironment)
         {
-            usersManage = new ManageUsersDao();
-        }
+            _webHostEnvironment = webHostEnvironment;
+        public ManageUsersDao usersManage;
+        // public ProductsController()
+        // {
+        //     usersManage = new ManageUsersDao();
+        // }
         [Route("products/list")]
         public IActionResult Products(string searchString, int? statusFilter, int? categoryFilter, int? brandFilter)
         {
+            string webRootPath = _webHostEnvironment.WebRootPath;
+            string imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "Images");
             using (var context = new SWPContext())
             {
                 string email = HttpContext.Session.GetString("USER_EMAIL");
@@ -41,10 +48,25 @@ namespace SWP.Controllers
                     (!brandFilter.HasValue || p.BrandId == brandFilter)
                 )
                 .ToList();
+                //foreach (var product in productList)
+                //{
+                //    foreach (var productImage in product.ProductImages)
+                //    {
+                //        productImage.Path = Path.Combine(imagesFolder, productImage.Path);
+                //    }
+                //}
+                foreach (var product in productList)
+                {
+                    foreach (var productImage in product.ProductImages)
+                    {
+                        //productImage.Path = Path.Combine("/Images/tap-boxing-tay-co-to-khong-1.jpg");
+                        productImage.Path = Path.Combine(productImage.Path);
+
+                    }
+                }
                 ViewBag.Categories = categories;
                 ViewBag.Brands = brands;
                 ViewBag.Products = productList;
-                ViewData["Products"] = productList;
                 ViewData["SearchString"] = searchString;
                 ViewBag.StatusFilter = statusFilter;
                 ViewBag.CategoryFilter = categoryFilter;
@@ -74,9 +96,25 @@ namespace SWP.Controllers
             }
             return View();
         }
+        public IActionResult GetImage(string imageName)
+        {
+            string imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+            string imagePath = Path.Combine(imagesFolder, imageName);
+
+            if (System.IO.File.Exists(imagePath))
+            {
+                byte[] imageData = System.IO.File.ReadAllBytes(imagePath);
+                return File(imageData, "image/jpeg");
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
 
         [HttpPost]
-        public IActionResult NewProduct(Product newProduct)
+        public IActionResult NewProduct(Product newProduct, List<IFormFile> imageFiles)
         {
             try
             {
@@ -96,17 +134,54 @@ namespace SWP.Controllers
                     newProduct.CategoryId = newProduct.CategoryId;
                     context.Products.Add(newProduct);
                     context.SaveChanges();
-                }
 
+                    string wwwrootFolder = _webHostEnvironment.WebRootPath;
+                    string imagesFolder = Path.Combine(wwwrootFolder, "Images");
+
+                    if (!Directory.Exists(imagesFolder))
+                    {
+                        Directory.CreateDirectory(imagesFolder);
+                    }
+
+                    foreach (var file in imageFiles)
+                    {
+                        if (file.Length > 0)
+                        {
+                            // Tạo một tên tệp duy nhất để tránh xung đột
+                            string uniqueFileName = Path.GetFileName(file.FileName);
+
+                            // Xây dựng đường dẫn đầy đủ để lưu ảnh trong thư mục Images
+                            string imagePath = Path.Combine(imagesFolder, uniqueFileName);
+
+                            using (var stream = new FileStream(imagePath, FileMode.Create))
+                            {
+                                file.CopyTo(stream);
+                            }
+
+                            // Chỉ lưu tên tệp trong cột Path của cơ sở dữ liệu
+                            var productImage = new ProductImage
+                            {
+                                ProductId = newProduct.ProductId,
+                                Path = uniqueFileName, // Chỉ lưu tên tệp
+                                CreateDate = DateTime.Now,
+                                CreatedBy = null,
+                                UpdateBy = null,
+                                Status = 1,
+                            };
+                            context.ProductImages.Add(productImage);
+                        }
+                    }
+
+                    context.SaveChanges();
+                }
                 return RedirectToAction("Products");
 
-            } catch(Exception ex)
-            {
-                ViewBag.ErrorMessage = "Có lỗi xảy ra khi tạo mới sản phẩm: ";
-                return RedirectToAction("CreateProduct");
-
             }
-
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = "Có lỗi xảy ra khi tạo mới sản phẩm: " + ex;
+                return RedirectToAction("CreateProduct");
+            }
         }
 
         [HttpGet]
@@ -129,16 +204,24 @@ namespace SWP.Controllers
             return View();
         }
 
+
+
         [HttpPost]
-        public IActionResult UpdateProduct(Product updatedProduct)
+        public IActionResult UpdateProduct(Product updatedProduct, List<IFormFile> imageFiles)
         {
             try
             {
                 using (var context = new SWPContext())
                 {
                     var existingProduct = context.Products.Find(updatedProduct.ProductId);
+
+                    var existingProductImage = context.Products
+                        .Include(p => p.ProductImages)
+                        .FirstOrDefault(p => p.ProductId == updatedProduct.ProductId);
+
                     if (existingProduct != null)
                     {
+
                         existingProduct.ProductName = updatedProduct.ProductName;
                         existingProduct.Description = updatedProduct.Description;
                         existingProduct.Price = updatedProduct.Price;
@@ -147,6 +230,46 @@ namespace SWP.Controllers
                         existingProduct.Status = updatedProduct.Status;
                         existingProduct.BrandId = updatedProduct.BrandId;
                         existingProduct.CategoryId = updatedProduct.CategoryId;
+                        // Xóa toàn bộ ảnh cũ
+                        foreach (var oldImage in existingProductImage.ProductImages)
+                        {
+                            var fullPath = Path.Combine(_webHostEnvironment.WebRootPath, "Images", oldImage.Path);
+                            if (System.IO.File.Exists(fullPath))
+                            {
+                                System.IO.File.Delete(fullPath);
+                            }
+                        }
+
+                        // Xóa toàn bộ ảnh cũ từ cơ sở dữ liệu
+                        existingProductImage.ProductImages.Clear();
+
+                        // Thêm ảnh mới
+                        foreach (var file in imageFiles)
+                        {
+                            if (file.Length > 0)
+                            {
+                                string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(file.FileName);
+                                string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Images", uniqueFileName);
+
+                                using (var stream = new FileStream(imagePath, FileMode.Create))
+                                {
+                                    file.CopyTo(stream);
+                                }
+
+                                // Lưu thông tin ảnh vào cơ sở dữ liệu
+                                var productImage = new ProductImage
+                                {
+                                    Path = uniqueFileName,
+                                    CreateDate = DateTime.Now,
+                                    CreatedBy = null,
+                                    UpdateBy = null,
+                                    Status = 1,
+                                };
+
+                                existingProductImage.ProductImages.Add(productImage);
+                            }
+                        }
+
                         context.SaveChanges();
                     }
                 }
@@ -160,20 +283,42 @@ namespace SWP.Controllers
             }
         }
 
+
         [HttpGet]
         public IActionResult DeleteProduct(int id)
         {
             using (var context = new SWPContext())
             {
-                var productToDelete = context.Products.Find(id);
+                var productToDelete = context.Products
+                    .Include(p => p.ProductImages) // Nạp danh sách ProductImages
+                    .FirstOrDefault(p => p.ProductId == id);
+
                 if (productToDelete != null)
                 {
+                    // Xóa tất cả ProductImages liên quan
+                    foreach (var productImage in productToDelete.ProductImages)
+                    {
+                        // Xóa ảnh từ thư mục
+                        var fullPath = Path.Combine(_webHostEnvironment.WebRootPath, "Images", productImage.Path);
+                        if (System.IO.File.Exists(fullPath))
+                        {
+                            System.IO.File.Delete(fullPath);
+                        }
+                    }
+
+                    // Xóa tất cả ProductImages từ cơ sở dữ liệu
+                    context.ProductImages.RemoveRange(productToDelete.ProductImages);
+
+                    // Xóa sản phẩm chính
                     context.Products.Remove(productToDelete);
+
                     context.SaveChanges();
                 }
             }
+
             return RedirectToAction("Products");
         }
-    }
 
+
+    }
 }

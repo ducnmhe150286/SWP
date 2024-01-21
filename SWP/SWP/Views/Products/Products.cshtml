@@ -97,9 +97,9 @@
 *@                        
                     <th>Trạng thái</th>
                         <th>Ngày tạo</th>
-                        <th>Người tạo</th>
-                        <th>Người cập nhật</th>
-                        <th>Action</th> <!-- Thêm cột Action -->
+                       @* <th>Người tạo</th>
+                        <th>Người cập nhật</th>*@
+                        <th style="width: 100px;">Action</th> 
                     </tr>
                 </thead>
                 <tbody class ="text-center">
@@ -111,8 +111,10 @@
                                 {
                                     @foreach (var image in item.ProductImages)
                                     {
-                                        <img src="@image.Path" alt="Image" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
-                                        <br />
+
+                                        <img src="/Images/@image.Path" alt="Image" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
+                                       
+<br />
                                     }
                                 }
                                 else
@@ -151,8 +153,8 @@
                             </td>
 
                             <td>@(item.CreatedDate.HasValue ? item.CreatedDate.Value.ToString("dd/MM/yyyy") : "")</td>
-                            <td>@item.CreatedBy</td>
-                            <td>@item.UpdateBy</td>
+                           @* <td>@item.CreatedBy</td>
+                            <td>@item.UpdateBy</td>*@
                             <td>
                                 <a href="@Url.Action("EditProduct", "Products", new { id = item.ProductId })" class="btn btn-primary mb-1">
                                     <span class="bi bi-pencil">Sửa</span>
