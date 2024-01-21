@@ -63,7 +63,11 @@ namespace SWP.Dao
                 user.LastName = registerModel.LastName;
                 user.RoleId = registerModel.RoleId??2;
                 user.CreatedDate = DateTime.Now;
+
+
+
                 user.Status = 1;
+
                 var check = context.Users.FirstOrDefault(x => x.Email == registerModel.Email);
                 if (check != null)
                 {
