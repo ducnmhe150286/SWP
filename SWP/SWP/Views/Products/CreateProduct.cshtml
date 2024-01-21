@@ -86,9 +86,9 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label asp-for="ProductImages" class="form-label">Ảnh sản phẩm</label>
-                            <input asp-for="ProductImages" type="file" class="form-control" required />
-                            <span asp-validation-for="ProductImages" class="text-danger"></span>
+                            <label name="imageFiles" class="form-label">Ảnh sản phẩm</label>
+                            <input name="imageFiles" type="file" class="form-control" multiple required />
+                            <span name="imageFiles" class="text-danger"></span>
                         </div>
                         <div class="mb-3 text-end">
                             <button type="submit" class=" btn btn-primary">Tạo mới</button>
