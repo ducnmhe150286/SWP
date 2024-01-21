@@ -14,7 +14,8 @@ namespace SWP.Controllers
         public ProductsController(IWebHostEnvironment webHostEnvironment)
         {
             _webHostEnvironment = webHostEnvironment;
-        public ManageUsersDao usersManage;
+        }
+        //public ManageUsersDao usersManage;
         // public ProductsController()
         // {
         //     usersManage = new ManageUsersDao();
@@ -26,12 +27,12 @@ namespace SWP.Controllers
             string imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "Images");
             using (var context = new SWPContext())
             {
-                string email = HttpContext.Session.GetString("USER_EMAIL");
+                //string email = HttpContext.Session.GetString("USER_EMAIL");
 
-                if (usersManage.CheckAdmin(email) == false)
-                {
-                    return RedirectToAction("Error");
-                }
+                //if (usersManage.CheckAdmin(email) == false)
+                //{
+                //    return RedirectToAction("Error");
+                //}
                 var brands = context.Brands.ToList();
                 var categories = context.Categories.ToList();
                 var productList = context.Products
