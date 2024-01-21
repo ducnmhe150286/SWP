@@ -88,8 +88,17 @@
             <tr>
                 <td>@brand.BrandId</td>
                 <td>@brand.BrandName</td>
-                
-                <td>@brand.Status</td>
+
+                <td>
+                    @if (brand.Status == 1)
+                    {
+                        <p>isActive</p>
+                    }
+                    else
+                    {
+                        <p>inActive</p>
+                    }
+                </td>
                 <td>@brand.CreatedDate</td>
                 <td>
                     <div class="btn-group" role="group" aria-label="Action Buttons">

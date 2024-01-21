@@ -84,8 +84,7 @@
             <tr>
                 <th>Category ID</th>
                 <th>Category Name</th>
-                <th>Created By</th>
-                <th>Update By</th>
+                
                 <th>Status</th>
                 <th>Created Date</th>
                 <th>Action</th>
@@ -97,9 +96,16 @@
                 <tr>
                     <td>@category.CategoryId</td>
                     <td>@category.CategoryName</td>
-                    <td>@category.CreatedBy</td>
-                    <td>@category.UpdateBy</td>
-                    <td>@category.Status</td>
+                    <td>
+                        @if (category.Status == 1)
+                        {
+                            <p>isActive</p>
+                        }
+                        else
+                        {
+                            <p>inActive</p>
+                        }
+                    </td>
                     <td>@category.CreatedDate</td>
                     <td>
                         <div class="btn-group" role="group" aria-label="Action Buttons">

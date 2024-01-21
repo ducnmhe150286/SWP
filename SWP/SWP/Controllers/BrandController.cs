@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWP.Models;
+using System.Text.RegularExpressions;
 
 namespace SWP.Controllers
 {
@@ -27,6 +28,13 @@ namespace SWP.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (!IsValidName(newBrand.BrandName))
+                {
+                    ModelState.AddModelError("BrandName", "Tên thương hiệu chỉ được chứa chữ cái.");
+                    // Xử lý lỗi nếu cần thiết
+                    return View(newBrand);
+                }
+
                 using (var context = new SWPContext())
                 {
                     // Lấy tên người dùng hiện tại, bạn cần cập nhật logic lấy tên người dùng theo cách của bạn
@@ -35,7 +43,7 @@ namespace SWP.Controllers
                     // Chuyển đổi giá trị từ kiểu string sang kiểu int?
                     int? status = 1; // Status mặc định là 1
 
-                    // Tạo mới Category
+                    // Tạo mới Brand
                     Brand brandToAdd = new Brand
                     {
                         BrandName = newBrand.BrandName,
@@ -45,7 +53,7 @@ namespace SWP.Controllers
                         CreatedDate = DateTime.Now
                     };
 
-                    // Thêm mới Category vào database
+                    // Thêm mới Brand vào database
                     context.Brands.Add(brandToAdd);
                     context.SaveChanges();
                 }
@@ -54,8 +62,14 @@ namespace SWP.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Nếu có lỗi, hiển thị lại trang AddCategory với thông tin nhập trước đó
+            // Nếu có lỗi, hiển thị lại trang AddBrand với thông tin nhập trước đó
             return View(newBrand);
+        }
+
+        private bool IsValidName(string name)
+        {
+            // Kiểm tra xem tên chỉ chứa chữ cái
+            return !string.IsNullOrWhiteSpace(name) && Regex.IsMatch(name, "^[a-zA-Zà-ỹẠ-Ỹ\\s]+$");
         }
         [HttpPost]
         public IActionResult Delete(int id)
