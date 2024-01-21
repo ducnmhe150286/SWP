@@ -48,7 +48,8 @@ namespace SWP.Controllers
                 int startIndex = 6 * currentPage + 1;
                 ViewData["NumberOfPages"] = users.Count / 6;
 
-                users = users.Skip(6 * currentPage).Take(6).ToList();
+                // Filter out users with Id equal to 1
+                users = users.Where(x => x.RoleId != 1).Skip(6 * currentPage).Take(6).ToList();
 
                 ViewData["currentPage"] = currentPage;
                 ViewData["startIndex"] = startIndex;
@@ -56,6 +57,7 @@ namespace SWP.Controllers
             }
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Index(int currentPage, string search)
         {
@@ -64,10 +66,19 @@ namespace SWP.Controllers
             {
                 int startIndex = 6 * currentPage + 1;
                 ViewData["NumberOfPages"] = users.Count / 6;
-                if(search!= null || search.Equals("\\s+"))
-                {
-                users = users.Where(x => x.FirstName.ToLower().Contains(search.ToLower())|| x.LastName.ToLower().Contains(search.ToLower()) || x.PhoneNumber.Contains(search)).ToList();
 
+                if (search != null && !search.Equals("\\s+"))
+                {
+                    // Filter out users with Id equal to 1 and match the search criteria
+                    users = users.Where(x => x.RoleId != 1 &&
+                        (x.FirstName.ToLower().Contains(search.ToLower()) ||
+                         x.LastName.ToLower().Contains(search.ToLower()) ||
+                         x.PhoneNumber.Contains(search))).ToList();
+                }
+                else
+                {
+                    // Filter out users with Id equal to 1
+                    users = users.Where(x => x.RoleId != 1).ToList();
                 }
 
                 users = users.Skip(6 * currentPage).Take(6).ToList();
@@ -78,6 +89,7 @@ namespace SWP.Controllers
             }
             return View();
         }
+
         public async Task<IActionResult> Details(int userId)
         {
             var users = UsersDao.GetUserById(userId);
@@ -93,13 +105,13 @@ namespace SWP.Controllers
         {
             var users = UsersDao.GetUserById(userId);
             ViewBag.Role = RoleDao.GetAllRoles();
-
+            ViewBag.Status = UsersDao.GetAllUser();
             return View(users);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int userId, [Bind("UserId,Password,FirstName,LastName,Image,Address,Gender,Email,PhoneNumber,RoleId")] UserRequest request)
+        public async Task<ActionResult> Edit(int userId, [Bind("UserId,Password,FirstName,LastName,Image,Address,Gender,Email,PhoneNumber,RoleId,Status")] UserRequest request)
         {
             var users = UsersDao.GetUserById(userId);
             if (users != null)
@@ -114,6 +126,7 @@ namespace SWP.Controllers
                 users.Password= request.Password;
                 users.Image= request.Image;
                 users.Gender= request.Gender;
+                users.Status= request.Status;
                 UsersDao.UpdateUser(users);
             }
            

@@ -98,21 +98,39 @@
                                 </div>
                             </div>
                             <hr>
-                             <div class="row">
+                            <div class="row">
                                 <div class="col-sm-3">
                                     <p class="mb-0">Status</p>
                                 </div>
-                                <div class="col-sm-9">
-                                    <p class="text-muted mb-0">@Model.Status</p>
+                                <div class="col-sm-6">
+                                    <!-- Adjusted column width to make space for the button -->
+                                    <p class="text-muted mb-0">
+                                        @if (Model.Status == 1)
+                                        {
+                                            <a>Active</a>
+                                        }
+                                        @if (Model.Status != 1)
+                                        {
+                                            <a>DeActive</a>
+                                        }
+                                    </p>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <!-- Added new column for the button and aligned it to the right -->
+                                    <a asp-controller="Users" asp-action="Edit" asp-route-userId="@Model.UserId" type="button" class="btn btn-primary">Update Status</a>
                                 </div>
                             </div>
+
+
                             <hr>
+
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card mb-4 mb-md-0">
                                 <div class="card-body">
+                                     
                                 </div>
                             </div>
                         </div>

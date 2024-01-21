@@ -13,9 +13,9 @@
                             {
                                 <div class="col-xl-6">
                                     <div class="card-body p-md-5 text-black">
-                                        <h3 class="mb-5 text-uppercase">Update user</h3>
+                                        <h3 class="mb-5 text-uppercase">Update Status</h3>
                                         <input type="hidden" asp-for="UserId" value="@Model.UserId" />
-                                        <div class="form-outline mb-4">
+                                        @*<div class="form-outline mb-4">
                                             <label class="form-label">User Name</label>
                                             <input asp-for="Email" type="text" id="Email" class="form-control form-control-lg" value="@Model.Email" />
                                             
@@ -42,7 +42,7 @@
                                             <div>
                                                 <input type="text" asp-for="Image" class="form-control mt-2" readonly value="@Model.Image">
                                                @* <input class="form-control form-control-lg" id="formFileLg" name="files" type="file" multiple />*@
-                                                <div class="small text-muted mt-2">
+                                              @*  <div class="small text-muted mt-2">
                                                     Upload image product or any other relevant file. Max file
                                                     size 50 MB
                                                 </div>
@@ -111,6 +111,23 @@
                                         <div class="d-flex justify-content-end pt-3">
                                             <button type="button" class="btn btn-light btn-lg">Reset all</button>
                                             <input type="submit" value="Save" class="btn btn-success btn-lg" />
+                                        </div>*@
+                                        <div class="row">
+                                             <div>
+                                                  <h6 class="form-label">Status</h6>
+                                                 </div>
+                                                <div class="col-md-6 mb-4">
+                                                    <select class="form-control form-control-lg" asp-for="Status">
+                                                         <option value="1">Active</option>
+                                                         <option value="2">Deactive</option>
+                                                   
+                                                    </select>
+                                                
+                                           </div>
+                                        </div>
+                                             <div class="d-flex justify-content-end pt-3">
+                                            
+                                                <input type="submit" value="Save" class="btn btn-success btn-lg" />
                                         </div>
                                     </div>
 
@@ -122,6 +139,6 @@
                 </div>
             </div>
         </div>
-        </div>
+        
     </section>
 </form>
