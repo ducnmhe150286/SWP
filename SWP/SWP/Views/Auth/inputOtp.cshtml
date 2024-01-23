@@ -19,7 +19,7 @@
                             <form asp-controller="Auth" asp-action="ConfirmOtp">
 
                                 <div class="mb-3">
-                                    <label for="text" class="form-label">Mã xác nhận</label>
+                                    <label for="email"> Mã xác nhận <span class="required-star">*</span></label>
                                     <input type="text" id="otp" class="form-control" name="otp" placeholder="Nhập mã xác nhận"
                                            required="">
                                 </div>
@@ -41,3 +41,8 @@
         </div>
     </div>
 </section>
+<style>
+    .required-star {
+        color: red;
+    }
+</style>

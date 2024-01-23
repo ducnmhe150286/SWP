@@ -63,9 +63,6 @@ namespace SWP.Dao
                 user.LastName = registerModel.LastName;
                 user.RoleId = registerModel.RoleId ?? 2;
                 user.CreatedDate = DateTime.Now;
-
-
-
                 user.Status = 1;
 
                 var check = context.Users.FirstOrDefault(x => x.Email == registerModel.Email);
@@ -175,7 +172,7 @@ namespace SWP.Dao
         public static string RandomString(int length)
         {
             Random random = new Random();
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
