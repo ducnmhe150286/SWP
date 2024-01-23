@@ -47,9 +47,9 @@ namespace SWP.Controllers
             {
                 int startIndex = 6 * currentPage + 1;
                 ViewData["NumberOfPages"] = users.Count / 6;
-
+                users = users.Skip(6 * currentPage).Take(6).ToList();
                 // Filter out users with Id equal to 1
-                users = users.Where(x => x.RoleId != 1).Skip(6 * currentPage).Take(6).ToList();
+               // users = users.Where(x => x.RoleId != 1).Skip(6 * currentPage).Take(6).ToList();
 
                 ViewData["currentPage"] = currentPage;
                 ViewData["startIndex"] = startIndex;
@@ -59,36 +59,86 @@ namespace SWP.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(int currentPage, string search)
+        public async Task<IActionResult> Index(int currentPage, string search, int? status)
         {
             var users = GetUsers().Result.ToList();
             if (users != null)
             {
-                int startIndex = 6 * currentPage + 1;
+               
                 ViewData["NumberOfPages"] = users.Count / 6;
 
                 if (search != null && !search.Equals("\\s+"))
                 {
-                    // Filter out users with Id equal to 1 and match the search criteria
-                    users = users.Where(x => x.RoleId != 1 &&
-                        (x.FirstName.ToLower().Contains(search.ToLower()) ||
-                         x.LastName.ToLower().Contains(search.ToLower()) ||
-                         x.PhoneNumber.Contains(search))).ToList();
+                    users = users.Where(x => x.FirstName.ToLower().Trim().Contains(search.ToLower().Trim()) || x.LastName.ToLower().Trim().Contains(search.ToLower().Trim()) 
+                    || x.PhoneNumber.Trim().Contains(search.Trim()) || x.Status.ToString().Trim().Contains(search.Trim()) || (x.Status == 1 && search.ToLower().Trim() == "active") || (x.Status != 1 && search.ToLower().Trim() == "deactive")).ToList();
+                   
+                   
                 }
-                else
+                
+                if (status.HasValue && status.Value != 0)
                 {
-                    // Filter out users with Id equal to 1
-                    users = users.Where(x => x.RoleId != 1).ToList();
+
+                    if (status.Value == 1) // Active
+                    {
+                        users = users.Where(x => x.Status == 1).ToList();
+                    }
+                    else if (status.Value != 1) // Deactive
+                    {
+                        users = users.Where(x => x.Status != 1).ToList();
+                    }
                 }
 
+                users = users.Skip(6 * currentPage).Take(6).ToList();
+                int startIndex = 6 * currentPage + 1;
+
+                ViewBag.strSearch = search;
+                ViewData["currentPage"] = currentPage;
+                ViewData["startIndex"] = startIndex;
+                return View(users);
+
+            }
+            return View();
+        }
+            /*[HttpPost]
+        public async Task<IActionResult> Index(int currentPage, string search, int? status)
+        {
+            var users = await GetUsers();
+
+            if (users != null)
+            {
+                // Apply search filter
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    users = users.Where(x =>
+                        x.FirstName.ToLower().Trim().Contains(search.ToLower().Trim()) ||
+                        x.LastName.ToLower().Trim().Contains(search.ToLower().Trim()) ||
+                        x.PhoneNumber.Contains(search) ||
+                        x.Status.ToString().Contains(search)
+                    ).ToList();
+                }
+
+                // Apply status filter
+                if (status.HasValue)
+                {
+                    users = users.Where(x => x.Status == status).ToList();
+                }
+
+                // Pagination logic
+                int startIndex = 6 * currentPage + 1;
+                ViewData["NumberOfPages"] = (int)Math.Ceiling((double)users.Count / 6);
+
+                // Apply pagination
                 users = users.Skip(6 * currentPage).Take(6).ToList();
 
                 ViewData["currentPage"] = currentPage;
                 ViewData["startIndex"] = startIndex;
+
                 return View(users);
             }
+
             return View();
         }
+*/
 
         public async Task<IActionResult> Details(int userId)
         {
@@ -101,7 +151,28 @@ namespace SWP.Controllers
             ViewBag.RoleName = roleName;
             return View(users);
         }
-        public async Task<IActionResult> Edit(int userId)
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Details(int userId, [Bind("UserId,Status")] UserRequest request)
+        {
+            var users = UsersDao.GetUserById(userId);
+
+            if (users != null)
+            {
+                users.UserId = userId;
+                users.Status = request.Status;
+                UsersDao.UpdateUser(users);
+            }
+            var roles = RoleDao.GetAllRoles();
+
+            // Lấy roleName tương ứng với user
+            string roleName = roles.FirstOrDefault(r => r.RoleId == users.RoleId)?.RoleName;
+
+            ViewBag.RoleName = roleName;
+            return View(users);
+        }
+        /*public async Task<IActionResult> Edit(int userId)
         {
             var users = UsersDao.GetUserById(userId);
             ViewBag.Role = RoleDao.GetAllRoles();
@@ -131,7 +202,7 @@ namespace SWP.Controllers
             }
            
             return RedirectToAction("Index");
-        }
+        }*/
        
         public IActionResult Delete(int userId)
         {
