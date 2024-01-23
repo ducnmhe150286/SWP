@@ -30,16 +30,16 @@ namespace SWP
                 var service = scope.ServiceProvider;
                 var context = new SWPContext();
                 UsersDao usersDao = new UsersDao();
-                if (context.Users.FirstOrDefault(x=>x.Email.Equals("admin@gmail.com"))==null)
+                if (context.Users.FirstOrDefault(x=>x.Email.Equals("phucnvhe1@gmail.com"))==null)
                 {
                     Dto.RegisterModel registerModel = new Dto.RegisterModel
                     {
-                        Email = "admin@gmail.com",
+                        Email = "phucnvhe1@gmail.com",
                         Password = "Admin123@",
                         FirstName = "Admin",
                         LastName = "Shop",
                         PhoneNumber = "0912345678",
-                        RoleId = 1
+                        RoleId = 1,
                     };
 
                     usersDao.Register(registerModel);
