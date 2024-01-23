@@ -21,7 +21,7 @@
 
                     <input type="submit" value="Tải lên" style="display: none;">
                 </div>
-                <hr><br>
+                <br>
             </form>
             @if (TempData["MESS_NOTE"] != null)
             {
@@ -35,7 +35,13 @@
                     }, 5000);
                 </script>
             }
-
+            <style>
+                .avatar {
+                    width: 280px;
+                    height: 350px;
+                    object-fit: cover;
+                }
+            </style>
 
         </div>
         <div class="col-sm-9">
@@ -44,26 +50,31 @@
                 <div class="tab-pane active" id="home">
                     <hr>
                     <form class="form" asp-controller="ProfileUsers" asp-action="UpdateProfile" method="post" id="registrationForm">
-                        <div class="form-group">
+                        <style>
+                            .required-star {
+                                color: red;
+                            }
+                        </style>
 
+                        <!-- Trong form của bạn -->
+                        <div class="form-group">
                             <div class="col-xs-6">
-                                <label for="firstName"><h4>Họ</h4></label>
-                                <input type="text" value="@Model.FirstName.Trim()" class="form-control" name="firstName" id="first_name" placeholder="Họ" title="Nhập họ của bạn.">
+                                <label for="firstName"><h4>Họ <span class="required-star">*</span></h4></label>
+                                <input type="text" value="@Model.FirstName.Trim()" class="form-control" name="firstName" id="first_name" placeholder="Họ" title="Nhập họ của bạn." required>
                             </div>
                         </div>
                         <div class="form-group">
-
                             <div class="col-xs-6">
-                                <label for="lastName"><h4>Tên</h4></label>
-                                <input type="text" value="@Model.LastName" class="form-control" name="lastName" id="last_name" placeholder="Tên" title="Nhập tên của bạn.">
+                                <label for="lastName"><h4>Tên <span class="required-star">*</span></h4></label>
+                                <input type="text" value="@Model.LastName" class="form-control" name="lastName" id="last_name" placeholder="Tên" title="Nhập tên của bạn." required>
                             </div>
                         </div>
-
                         <div class="form-group">
-
                             <div class="col-xs-6">
-                                <label for="phoneNumber"><h4>Số điện thoại</h4></label>
-                                <input type="text" value="@Model.PhoneNumber" class="form-control" name="phoneNumber" id="phone" placeholder="nhập số điện thoại" title="Nhập số điện thoại.">
+                                <label for="phoneNumber"><h4>Số điện thoại <span class="required-star">*</span></h4></label>
+                                <small id="phoneError" class="text-danger"></small>
+                                <input type="text" value="@Model.PhoneNumber" class="form-control" name="phoneNumber" id="phone" placeholder="Nhập số điện thoại" title="Nhập số điện thoại." required pattern="^(09|08|03|05)[0-9]{8}$">
+                                
                             </div>
                         </div>
 
@@ -106,31 +117,41 @@
 
                     <hr>
 
-                </div><!--/tab-pane-->
+                </div>
 
 
-            </div><!--/tab-pane-->
-        </div><!--/tab-content-->
+            </div>
+        </div>
 
-    </div><!--/col-9-->
-</div><!--/row-->
+    </div>
+</div>
 
 
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
-    // Sự kiện click trên ảnh sẽ kích hoạt sự kiện click trên nút file
+    
     $('#avatarImage').click(function () {
         $('#fileInput').click();
     });
 
-    // Bắt sự kiện khi nút file thay đổi giá trị
     $('#fileInput').change(function () {
-        // Kích hoạt sự kiện submit của form
         $('#uploadForm').submit();
     });
 
 
-    
+
+</script>
+
+<script>
+    document.getElementById('phone').addEventListener('input', function () {
+        var phoneInput = this;
+        var errorElement = document.getElementById('phoneError');
+        if (!phoneInput.checkValidity()) {
+            errorElement.textContent = 'Số điện thoại không hợp lệ.';
+        } else {
+            errorElement.textContent = '';
+        }
+    });
 </script>
 

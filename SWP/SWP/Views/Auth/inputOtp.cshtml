@@ -12,7 +12,10 @@
                                     Nhập mã xác nhập của bạn vào đây!
                                 </p>
                             </div>
-                            
+                            @{
+                                var message = ViewData["errorType"];
+                            }
+                            <p style="color:red">@message</p>
                             <form asp-controller="Auth" asp-action="ConfirmOtp">
 
                                 <div class="mb-3">

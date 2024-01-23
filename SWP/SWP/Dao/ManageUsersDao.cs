@@ -106,7 +106,7 @@ namespace SWP.Dao
             {
 
                 var data = context.Users.FirstOrDefault(x => x.Email == email);
-                if(data.Password!= HashPassword(passWordModel.Password))
+                if(passWordModel.Password == null || data.Password!= HashPassword(passWordModel.Password))
                 {
                     return "Mật khẩu cũ không dúng";
                 }
