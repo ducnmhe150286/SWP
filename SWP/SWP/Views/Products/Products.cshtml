@@ -16,7 +16,7 @@
 
     <div class="row">
         <div class="col-8">
-            <h3>Sản Phẩm Đăng Bán</h3>
+            <h3>Sản Phẩm Trong Hệ Thống</h3>
 
         </div>
         <div class="col-4">
@@ -30,7 +30,7 @@
     <div style="display:flex;">
         <div>
 
-            <p>Danh sách các sản phẩm đang đăng bán để theo dõi và quản lý</p>
+            <p>Danh sách các sản phẩm đang có trong hệ thống để theo dõi và quản lý</p>
             <form action="@Url.Action("Products", "Products")" method="get">
 
             <div class="row mb-3">
@@ -136,10 +136,7 @@
                                     switch (item.Status)
                                     {
                                         case 1:
-                                            statusText = "Hoạt động";
-                                            break;
-                                        case 2:
-                                            statusText = "Hết hàng";
+                                            statusText = item.Quantity == 0 ? "Hết hàng" : "Hoạt động";
                                             break;
                                         case 0:
                                             statusText = "Ngừng hoạt động";
