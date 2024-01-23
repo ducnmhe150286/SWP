@@ -15,6 +15,7 @@ namespace SWP.Controllers
             _environment = environment;
             usersManage = new ManageUsersDao();
         }
+        
         public IActionResult Index()
         {
             string email = HttpContext.Session.GetString("USER_EMAIL");
@@ -22,6 +23,7 @@ namespace SWP.Controllers
             {
                 return Redirect("Error");
             }
+            
             var user = usersManage.getUserByEmail(email);
             return View(user);
         }
@@ -60,6 +62,10 @@ namespace SWP.Controllers
             {
                 return RedirectToAction("Error");
             }
+            if (!ModelState.IsValid)
+            {
+                return View("ChangePassword", passWordModel);
+            }
             var user = usersManage.changePassWord(passWordModel,email);
             if (user != "")
             {
@@ -93,6 +99,11 @@ namespace SWP.Controllers
                 var newFileName = $"{fileName}_{timestamp}{fileExtension}";
 
                 var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
+
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
                 var filePath = Path.Combine(uploadsFolder, newFileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))

@@ -10,7 +10,7 @@ namespace SWP.Dto
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Mật khẩu không được để trống!")]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z]).{8,}$", ErrorMessage = "Mật khẩu tối thiểu 8 ký tự (@,... và 1 ký tự in hoa))")]
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$", ErrorMessage = "Mật khẩu tối thiểu 8 ký tự (@,... và 1 ký tự in hoa))")]
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Mật khẩu không được để trống!")]
@@ -18,7 +18,7 @@ namespace SWP.Dto
         public string ConfirmPassword { get; set; }
 
         [Required(ErrorMessage = "SĐT không được để trống!")]
-        [RegularExpression(@"^(09|08|03)+([0-9]{8})\b", ErrorMessage = "SĐT không đúng định dạng!")]
+        [RegularExpression(@"^(09|08|03|05)+([0-9]{8})\b", ErrorMessage = "SĐT không đúng định dạng!")]
         public string PhoneNumber { get; set; }
 
         [Required(ErrorMessage = "Tên không được để trống!")]

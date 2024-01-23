@@ -17,7 +17,7 @@ namespace SWP.Dao
             context = new SWPContext();
 
         }
-        public User login(string email, string password)
+        public User login(LoginModel loginModel)
         {
             try
             {
@@ -27,12 +27,12 @@ namespace SWP.Dao
                 //    return null;
                 //}
                 //return data;
-                var user = context.Users.FirstOrDefault(x => x.Email == email);
+                var user = context.Users.FirstOrDefault(x => x.Email == loginModel.Email);
                 if (user == null)
                 {
                     return null;
                 }
-                string hashedInputPassword = HashPassword(password);
+                string hashedInputPassword = HashPassword(loginModel.Password);
 
                 if (hashedInputPassword == user.Password)
                 {
@@ -61,7 +61,7 @@ namespace SWP.Dao
                 user.PhoneNumber = registerModel.PhoneNumber;
                 user.FirstName = registerModel.FirstName;
                 user.LastName = registerModel.LastName;
-                user.RoleId = registerModel.RoleId??2;
+                user.RoleId = registerModel.RoleId ?? 2;
                 user.CreatedDate = DateTime.Now;
 
 
@@ -100,7 +100,7 @@ namespace SWP.Dao
                 string otp = RandomString(6);
                 var data = context.Users.FirstOrDefault(x => x.Email == email);
 
-                if(data == null)
+                if (data == null)
                 {
                     return false;
                 }
@@ -108,7 +108,12 @@ namespace SWP.Dao
                 data.OtpExpired = DateTime.Now.AddMinutes(5);
                 context.SaveChanges();
 
-                await SendEmailAsync(email, "Mã xác nhận", $"<p>Mã xác nhận của bạn - <b>{otp}</b>.</p>");
+                await SendEmailAsync(email, "Mã xác nhận", $@"
+                                            <div style=""border: 1px solid #d33; background-color: #f8d7da; color: #721c24; padding: 15px; margin-bottom: 15px;"">
+                                            <p style=""margin-bottom: 0;""><strong>Cảnh báo:</strong></p>
+                                            <p style=""margin-bottom: 0;"">Vui lòng không chia sẻ mã xác nhận của bạn với người khác.</p>
+                                            <p style=""margin-bottom: 0;"">Mã xác nhận của bạn: <strong>{otp}</strong>.</p>
+                                            </div>");
                 return true;
             }
             catch (Exception)
@@ -132,7 +137,7 @@ namespace SWP.Dao
                 }
                 if (data.OtpExpired < DateTime.Now) return "Mã xác nhận hết hạn!";
                 if (data.Otp != otp) return "Mã xác nhận không đúng!";
-               
+
                 return "";
             }
             catch (Exception)
@@ -206,28 +211,29 @@ namespace SWP.Dao
         {
             try
             {
-                using(var connection = new SWPContext())
+                using (var connection = new SWPContext())
                 {
                     var list = connection.Users.ToList();
                     return list;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return null;
             }
-            
+
         }
         public static User GetUserById(int id)
         {
             try
             {
-                using(var connection = new SWPContext())
+                using (var connection = new SWPContext())
                 {
-                    var user = connection.Users.Where(x => x.UserId== id).FirstOrDefault();
+                    var user = connection.Users.Where(x => x.UserId == id).FirstOrDefault();
                     return user;
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return null;
             }
@@ -236,12 +242,13 @@ namespace SWP.Dao
         {
             try
             {
-                using(var context = new SWPContext())
+                using (var context = new SWPContext())
                 {
                     context.Users.Add(user);
                     context.SaveChanges();
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -268,7 +275,7 @@ namespace SWP.Dao
             {
                 using (var context = new SWPContext())
                 {
-                   var p1 = context.Users.SingleOrDefault(c=> c.UserId == user.UserId);
+                    var p1 = context.Users.SingleOrDefault(c => c.UserId == user.UserId);
                     context.Users.Remove(p1);
                     context.SaveChanges();
                 }
@@ -278,7 +285,7 @@ namespace SWP.Dao
                 throw new Exception(ex.Message);
             }
         }
-        
+
 
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using SWP.Dao;
 using SWP.Dto;
 using SWP.Models;
@@ -15,17 +16,26 @@ namespace SWP.Controllers
             this.userDao = new UsersDao();
             this.usersManage = new ManageUsersDao();
         }
-
-        public IActionResult Index(string email, string password)
+        public IActionResult Index()
         {
-            if (string.IsNullOrEmpty(email))
+            string successMessage = TempData["SuccessMessage"] as string;
+            if (successMessage != null && successMessage != "")
             {
-                return View();
+                TempData["MESS_NOTE_SUCCESS"]= successMessage;
             }
-            var user = userDao.login(email, password);
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Index(LoginModel loginModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("Index", loginModel);
+            }
+            var user = userDao.login(loginModel);
             if (user == null)
             {
-                ViewData["error"] = "Mat khau hoac email sai";
+                ViewData["error"] = "Email hoặc mật khẩu không đúng!";
             }
             else
             {
@@ -74,8 +84,8 @@ namespace SWP.Controllers
                     await userDao.SendEmailAsync(registerModel.Email, "Đăng ký thanh công", "Chào mừng đến với Boxing Shop!!!");
                     ViewData["message1"] = "Đăng ký thành công.";
                 }
-
-                return View();
+                TempData["SuccessMessage"] = "Đăng ký thành công.";
+                return RedirectToAction("Index");
             }
            
         }
@@ -125,15 +135,18 @@ namespace SWP.Controllers
             {
                 email = HttpContext.Session.GetString("USER_EMAIL");
                 var output = userDao.Confirm(email,otp);
-                if(output.Equals("Mã xác nhận hết hạn!"))
-                {
-                    ViewData["errorType"] = "0"; 
-                }
+                //if(output.Equals("Mã xác nhận hết hạn!"))
+                //{
+                //    ViewData["errorType"] = "0";
+                //    return View("inputOtp");
+                //}
                 if(output != "")
                 {
-                    ViewData["message"] = output;
+                    ViewData["errorType"] = output;
+                    
+                    return View("inputOtp");
                 }
-               
+
                 return RedirectToAction("resetpassword");
             }
             catch (Exception)

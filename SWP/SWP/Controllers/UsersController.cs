@@ -111,21 +111,21 @@ namespace SWP.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int userId, [Bind("UserId,Password,FirstName,LastName,Image,Address,Gender,Email,PhoneNumber,RoleId,Status")] UserRequest request)
+        public async Task<ActionResult> Edit(int userId, [Bind("UserId,Status")] UserRequest request)
         {
             var users = UsersDao.GetUserById(userId);
             if (users != null)
             {
                 users.UserId= userId;
-                users.Address = request.Address;
-                users.PhoneNumber= request.PhoneNumber;
-                users.LastName = request.LastName;
-                users.FirstName = request.FirstName;
-                users.Email = request.Email;
-                users.RoleId = request.RoleId;
-                users.Password= request.Password;
-                users.Image= request.Image;
-                users.Gender= request.Gender;
+                //users.Address = request.Address;
+                //users.PhoneNumber= request.PhoneNumber;
+                //users.LastName = request.LastName;
+                //users.FirstName = request.FirstName;
+                //users.Email = request.Email;
+                //users.RoleId = request.RoleId;
+                //users.Password= request.Password;
+                //users.Image= request.Image;
+                //users.Gender= request.Gender;
                 users.Status= request.Status;
                 UsersDao.UpdateUser(users);
             }
