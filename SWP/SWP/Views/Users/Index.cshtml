@@ -22,11 +22,13 @@
             <!-- Search form -->
             <form method="post" asp-controller="Users" asp-action="Index" class="mb-4">
                 <div class="input-group">
-                    <input type="text" name="search" class="form-control" placeholder="Tìm kiếm theo tên hoặc số điện thoại">
+                    <input type="text" name="search" class="form-control" placeholder="tìm kiếm " value="@ViewBag.strSearch">
                     <button type="submit" class="btn btn-primary">Tìm kiếm</button>
                 </div>
             </form>
+            
             <div class="row">
+                
                 @*@if (Model != null)
                 {
                 @foreach (var item in Model)
@@ -73,6 +75,7 @@
                                 int startIndex = (int)ViewData["startIndex"];
                                
                             }
+                            
                             @foreach (var item in Model)
                             {
                                 <tr>
@@ -120,12 +123,12 @@
                                 </a>
                             </li>
                         }
-                        @for (int i = 0; i <= ViewBag.NumberOfPages; i++)
+                        @for (int i = 1; i <= ViewBag.NumberOfPages; i++)
                         {
                             <li class="page-item "><a class="page-link" asp-controller="Users" asp-action="Index" asp-route-currentPage="@i">@i</a></li>
 
                         }
-                        @if (ViewBag.currentPage < ViewBag.NumberOfPages)
+                        @if (ViewBag.currentPage < ViewBag.NumberOfPages )
                         {
                             <li class="page-item">
                                 <a class="page-link" asp-controller="Users" asp-action="Index" asp-route-currentPage="@(ViewBag.currentPage + 1)" aria-label="Next">

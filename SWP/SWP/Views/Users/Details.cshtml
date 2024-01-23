@@ -4,7 +4,9 @@
 *@
 @{
 }
+@using SWP.Models;
 
+<form  enctype="multipart/form-data" asp-action="Details">
 <section style="background-color: #eee;">
     <div class="container py-5">
         <div class="row">
@@ -17,6 +19,7 @@
                 <div class="col-lg-4">
                     <div class="card mb-4">
                         <div class="card-body text-center">
+                                <input type="hidden" asp-for="UserId" value="@Model.UserId" />
                             <img src="/uploads/@Model.Image" alt="avatar"
                              class="rounded-circle img-fluid" style="width: 150px;">
                             <h5 class="my-3">@Model.FirstName @Model.LastName</h5>
@@ -98,46 +101,41 @@
                                 </div>
                             </div>
                             <hr>
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <p class="mb-0">Status</p>
-                                </div>
-                                <div class="col-sm-6">
-                                    <!-- Adjusted column width to make space for the button -->
-                                    <p class="text-muted mb-0">
-                                        @if (Model.Status == 1)
-                                        {
-                                            <a>Active</a>
-                                        }
-                                        @if (Model.Status != 1)
-                                        {
-                                            <a>DeActive</a>
-                                        }
-                                    </p>
-                                </div>
-                                <div class="col-sm-3 text-right">
-                                    <!-- Added new column for the button and aligned it to the right -->
-                                    <a asp-controller="Users" asp-action="Edit" asp-route-userId="@Model.UserId" type="button" class="btn btn-primary">Update Status</a>
-                                </div>
-                            </div>
+                           <form method="post" asp-action="Details" asp-controller="Users">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <p class="mb-0">Status</p>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <!-- Adjusted column width to make space for the button -->
+                                        <p class="text-muted mb-0">
+                                            <select class="form-control form-control-lg" asp-for="Status">
+                                                <option value="1" >Active</option>
+                                                <option value="0" >Deactive</option>
 
-
+                                            </select>
+                                        </p>
+                                    </div>
+                                    <div class="col-sm-3 text-right">
+                                        <!-- Added new column for the button and aligned it to the right -->
+                                        @* <a asp-controller="Users" asp-action="Details" asp-route-userId="@Model.UserId" type="button" class="btn btn-primary">Update Status</a>*@
+                                        <button type="submit"  class="btn btn-success btn-lg" >Update User</button>
+                                    </div>
+                                </div>
+                           </form>
+                                
+                            
                             <hr>
 
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        
+                        <div class="col-md-3">
                             <div class="card mb-4 mb-md-0">
-                                <div class="card-body">
-                                     
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card mb-4 mb-md-0">
-                                <div class="card-body">
-                                </div>
+                                
+                                        <a class="btn btn-primary btn-lg" asp-area="" asp-controller="Users" asp-action="Index">Return list</a>
+                                
                             </div>
                         </div>
                     </div>
@@ -147,3 +145,4 @@
 
     </div>
 </section>
+</form>
