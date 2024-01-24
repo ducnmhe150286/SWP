@@ -22,11 +22,12 @@ namespace SWP.Controllers
         
         private readonly UsersDao usersDao;
         private readonly RoleDao roleDao;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UsersController( UsersDao usersDao)
+        public UsersController( UsersDao usersDao, IWebHostEnvironment webHostEnvironment)
         {
             usersDao = new UsersDao();
-           
+            _webHostEnvironment = webHostEnvironment;
         }
         public async Task<List<Role>> GetAllRoles()
         { 
@@ -69,75 +70,32 @@ namespace SWP.Controllers
 
                 if (search != null && !search.Equals("\\s+"))
                 {
-                    users = users.Where(x => x.FirstName.ToLower().Trim().Contains(search.ToLower().Trim()) || x.LastName.ToLower().Trim().Contains(search.ToLower().Trim()) 
-                    || x.PhoneNumber.Trim().Contains(search.Trim()) || x.Status.ToString().Trim().Contains(search.Trim()) || (x.Status == 1 && search.ToLower().Trim() == "active") || (x.Status != 1 && search.ToLower().Trim() == "deactive")).ToList();
+                    users = users.Where(x => (x.FirstName.ToLower().Trim().Contains(search.ToLower().Trim()) || x.LastName.ToLower().Trim().Contains(search.ToLower().Trim()) 
+                    || x.PhoneNumber.Trim().Contains(search.Trim()) )
+                     && (!status.HasValue || x.Status == status)).ToList();
                    
                    
                 }
-                
-                if (status.HasValue && status.Value != 0)
-                {
 
-                    if (status.Value == 1) // Active
-                    {
-                        users = users.Where(x => x.Status == 1).ToList();
-                    }
-                    else if (status.Value != 1) // Deactive
-                    {
-                        users = users.Where(x => x.Status != 1).ToList();
-                    }
+                
+                if (status.HasValue)
+                {
+                    users = users.Where(x => x.Status == status).ToList();
                 }
 
                 users = users.Skip(6 * currentPage).Take(6).ToList();
                 int startIndex = 6 * currentPage + 1;
 
                 ViewBag.strSearch = search;
+                ViewBag.Status = status;
                 ViewData["currentPage"] = currentPage;
                 ViewData["startIndex"] = startIndex;
                 return View(users);
-
+                
             }
             return View();
         }
-            /*[HttpPost]
-        public async Task<IActionResult> Index(int currentPage, string search, int? status)
-        {
-            var users = await GetUsers();
-
-            if (users != null)
-            {
-                // Apply search filter
-                if (!string.IsNullOrWhiteSpace(search))
-                {
-                    users = users.Where(x =>
-                        x.FirstName.ToLower().Trim().Contains(search.ToLower().Trim()) ||
-                        x.LastName.ToLower().Trim().Contains(search.ToLower().Trim()) ||
-                        x.PhoneNumber.Contains(search) ||
-                        x.Status.ToString().Contains(search)
-                    ).ToList();
-                }
-
-                // Apply status filter
-                if (status.HasValue)
-                {
-                    users = users.Where(x => x.Status == status).ToList();
-                }
-
-                // Pagination logic
-                int startIndex = 6 * currentPage + 1;
-                ViewData["NumberOfPages"] = (int)Math.Ceiling((double)users.Count / 6);
-
-                // Apply pagination
-                users = users.Skip(6 * currentPage).Take(6).ToList();
-
-                ViewData["currentPage"] = currentPage;
-                ViewData["startIndex"] = startIndex;
-
-                return View(users);
-            }
-
-            return View();
-        }
+           
 */
 
         public async Task<IActionResult> Details(int userId)
