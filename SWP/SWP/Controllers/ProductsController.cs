@@ -44,7 +44,12 @@ namespace SWP.Controllers
                     p.ProductName.Contains(searchString) ||
                     p.Brand.BrandName.Contains(searchString) ||
                     p.Category.CategoryName.Contains(searchString)) &&
-                    (!statusFilter.HasValue || p.Status == statusFilter) &&
+                    (!statusFilter.HasValue ||
+                        (
+                            (statusFilter != 2 && statusFilter != 1) ? p.Status == statusFilter :
+                            (statusFilter == 1 ? (p.Status == 1 && p.Quantity > 0) : p.Quantity == 0)
+                        )
+                    ) &&
                     (!categoryFilter.HasValue || p.CategoryId == categoryFilter) &&
                     (!brandFilter.HasValue || p.BrandId == brandFilter)
                 )
@@ -112,6 +117,12 @@ namespace SWP.Controllers
                 return NotFound();
             }
         }
+        private string GetUniqueFileName(string fileName)
+        {
+            string timestamp = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+            string uniqueFileName = Path.GetFileNameWithoutExtension(fileName) + "_" + timestamp + Path.GetExtension(fileName);
+            return uniqueFileName;
+        }
 
 
         [HttpPost]
@@ -149,7 +160,7 @@ namespace SWP.Controllers
                         if (file.Length > 0)
                         {
                             // Tạo một tên tệp duy nhất để tránh xung đột
-                            string uniqueFileName = Path.GetFileName(file.FileName);
+                            string uniqueFileName = GetUniqueFileName(file.FileName);
 
                             // Xây dựng đường dẫn đầy đủ để lưu ảnh trong thư mục Images
                             string imagePath = Path.Combine(imagesFolder, uniqueFileName);
@@ -215,14 +226,12 @@ namespace SWP.Controllers
                 using (var context = new SWPContext())
                 {
                     var existingProduct = context.Products.Find(updatedProduct.ProductId);
-
                     var existingProductImage = context.Products
                         .Include(p => p.ProductImages)
                         .FirstOrDefault(p => p.ProductId == updatedProduct.ProductId);
 
                     if (existingProduct != null)
                     {
-
                         existingProduct.ProductName = updatedProduct.ProductName;
                         existingProduct.Description = updatedProduct.Description;
                         existingProduct.Price = updatedProduct.Price;
@@ -231,43 +240,48 @@ namespace SWP.Controllers
                         existingProduct.Status = updatedProduct.Status;
                         existingProduct.BrandId = updatedProduct.BrandId;
                         existingProduct.CategoryId = updatedProduct.CategoryId;
-                        // Xóa toàn bộ ảnh cũ
-                        foreach (var oldImage in existingProductImage.ProductImages)
+
+                        // Kiểm tra xem có tệp tin mới được chọn hay không
+                        if (imageFiles != null && imageFiles.Count > 0)
                         {
-                            var fullPath = Path.Combine(_webHostEnvironment.WebRootPath, "Images", oldImage.Path);
-                            if (System.IO.File.Exists(fullPath))
+                            // Xóa toàn bộ ảnh cũ
+                            foreach (var oldImage in existingProductImage.ProductImages)
                             {
-                                System.IO.File.Delete(fullPath);
-                            }
-                        }
-
-                        // Xóa toàn bộ ảnh cũ từ cơ sở dữ liệu
-                        existingProductImage.ProductImages.Clear();
-
-                        // Thêm ảnh mới
-                        foreach (var file in imageFiles)
-                        {
-                            if (file.Length > 0)
-                            {
-                                string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(file.FileName);
-                                string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Images", uniqueFileName);
-
-                                using (var stream = new FileStream(imagePath, FileMode.Create))
+                                var fullPath = Path.Combine(_webHostEnvironment.WebRootPath, "Images", oldImage.Path);
+                                if (System.IO.File.Exists(fullPath))
                                 {
-                                    file.CopyTo(stream);
+                                    System.IO.File.Delete(fullPath);
                                 }
+                            }
 
-                                // Lưu thông tin ảnh vào cơ sở dữ liệu
-                                var productImage = new ProductImage
+                            // Xóa toàn bộ ảnh cũ từ cơ sở dữ liệu
+                            existingProductImage.ProductImages.Clear();
+
+                            // Thêm ảnh mới
+                            foreach (var file in imageFiles)
+                            {
+                                if (file.Length > 0)
                                 {
-                                    Path = uniqueFileName,
-                                    CreateDate = DateTime.Now,
-                                    CreatedBy = null,
-                                    UpdateBy = null,
-                                    Status = 1,
-                                };
+                                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(file.FileName);
+                                    string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Images", uniqueFileName);
 
-                                existingProductImage.ProductImages.Add(productImage);
+                                    using (var stream = new FileStream(imagePath, FileMode.Create))
+                                    {
+                                        file.CopyTo(stream);
+                                    }
+
+                                    // Lưu thông tin ảnh vào cơ sở dữ liệu
+                                    var productImage = new ProductImage
+                                    {
+                                        Path = uniqueFileName,
+                                        CreateDate = DateTime.Now,
+                                        CreatedBy = null,
+                                        UpdateBy = null,
+                                        Status = 1,
+                                    };
+
+                                    existingProductImage.ProductImages.Add(productImage);
+                                }
                             }
                         }
 
