@@ -6,7 +6,7 @@
 
 @model SWP.Models.Category
 
-<h2>Add Category</h2>
+<h2>THÊM MỚI DANH MỤC SẢN PHẨM</h2>
 
 @using (Html.BeginForm("AddCategory", "Category", FormMethod.Post))
 {
@@ -18,5 +18,5 @@
         @Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "text-danger" })
     </div>
 
-    <button type="submit" class="btn btn-primary">Add Category</button>
+    <button type="submit" class="btn btn-primary">Thêm mới</button>
 }
