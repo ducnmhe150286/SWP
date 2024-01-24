@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SWP.Models;
 using System.Text.RegularExpressions;
 
@@ -37,6 +38,13 @@ namespace SWP.Controllers
 
                 using (var context = new SWPContext())
                 {
+                    // Kiểm tra xem tên thương hiệu đã tồn tại chưa
+                    if (context.Brands.Any(b => b.BrandName == newBrand.BrandName))
+                    {
+                        ModelState.AddModelError("BrandName", "Tên thương hiệu đã tồn tại. Vui lòng chọn tên khác.");
+                        // Xử lý lỗi nếu cần thiết
+                        return View(newBrand);
+                    }
                     // Lấy tên người dùng hiện tại, bạn cần cập nhật logic lấy tên người dùng theo cách của bạn
                     string currentUserName = "User1"; // Thay thế bằng logic lấy tên người dùng
 
@@ -76,15 +84,26 @@ namespace SWP.Controllers
         {
             using (var context = new SWPContext())
             {
-                var brandToDelete = context.Brands.Find(id);
-                if (brandToDelete != null)
+                var brandToDelete = context.Brands.Include(b => b.Products).FirstOrDefault(b => b.BrandId == id);
+
+                if (brandToDelete == null)
                 {
-                    context.Brands.Remove(brandToDelete);
-                    context.SaveChanges();
+                    return NotFound();
                 }
-                // Chuyển hướng đến trang danh sách (Index) để hiển thị danh sách cập nhật
-                return RedirectToAction("Index");
+
+                // Kiểm tra xem có sản phẩm đang sử dụng Brand hay không
+                if (brandToDelete.Products.Any())
+                {
+                    ModelState.AddModelError(string.Empty, "Không thể xóa Category vì có sản phẩm đang sử dụng.");
+                    return RedirectToAction("Index"); // Hoặc chuyển hướng đến trang nào đó để thông báo lỗi.
+                }
+
+                context.Brands.Remove(brandToDelete);
+                context.SaveChanges();
             }
+
+            // Chuyển hướng đến trang danh sách (Index) để hiển thị danh sách cập nhật
+            return RedirectToAction("Index");
         }
         [HttpGet]
         public ActionResult Edit(int id)

@@ -5,7 +5,7 @@
 }
 @model SWP.Models.Brand
 
-<h2>Edit Brand</h2>
+<h2>CẬP NHẬT THƯƠNG HIỆU</h2>
 
 @using (Html.BeginForm("Edit", "Brand", FormMethod.Post))
 {
@@ -20,9 +20,13 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.Status)
-        @Html.TextBoxFor(model => model.Status, new { @class = "form-control" })
+        @Html.DropDownListFor(model => model.Status, new List<SelectListItem>
+    {
+    new SelectListItem { Text = "Hoạt động", Value = "1"},
+    new SelectListItem { Text = "Không hoạt động", Value = "0" }
+    }, "Chọn trạng thái", new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
     </div>
 
-    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <button type="submit" class="btn btn-primary">CẬP NHẬT</button>
 }

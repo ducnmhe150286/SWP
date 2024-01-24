@@ -44,11 +44,17 @@ namespace SWP.Controllers
 
                 using (var context = new SWPContext())
                 {
+                    if (context.Categories.Any(c => c.CategoryName == newCategory.CategoryName))
+                    {
+                        ModelState.AddModelError("CategoryName", "Tên danh mục đã tồn tại. Vui lòng chọn tên khác.");
+                        // Xử lý lỗi nếu cần thiết
+                        return View(newCategory);
+                    }
                     // Lấy tên người dùng hiện tại, bạn cần cập nhật logic lấy tên người dùng theo cách của bạn
                     string currentUserName = "User1"; // Thay thế bằng logic lấy tên người dùng
 
                     // Chuyển đổi giá trị từ kiểu string sang kiểu int?
-                    int? status = 1; // Status mặc định là 1
+                    newCategory.Status = 1;
 
                     // Tạo mới Category
                     Category categoryToAdd = new Category
@@ -56,7 +62,7 @@ namespace SWP.Controllers
                         CategoryName = newCategory.CategoryName,
                         CreatedBy = currentUserName,
                         UpdateBy = currentUserName,
-                        Status = status,
+                        Status = newCategory.Status,
                         CreatedDate = DateTime.Now
                     };
 
@@ -83,12 +89,21 @@ namespace SWP.Controllers
         {
             using (var context = new SWPContext())
             {
-                var categoryToDelete = context.Categories.Find(id);
-                if (categoryToDelete != null)
+                var categoryToDelete = context.Categories.Include(c => c.Products).FirstOrDefault(c => c.CategoryId == id);
+
+                if (categoryToDelete == null)
                 {
-                    context.Categories.Remove(categoryToDelete);
-                    context.SaveChanges();
+                    return NotFound();
                 }
+
+                // Kiểm tra xem có sản phẩm đang sử dụng Category hay không
+                if (categoryToDelete.Products.Any())
+                {
+                    return RedirectToAction("Index"); // Hoặc chuyển hướng đến trang nào đó để thông báo lỗi.
+                }
+
+                context.Categories.Remove(categoryToDelete);
+                context.SaveChanges();
             }
 
             // Chuyển hướng đến trang danh sách (Index) để hiển thị danh sách cập nhật
