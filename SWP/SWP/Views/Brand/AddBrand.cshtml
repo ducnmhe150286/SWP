@@ -5,7 +5,7 @@
 }
 @model SWP.Models.Brand
 
-<h2>Add Brand</h2>
+<h2>THÊM THƯƠNG HIỆU</h2>
 
 @using (Html.BeginForm("AddBrand", "Brand", FormMethod.Post))
 {
@@ -17,5 +17,5 @@
         @Html.ValidationMessageFor(model => model.BrandName, "", new { @class = "text-danger" })
     </div>
 
-    <button type="submit" class="btn btn-primary">Add Brand</button>
+    <button type="submit" class="btn btn-primary">Thêm mới</button>
 }
