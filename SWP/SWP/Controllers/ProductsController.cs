@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SWP.Dao;
 using SWP.Models;
+using SWP.Utilities;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace SWP.Controllers
@@ -21,8 +24,9 @@ namespace SWP.Controllers
         //     usersManage = new ManageUsersDao();
         // }
         [Route("products/list")]
-        public IActionResult Products(string searchString, int? statusFilter, int? categoryFilter, int? brandFilter)
+        public IActionResult Products(string searchString, int? statusFilter, int? categoryFilter, int? brandFilter, int page = 1)
         {
+            int pageSize = 5;
             string webRootPath = _webHostEnvironment.WebRootPath;
             string imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "Images");
             using (var context = new SWPContext())
@@ -39,11 +43,15 @@ namespace SWP.Controllers
                     .Include(p => p.Brand)
                     .Include(p => p.Category)
                     .Include(p => p.ProductImages)
+                    .Include(p => p.ProductDetails)
+                    .ThenInclude(pd => pd.Color)
+                    .Include(p => p.ProductDetails)
+                    .ThenInclude(pd => pd.Size)
                     .Where(p =>
                     (string.IsNullOrEmpty(searchString) ||
                     p.ProductName.Contains(searchString) ||
                     p.Brand.BrandName.Contains(searchString) ||
-                    p.Category.CategoryName.Contains(searchString)) &&
+                    p.Category.CategoryName.Contains(searchString)) && 
                     (!statusFilter.HasValue ||
                         (
                             (statusFilter != 2 && statusFilter != 1) ? p.Status == statusFilter :
@@ -53,14 +61,10 @@ namespace SWP.Controllers
                     (!categoryFilter.HasValue || p.CategoryId == categoryFilter) &&
                     (!brandFilter.HasValue || p.BrandId == brandFilter)
                 )
+                .OrderByDescending(p => p.CreatedDate)
                 .ToList();
-                //foreach (var product in productList)
-                //{
-                //    foreach (var productImage in product.ProductImages)
-                //    {
-                //        productImage.Path = Path.Combine(imagesFolder, productImage.Path);
-                //    }
-                //}
+                var paginatedList = PaginatedList<Product>.Create(productList.AsQueryable(), page, pageSize);
+
                 foreach (var product in productList)
                 {
                     foreach (var productImage in product.ProductImages)
@@ -72,11 +76,13 @@ namespace SWP.Controllers
                 }
                 ViewBag.Categories = categories;
                 ViewBag.Brands = brands;
-                ViewBag.Products = productList;
+                ViewBag.Products = paginatedList;
                 ViewData["SearchString"] = searchString;
                 ViewBag.StatusFilter = statusFilter;
                 ViewBag.CategoryFilter = categoryFilter;
                 ViewBag.BrandFilter = brandFilter;
+                ViewData["ErrorMessage"] = TempData["ErrorMessage"] as string;
+                ViewData["SuccessMessage"] = TempData["SuccessMessage"] as string;
 
 
             }
@@ -95,9 +101,15 @@ namespace SWP.Controllers
             {
                 var brandList = context.Brands.ToList();
                 var categoryList = context.Categories.ToList();
+                var colorList = context.Colors.ToList();
+                var sizeList = context.Sizes.ToList();
 
                 ViewBag.Brand = brandList;
+                ViewBag.Color = colorList;
+                ViewBag.Size = sizeList;
                 ViewBag.Category = categoryList;
+                ViewData["ErrorMessage"] = TempData["ErrorMessage"] as string;
+
 
             }
             return View();
@@ -126,7 +138,7 @@ namespace SWP.Controllers
 
 
         [HttpPost]
-        public IActionResult NewProduct(Product newProduct, List<IFormFile> imageFiles)
+        public IActionResult NewProduct(Product newProduct,int? ColorId,int? SizeId ,string Feature, string Attributes, List<IFormFile> imageFiles)
         {
             try
             {
@@ -134,8 +146,16 @@ namespace SWP.Controllers
                 newProduct.CreatedBy = null;
                 newProduct.UpdateBy = null;
                 newProduct.ProductImages = null;
+               
                 using (var context = new SWPContext())
                 {
+                    if (context.Products.Any(p => p.ProductName == newProduct.ProductName &&
+                                            p.BrandId == newProduct.BrandId &&
+                                            p.CategoryId == newProduct.CategoryId))
+                    {
+                        TempData["ErrorMessage"] = " Tên sản phẩm đã tồn tại trong cùng một thương hiệu và danh mục.";
+                        return RedirectToAction("CreateProduct");
+                    }
                     newProduct.ProductName = string.IsNullOrWhiteSpace(newProduct.ProductName) ? null : newProduct.ProductName;
                     newProduct.Description = string.IsNullOrWhiteSpace(newProduct.Description) ? null : newProduct.Description;
                     newProduct.Price = newProduct.Price.HasValue ? newProduct.Price : null;
@@ -146,7 +166,6 @@ namespace SWP.Controllers
                     newProduct.CategoryId = newProduct.CategoryId;
                     context.Products.Add(newProduct);
                     context.SaveChanges();
-
                     string wwwrootFolder = _webHostEnvironment.WebRootPath;
                     string imagesFolder = Path.Combine(wwwrootFolder, "Images");
 
@@ -185,13 +204,32 @@ namespace SWP.Controllers
                     }
 
                     context.SaveChanges();
+                    if (ColorId.HasValue || SizeId.HasValue || !string.IsNullOrWhiteSpace(Feature) || !string.IsNullOrWhiteSpace(Attributes))
+                    {
+                        int generatedProductId = newProduct.ProductId;
+                        var productDetailEntity = new ProductDetail
+                        {
+                            ProductId = generatedProductId,
+                            ColorId = ColorId.HasValue ? ColorId : null,
+                            SizeId = SizeId.HasValue ? SizeId : null,
+                            Feature = Feature,
+                            Attributes = Attributes,
+                            CreatedDate = DateTime.Now,
+                            CreatedBy = null,
+                            UpdateBy = null,
+                            Status = 1,
+                        };
+                        context.ProductDetails.Add(productDetailEntity);
+                        context.SaveChanges();
+                    }
                 }
+                TempData["SuccessMessage"] = "Tạo mới sản phẩm thành công!";
                 return RedirectToAction("Products");
 
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = "Có lỗi xảy ra khi tạo mới sản phẩm: " + ex;
+                TempData["ErrorMessage"] = "Có lỗi xảy ra khi tạo mới sản phẩm: " ;
                 return RedirectToAction("CreateProduct");
             }
         }
@@ -205,13 +243,22 @@ namespace SWP.Controllers
                     .Include(p => p.Brand)
                     .Include(p => p.Category)
                     .Include(p => p.ProductImages)
+                    .Include(p => p.ProductDetails)
                     .FirstOrDefault(p => p.ProductId == id);
 
+                var firstProductDetail = product?.ProductDetails?.FirstOrDefault();
                 var brands = context.Brands.ToList();
                 var categories = context.Categories.ToList();
+                var colorList = context.Colors.ToList();
+                var sizeList = context.Sizes.ToList();
+                ViewBag.ProductDetail = firstProductDetail;
+                ViewBag.Color = colorList;
+                ViewBag.Size = sizeList;
                 ViewBag.Product = product;
                 ViewBag.Brands = brands;
                 ViewBag.Categories = categories;
+                ViewData["ErrorMessage"] = TempData["ErrorMessage"] as string;
+
             }
             return View();
         }
@@ -219,12 +266,24 @@ namespace SWP.Controllers
 
 
         [HttpPost]
-        public IActionResult UpdateProduct(Product updatedProduct, List<IFormFile> imageFiles)
+        public IActionResult UpdateProduct(Product updatedProduct, int? ColorId, int? SizeId, string Feature, string Attributes, List<IFormFile> imageFiles)
         {
             try
             {
                 using (var context = new SWPContext())
                 {
+
+                    // Kiểm tra xem tên sản phẩm đã được cập nhật có tồn tại cho một sản phẩm khác không
+                    if (context.Products.Any(p => p.ProductName == updatedProduct.ProductName &&
+                                      p.BrandId == updatedProduct.BrandId &&
+                                      p.CategoryId == updatedProduct.CategoryId &&
+                                      p.ProductId != updatedProduct.ProductId))
+                    {
+                        TempData["ErrorMessage"] = "Tên sản phẩm đã tồn tại trong cùng một danh mục và thương hiệu.";
+                        return RedirectToAction("EditProduct", new { id = updatedProduct.ProductId });
+                    }
+
+
                     var existingProduct = context.Products.Find(updatedProduct.ProductId);
                     var existingProductImage = context.Products
                         .Include(p => p.ProductImages)
@@ -284,16 +343,46 @@ namespace SWP.Controllers
                                 }
                             }
                         }
+                        var productDetailEntity = context.ProductDetails.FirstOrDefault(pd => pd.ProductId == updatedProduct.ProductId);
+                        if (productDetailEntity != null)
+                        {
+                            productDetailEntity.ColorId = ColorId;
+                            productDetailEntity.SizeId = SizeId;
+                            productDetailEntity.Feature = Feature;
+                            productDetailEntity.Attributes = Attributes;
+                            productDetailEntity.UpdateBy = null;
+                            productDetailEntity.Status = 1;
+                        }
+                        else
+                        {
+                            // Nếu chi tiết sản phẩm chưa tồn tại, tạo mới
+                            var newProductDetail = new ProductDetail
+                            {
+                                ProductId = updatedProduct.ProductId,
+                                ColorId = ColorId,
+                                SizeId = SizeId,
+                                Feature = Feature,
+                                Attributes = Attributes,
+                                CreatedDate = DateTime.Now,
+                                CreatedBy = null,
+                                UpdateBy = null,
+                                Status = 1,
+                            };
+                            context.ProductDetails.Add(newProductDetail);
+                        }
+
 
                         context.SaveChanges();
                     }
                 }
+                TempData["SuccessMessage"] = "Cập nhật sản phẩm thành công!";
 
                 return RedirectToAction("Products");
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = "Có lỗi xảy ra khi cập nhật sản phẩm: " + ex.Message;
+                TempData["ErrorMessage"] = "Có lỗi xảy ra khi cập nhật sản phẩm: ";
+
                 return RedirectToAction("EditProduct", new { id = updatedProduct.ProductId });
             }
         }
@@ -330,6 +419,7 @@ namespace SWP.Controllers
                     context.SaveChanges();
                 }
             }
+            TempData["SuccessMessage"] = "Xóa sản phẩm thành công!";
 
             return RedirectToAction("Products");
         }

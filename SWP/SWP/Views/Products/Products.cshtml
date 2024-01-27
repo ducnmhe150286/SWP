@@ -30,7 +30,11 @@
     <div style="display:flex;">
         <div>
 
-            <p>Danh sách các sản phẩm đang có trong hệ thống để theo dõi và quản lý</p>
+            <p>Danh sách các sản phẩm đang có trong hệ thống để theo dõi và quản lý</p
+            <p style="color: red;">@ViewData["ErrorMessage"]</p>
+            <p style="color: green;">@ViewData["SuccessMessage"]</p>
+
+
             <form action="@Url.Action("Products", "Products")" method="get">
 
             <div class="row mb-3">
@@ -95,6 +99,8 @@
                         <th>Danh mục</th>
 @*                        <th>Giảm giá</th>
 *@                        
+                        <th>Màu sắc</th>
+                        <th>Kích cỡ</th>
                     <th>Trạng thái</th>
                         <th>Ngày tạo</th>
                        @* <th>Người tạo</th>
@@ -148,7 +154,33 @@
                                     @statusText
                                 }
                             </td>
-
+                            <td>
+                                @if (item.ProductDetails != null && item.ProductDetails.Any())
+                                {
+                                    @foreach (var productDetail in item.ProductDetails)
+                                    {
+                                        <span>@productDetail.Color?.ColorName</span>
+                                        <br />
+                                    }
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
+                            <td>@if (item.ProductDetails != null && item.ProductDetails.Any())
+                                {
+                                    @foreach (var productDetail in item.ProductDetails)
+                                    {
+                                        <span>@productDetail.Size?.SizeName</span>
+                                        <br />
+                                    }
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                             </td>
                             <td>@(item.CreatedDate.HasValue ? item.CreatedDate.Value.ToString("dd/MM/yyyy") : "")</td>
                            @* <td>@item.CreatedBy</td>
                             <td>@item.UpdateBy</td>*@
@@ -166,7 +198,38 @@
                 </tbody>
             </table>
         </div>
+
+            
     </div>
+    <div class="d-flex justify-content-center">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        @if (ViewBag.Products.HasPreviousPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Products", new { page = ViewBag.Products.PageIndex - 1 })" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        }
+                        @for (int i = 1; i <= ViewBag.Products.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == ViewBag.Products.PageIndex ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("Products", new { page = i })">@i</a>
+                            </li>
+                        }
+                        @if (ViewBag.Products.HasNextPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Products", new { page = ViewBag.Products.PageIndex + 1 })" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+
 
     <script>
         function confirmDelete(productId) {
