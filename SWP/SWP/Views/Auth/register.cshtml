@@ -34,14 +34,14 @@
                                         <div class="form-outline">
                                             <label class="form-label" for="form3Example1m">Họ <span class="required-star">*</span></label>
                                             <span id="firstNameError" asp-validation-for="FirstName" class="text-danger"></span>
-                                            <input type="text" asp-for="FirstName" class="form-control form-control-lg" />
+                                            <input type="text" placeholder="Nhập họ của bạn" asp-for="FirstName" class="form-control form-control-lg" />
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-4">
                                         <div class="form-outline">
                                             <label class="form-label" for="form3Example1n">Tên <span class="required-star">*</span></label>
                                             <span id="lastNameError" asp-validation-for="LastName" class="text-danger"></span>
-                                            <input type="text" asp-for="LastName" class="form-control form-control-lg" />
+                                            <input type="text" placeholder="Nhập tên của bạn" asp-for="LastName" class="form-control form-control-lg" />
                                         </div>
                                     </div>
                                 </div>
@@ -49,25 +49,25 @@
                                 <div class="form-outline mb-4">
                                     <label class="form-label" for="form3Example3cg">SĐT <span class="required-star">*</span></label>
                                     <span id="phoneNumberError" asp-validation-for="PhoneNumber" class="text-danger"></span>
-                                    <input type="text" asp-for="PhoneNumber" class="form-control form-control-lg" />
+                                    <input type="text" placeholder="Nhập sđt của bạn" asp-for="PhoneNumber" class="form-control form-control-lg" />
                                 </div>
 
                                 <div class="form-outline mb-4">
                                     <label class="form-label" for="form3Example3cg">Email <span class="required-star">*</span></label>
                                     <span id="emailError" asp-validation-for="Email" class="text-danger"></span>
-                                    <input type="email" asp-for="Email" class="form-control form-control-lg" />
+                                    <input type="email" placeholder="example@gmail.com" asp-for="Email" class="form-control form-control-lg" />
                                 </div>
 
                                 <div class="form-outline mb-4">
-                                    <label class="form-label" for="form3Example4cg">Mật khẩu <span class="required-star">*</span></label>
+                                    <label class="form-label" for="form3Example4cg">Mật khẩu <span class="required-star">*</span> </label>
                                     <span id="passwordError" asp-validation-for="Password" class="text-danger"></span>
-                                    <input type="password" asp-for="Password" class="form-control form-control-lg" />
+                                    <input type="password" placeholder="vd:!Example123" asp-for="Password" class="form-control form-control-lg" />
                                 </div>
 
                                 <div class="form-outline mb-4">
                                     <label class="form-label" for="form3Example4cdg">Xác nhận mật khẩu <span class="required-star">*</span></label>
                                     <span id="confirmPasswordError" asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                                    <input type="password" asp-for="ConfirmPassword" class="form-control form-control-lg" />
+                                    <input type="password" placeholder="vd:!Example123" asp-for="ConfirmPassword" class="form-control form-control-lg" />
                                 </div>
 
                                 <div class="d-flex justify-content-center">
