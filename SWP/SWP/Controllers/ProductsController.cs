@@ -37,8 +37,8 @@ namespace SWP.Controllers
                 //{
                 //    return RedirectToAction("Error");
                 //}
-                var brands = context.Brands.ToList();
-                var categories = context.Categories.ToList();
+                var brands = context.Brands.Where(b => b.Status == 1).ToList();
+                var categories = context.Categories.Where(c => c.Status == 1).ToList();
                 var productList = context.Products
                     .Include(p => p.Brand)
                     .Include(p => p.Category)
@@ -63,6 +63,11 @@ namespace SWP.Controllers
                 )
                 .OrderByDescending(p => p.CreatedDate)
                 .ToList();
+                if (productList.Count == 0)
+                {
+                    TempData["ErrorMessage"] = "Không có dữ liệu sản phẩm.";
+                    //return RedirectToAction("Products");
+                }
                 var paginatedList = PaginatedList<Product>.Create(productList.AsQueryable(), page, pageSize);
 
                 foreach (var product in productList)
@@ -99,10 +104,10 @@ namespace SWP.Controllers
         {
             using (var context = new SWPContext())
             {
-                var brandList = context.Brands.ToList();
-                var categoryList = context.Categories.ToList();
-                var colorList = context.Colors.ToList();
-                var sizeList = context.Sizes.ToList();
+                var brandList = context.Brands.Where(b => b.Status == 1).ToList();
+                var categoryList = context.Categories.Where(c => c.Status == 1).ToList();
+                var colorList = context.Colors.Where(c => c.Status == 1).ToList();
+                var sizeList = context.Sizes.Where(s => s.Status == 1).ToList();
 
                 ViewBag.Brand = brandList;
                 ViewBag.Color = colorList;
@@ -247,10 +252,11 @@ namespace SWP.Controllers
                     .FirstOrDefault(p => p.ProductId == id);
 
                 var firstProductDetail = product?.ProductDetails?.FirstOrDefault();
-                var brands = context.Brands.ToList();
-                var categories = context.Categories.ToList();
-                var colorList = context.Colors.ToList();
-                var sizeList = context.Sizes.ToList();
+                var brands = context.Brands.Where(b => b.Status == 1).ToList();
+                var categories = context.Categories.Where(c => c.Status == 1).ToList();
+                var colorList = context.Colors.Where(c => c.Status == 1).ToList();
+                var sizeList = context.Sizes.Where(s => s.Status == 1).ToList();
+
                 ViewBag.ProductDetail = firstProductDetail;
                 ViewBag.Color = colorList;
                 ViewBag.Size = sizeList;
@@ -394,11 +400,18 @@ namespace SWP.Controllers
             using (var context = new SWPContext())
             {
                 var productToDelete = context.Products
-                    .Include(p => p.ProductImages) // Nạp danh sách ProductImages
+                    .Include(p => p.ProductImages)
+                    .Include(p => p.ProductDetails)
                     .FirstOrDefault(p => p.ProductId == id);
 
-                if (productToDelete != null)
+                if (productToDelete != null && productToDelete.Quantity == 0)
                 {
+                    // Xóa thông tin trong ProductDetail
+                    if (productToDelete.ProductDetails != null && productToDelete.ProductDetails.Any())
+                    {
+                        context.ProductDetails.RemoveRange(productToDelete.ProductDetails);
+                    }
+
                     // Xóa tất cả ProductImages liên quan
                     foreach (var productImage in productToDelete.ProductImages)
                     {
@@ -417,12 +430,17 @@ namespace SWP.Controllers
                     context.Products.Remove(productToDelete);
 
                     context.SaveChanges();
+                    TempData["SuccessMessage"] = "Xóa sản phẩm thành công!";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Không thể xóa sản phẩm. Số lượng sản phẩm lớn hơn 0.";
                 }
             }
-            TempData["SuccessMessage"] = "Xóa sản phẩm thành công!";
 
             return RedirectToAction("Products");
         }
+
 
 
     }
