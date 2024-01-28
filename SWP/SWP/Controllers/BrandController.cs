@@ -94,8 +94,8 @@ namespace SWP.Controllers
                 // Kiểm tra xem có sản phẩm đang sử dụng Brand hay không
                 if (brandToDelete.Products.Any())
                 {
-                    ModelState.AddModelError(string.Empty, "Không thể xóa Category vì có sản phẩm đang sử dụng.");
-                    return RedirectToAction("Index"); // Hoặc chuyển hướng đến trang nào đó để thông báo lỗi.
+                    TempData["ErrorMessage"] = "Không thể xóa vì danh mục đang có sản phẩm sử dụng.";
+                    return RedirectToAction(nameof(Index));
                 }
 
                 context.Brands.Remove(brandToDelete);
@@ -131,6 +131,14 @@ namespace SWP.Controllers
 
                     if (existingBrand != null)
                     {
+                        // Kiểm tra xem có sản phẩm sử dụng Brand không
+                        if (HasProductsInBrand(existingBrand.BrandId))
+                        {
+                            // Hiển thị thông báo cho người dùng
+                            TempData["ErrorMessage"] = "Không thể thay đổi trạng thái vì đang có sản phẩm sử dụng thương hiệu này.";
+                            return RedirectToAction("Index");
+                        }
+
                         existingBrand.BrandName = editedBrand.BrandName;
                         existingBrand.Status = editedBrand.Status;
 
@@ -138,17 +146,28 @@ namespace SWP.Controllers
                     }
                     else
                     {
-                        // Xử lý khi không tìm thấy Category
+                        // Xử lý khi không tìm thấy Brand
                         return NotFound();
                     }
                 }
 
                 // Chuyển hướng đến trang danh sách (Index) để hiển thị danh sách cập nhật
+                TempData["SuccessMessage"] = "Brand đã được cập nhật thành công.";
                 return RedirectToAction("Index");
             }
 
             // Nếu có lỗi, hiển thị lại trang Edit với thông tin nhập trước
             return View(editedBrand);
+        }
+
+        private bool HasProductsInBrand(int brandId)
+        {
+            using (var context = new SWPContext())
+            {
+                // Kiểm tra xem có sản phẩm nào sử dụng Brand có ID là brandId không
+                var productsInBrand = context.Products.Where(p => p.BrandId == brandId).ToList();
+                return productsInBrand.Any();
+            }
         }
     }
 }

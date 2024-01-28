@@ -103,17 +103,17 @@
 
     <table>
         <tr>
-            <th>BrandId</th>
-            <th>BrandName</th>
             
-            <th>Status</th>
-            <th>CreatedDate</th>
+            <th>Tên Thương Hiệu</th>
+            
+            <th>Trạng Thái</th>
+            <th>Ngày Tạo</th>
             <th>Action</th>
         </tr>
         @foreach (var brand in Model)
         {
             <tr>
-                <td>@brand.BrandId</td>
+                
                 <td>@brand.BrandName</td>
 
                 <td>
@@ -147,7 +147,12 @@
             </div>
         }
     </table>
-
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
     <script>
         var deleteButtons = document.querySelectorAll('.delete-button');
         deleteButtons.forEach(function (button) {
