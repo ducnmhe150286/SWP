@@ -30,10 +30,11 @@
     <div style="display:flex;">
         <div>
 
-            <p>Danh sách các sản phẩm đang có trong hệ thống để theo dõi và quản lý</p
-            <p style="color: red;">@ViewData["ErrorMessage"]</p>
-            <p style="color: green;">@ViewData["SuccessMessage"]</p>
-
+@*            <p>Danh sách các sản phẩm đang có trong hệ thống để theo dõi và quản lý</p
+*@                
+               
+            <h5 style="color: green;">@ViewData["SuccessMessage"]</h5>
+            <h5 style="color: red"> @ViewData["ErrorMessage"]</h5>
 
             <form action="@Url.Action("Products", "Products")" method="get">
 
@@ -87,7 +88,7 @@
             </div>
             </form>
            
-            <table class="table table-bordered table-responsive w-100">
+        <table class="table table-bordered table-responsive w-100">
                 <thead class="text-center">
                     <tr>
                         <th>Hình ảnh</th> 
@@ -109,92 +110,96 @@
                     </tr>
                 </thead>
                 <tbody class ="text-center">
-                    @foreach (Product item in ViewBag.Products)
-                    {
-                        <tr>
-                            <td>
-                                @if (item.ProductImages != null && item.ProductImages.Any())
-                                {
-                                    @foreach (var image in item.ProductImages)
+                     
+                        @foreach (Product item in ViewBag.Products)
+                        {
+                            <tr>
+                                <td>
+                                    @if (item.ProductImages != null && item.ProductImages.Any())
                                     {
+                                        @foreach (var image in item.ProductImages)
+                                        {
 
-                                        <img src="/Images/@image.Path" alt="Image" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
-                                       
-<br />
+                                            <img src="/Images/@image.Path" alt="Image" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
+
+                                            <br />
+                                        }
                                     }
-                                }
-                                else
-                                {
-                                    <span>-</span>
-                                }
-                            </td>
-                            <td>@item.ProductName</td>
-                            <td>@item.Description</td>
-                            <td>@item.Brand.BrandName</td>
-                            <td>@item.Price</td>
-                            <td>@item.Quantity</td>
-                            <td>@item.Category.CategoryName</td>
-@*                            <td>@item.IsSale</td>
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </td>
+                                <td>@item.ProductName</td>
+                                <td>@item.Description</td>
+                                <td>@item.Brand.BrandName</td>
+                                <td>@item.Price</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.Category.CategoryName</td>
+                                @*                            <td>@item.IsSale</td>
                         *@
-                            <td>
-                                @{
-                                    string statusText = "";
-                                    switch (item.Status)
-                                    {
-                                        case 1:
-                                            statusText = item.Quantity == 0 ? "Hết hàng" : "Hoạt động";
-                                            break;
-                                        case 0:
-                                            statusText = "Ngừng hoạt động";
-                                            break;
-                                        default:
-                                            statusText = "Không xác định";
-                                            break;
+                                <td>
+                                    @{
+                                        string statusText = "";
+                                        switch (item.Status)
+                                        {
+                                            case 1:
+                                                statusText = item.Quantity == 0 ? "Hết hàng" : "Hoạt động";
+                                                break;
+                                            case 0:
+                                                statusText = "Ngừng hoạt động";
+                                                break;
+                                            default:
+                                                statusText = "Không xác định";
+                                                break;
+                                        }
+                                        @statusText
                                     }
-                                    @statusText
-                                }
-                            </td>
-                            <td>
-                                @if (item.ProductDetails != null && item.ProductDetails.Any())
-                                {
-                                    @foreach (var productDetail in item.ProductDetails)
+                                </td>
+                                <td>
+                                    @if (item.ProductDetails != null && item.ProductDetails.Any())
                                     {
-                                        <span>@productDetail.Color?.ColorName</span>
-                                        <br />
+                                        @foreach (var productDetail in item.ProductDetails)
+                                        {
+                                            <span>@productDetail.Color?.ColorName</span>
+                                            <br />
+                                        }
                                     }
-                                }
-                                else
-                                {
-                                    <span>-</span>
-                                }
-                            </td>
-                            <td>@if (item.ProductDetails != null && item.ProductDetails.Any())
-                                {
-                                    @foreach (var productDetail in item.ProductDetails)
+                                    else
                                     {
-                                        <span>@productDetail.Size?.SizeName</span>
-                                        <br />
+                                        <span>-</span>
                                     }
-                                }
-                                else
-                                {
-                                    <span>-</span>
-                                }
-                             </td>
-                            <td>@(item.CreatedDate.HasValue ? item.CreatedDate.Value.ToString("dd/MM/yyyy") : "")</td>
-                           @* <td>@item.CreatedBy</td>
+                                </td>
+                                <td>@if (item.ProductDetails != null && item.ProductDetails.Any())
+                                    {
+                                        @foreach (var productDetail in item.ProductDetails)
+                                        {
+                                            <span>@productDetail.Size?.SizeName</span>
+                                            <br />
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </td>
+                                <td>@(
+                                    item.CreatedDate.HasValue ? item.CreatedDate.Value.ToString("dd/MM/yyyy") : ""
+                                    )</td>
+                                @* <td>@item.CreatedBy</td>
                             <td>@item.UpdateBy</td>*@
-                            <td>
-                                <a href="@Url.Action("EditProduct", "Products", new { id = item.ProductId })" class="btn btn-primary mb-1">
-                                    <span class="bi bi-pencil">Sửa</span>
-                                </a>
-                                <a href="#" class="btn btn-danger" onclick="confirmDelete(@item.ProductId)">
-                                    <span class="bi bi-trash">Xóa</span>
-                                </a>
-                            </td>
+                                <td>
+                                    <a href="@Url.Action("EditProduct", "Products", new { id = item.ProductId })" class="btn btn-primary mb-1">
+                                        <span class="bi bi-pencil">Sửa</span>
+                                    </a>
+                                    <a href="#" class="btn btn-danger" onclick="confirmDelete(@item.ProductId)">
+                                        <span class="bi bi-trash">Xóa</span>
+                                    </a>
+                                </td>
 
-                        </tr>
-                    }
+                            </tr>
+                        }
+                    
                 </tbody>
             </table>
         </div>
