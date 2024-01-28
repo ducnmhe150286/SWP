@@ -96,7 +96,7 @@ namespace SWP.Controllers
             return View();
         }
            
-*/
+
 
         public async Task<IActionResult> Details(int userId)
         {
