@@ -99,7 +99,8 @@ namespace SWP.Controllers
                 // Kiểm tra xem có sản phẩm đang sử dụng Category hay không
                 if (categoryToDelete.Products.Any())
                 {
-                    return RedirectToAction("Index"); // Hoặc chuyển hướng đến trang nào đó để thông báo lỗi.
+                    TempData["ErrorMessage"] = "Không thể xóa vì thương hiệu đang có sản phẩm sử dụng.";
+                    return RedirectToAction(nameof(Index));
                 }
 
                 context.Categories.Remove(categoryToDelete);
@@ -136,6 +137,13 @@ namespace SWP.Controllers
 
                     if (existingCategory != null)
                     {
+                        // Kiểm tra xem có sản phẩm sử dụng Category không
+                        if (HasProductsInCategory(existingCategory.CategoryId))
+                        {
+                            TempData["ErrorMessage"] = "Không thể thay đổi trạng thái vì đang có sản phẩm sử dụng danh mục này.";
+                            return RedirectToAction("Index");
+                        }
+
                         existingCategory.CategoryName = editedCategory.CategoryName;
                         existingCategory.Status = editedCategory.Status;
 
@@ -149,13 +157,22 @@ namespace SWP.Controllers
                 }
 
                 // Chuyển hướng đến trang danh sách (Index) để hiển thị danh sách cập nhật
+                TempData["SuccessMessage"] = "Category đã được cập nhật thành công.";
                 return RedirectToAction("Index");
             }
 
             // Nếu có lỗi, hiển thị lại trang Edit với thông tin nhập trước
             return View(editedCategory);
         }
+
+        private bool HasProductsInCategory(int categoryId)
+        {
+            using (var context = new SWPContext())
+            {
+                // Kiểm tra xem có sản phẩm nào sử dụng Category có ID là categoryId không
+                var productsInCategory = context.Products.Where(p => p.CategoryId == categoryId).ToList();
+                return productsInCategory.Any();
+            }
+        }
     }
 }
-    
-
