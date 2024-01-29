@@ -130,38 +130,62 @@ namespace SWP.Controllers
             ViewBag.RoleName = roleName;
             return View(users);
         }
-        /*public async Task<IActionResult> Edit(int userId)
+        public IActionResult Add(int userId)
         {
-            var users = UsersDao.GetUserById(userId);
+            // Trả về view để hiển thị form thêm mới
+            // Nếu bạn muốn truyền dữ liệu khác vào view, bạn có thể thực hiện ở đây
             ViewBag.Role = RoleDao.GetAllRoles();
             ViewBag.Status = UsersDao.GetAllUser();
-            return View(users);
+            return View();
         }
 
+        // POST: Users/Add
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int userId, [Bind("UserId,Status")] UserRequest request)
+        public IActionResult Add([Bind("Email,RoleId,FirstName,LastName,PhoneNumber,Status")] CreateUserRequest request)
         {
-            var users = UsersDao.GetUserById(userId);
-            if (users != null)
+            if (ModelState.IsValid)
             {
-                users.UserId= userId;
-                //users.Address = request.Address;
-                //users.PhoneNumber= request.PhoneNumber;
-                //users.LastName = request.LastName;
-                //users.FirstName = request.FirstName;
-                //users.Email = request.Email;
-                //users.RoleId = request.RoleId;
-                //users.Password= request.Password;
-                //users.Image= request.Image;
-                //users.Gender= request.Gender;
-                users.Status= request.Status;
-                UsersDao.UpdateUser(users);
+                try
+                {
+                    // Tạo một đối tượng User từ UserRequest
+                    var user = new User
+                    {
+                        Email = request.Email,
+                        RoleId = request.RoleId,
+                        FirstName = request.FirstName,
+                        LastName = request.LastName,
+                        PhoneNumber = request.PhoneNumber,
+                       
+                        Status = request.Status,
+                        CreatedDate = DateTime.Now,
+                       
+                    };
+
+                    // Thêm user vào cơ sở dữ liệu
+                    UsersDao.SaveUser(user);
+
+                    // Chuyển hướng người dùng đến trang danh sách hoặc trang chi tiết của user vừa tạo
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    // Xử lý lỗi nếu có
+                    ModelState.AddModelError(string.Empty, "Đã xảy ra lỗi khi thêm user. Vui lòng thử lại sau.");
+
+                    // Nếu bạn muốn ghi log lỗi, bạn có thể sử dụng logging framework như Serilog hoặc log vào cơ sở dữ liệu
+                    // _logger.LogError(ex, "Lỗi khi thêm user");
+                }
             }
-           
-            return RedirectToAction("Index");
-        }*/
-       
+
+            // Nếu ModelState không hợp lệ, trả về view với các lỗi
+            ViewBag.Role = RoleDao.GetAllRoles();
+            ViewBag.Status = UsersDao.GetAllUser();
+            return View(request);
+        }
+
+
+
         public IActionResult Delete(int userId)
         {
             
