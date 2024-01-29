@@ -1,14 +1,16 @@
-﻿@*
+﻿﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
 }
 @model List<Category>
 
+
+
 <!-- Nút thêm mới ở đầu danh sách -->
 <!-- Index.cshtml -->
 
-<h2 class ="product-category-heading">QUẢN LÝ DANH MỤC SẢN PHẨM</h2>
+<h2 class="product-category-heading">QUẢN LÝ DANH MỤC SẢN PHẨM</h2>
 
 <div class="custom-container">
     <a asp-action="AddCategory">Thêm mới</a>
@@ -45,6 +47,7 @@
                 .custom-container a:hover {
                     background-color: #0056b3; /* Màu nền khi di chuột qua */
                 }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -109,22 +112,23 @@
     <table>
         <thead>
             <tr>
-                <th>Category ID</th>
-                <th>Category Name</th>
-                
-                <th>Status</th>
-                <th>Created Date</th>
-                <th>Action</th>
+
+                <th>Tên Danh Mục</th>
+
+                <th>Trạng Thái</th>
+                <th>Ngày Tạo</th>
+                <th>Thao Tác</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var category in Model)
             {
                 <tr>
-                    <td>@category.CategoryId</td>
+
                     <td>@category.CategoryName</td>
                     <td>
-                        @if(category.Status == 1){
+                        @if (category.Status == 1)
+                        {
                             <p>Hoạt Động</p>
                         }
                         else
@@ -145,7 +149,9 @@
                 <div class="modal" id="deleteModal-@category.CategoryId">
                     <div class="modal-content">
                         <span class="close" data-dismiss="modal">&times;</span>
-                        <p>Bạn có chắc là muốn xóa danh mục này?</p>
+                        <p>
+                            Bạn có chắc là muốn xóa danh mục này?
+                        </p>
                         <form asp-controller="Category" asp-action="Delete" asp-route-id="@category.CategoryId" method="post">
                             <button type="submit" class="btn btn-danger">Xóa</button>
                         </form>
@@ -154,6 +160,12 @@
             }
         </tbody>
     </table>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
 
     <script>
         var deleteButtons = document.querySelectorAll('.delete-button');

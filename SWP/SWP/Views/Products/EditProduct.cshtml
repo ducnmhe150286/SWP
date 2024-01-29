@@ -7,17 +7,18 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Cập nhật sản phẩm</h5>
+                        <h5 style="color: red;">@ViewData["ErrorMessage"]</h5>
                         <div class="row">
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label asp-for="ProductName" class="form-label"> Tên sản phẩm</label>
+                                    <label asp-for="ProductName" class="form-label"> Tên sản phẩm<span class="required-star">*</span></label>
                                     <input asp-for="ProductName" class="form-control" value="@ViewBag.Product.ProductName" required pattern="^(?!\s*$).+" title="Tên sản phẩm không được chỉ chứa dấu cách" />
                                     <span asp-validation-for="ProductName" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label asp-for="BrandId" class="form-label">Nhãn hiệu</label>
+                                    <label asp-for="BrandId" class="form-label">Nhãn hiệu<span class="required-star">*</span></label>
                                   <select asp-for="BrandId" class="form-control">
                                         @foreach (var brand in ViewBag.Brands)
                                         {
@@ -33,14 +34,15 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label asp-for="Description" class="form-label">Mô tả</label>
-                                    <input asp-for="Description" class="form-control"  value=@ViewBag.Product.Description></input>
-                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                    <label asp-for="IsSale" class="form-label">Khuyến mại</label>
+                                    <input asp-for="IsSale" class=" form-control" />
+                                    <span asp-validation-for="IsSale" class="text-danger"></span>
+
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label asp-for="Price" class="form-label">Giá</label>
+                                    <label asp-for="Price" class="form-label">Giá<span class="required-star">*</span></label>
                                     <input asp-for="Price" class="form-control" type="text"  value="@ViewBag.Product.Price" required />
                                     <span asp-validation-for="Price" class="text-danger"></span>
                                 </div>
@@ -49,14 +51,14 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label asp-for="Quantity" class="form-label">Số lượng</label>
+                                    <label asp-for="Quantity" class="form-label">Số lượng<span class="required-star">*</span></label>
                                     <input asp-for="Quantity" class="form-control" value="@ViewBag.Product.Quantity" type="number" min="0" required oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')" pattern="\d+" title="Số lượng phải là số nguyên không âm"  />
                                     <span asp-validation-for="Quantity" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label asp-for="CategoryId" class="form-label">Danh mục</label>
+                                    <label asp-for="CategoryId" class="form-label">Danh mục<span class="required-star">*</span></label>
                                     <select asp-for="CategoryId" class="form-control">
                                         @foreach (var category in ViewBag.Categories)
                                         {
@@ -70,9 +72,43 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label asp-for="IsSale" class="form-label">Khuyến mại</label>
-                                    <input asp-for="IsSale" class=" form-control"/>
-                                    <span asp-validation-for="IsSale" class="text-danger"></span>
+                                    <label name="ColorId" class="form-label">Màu sắc</label>
+                                    <select name="ColorId" class="form-control">
+                                        <option value="">-- Chọn màu sắc --</option>
+                                        
+                                        @foreach (var color in ViewBag.Color)
+                                        {
+                                                    <option value="@color.ColorId" selected="@(color.ColorId == ViewBag?.ProductDetail?.ColorId)">@color.ColorName</option>
+                                               
+                                        }
+                                    </select>
+                                    <span name="ColorId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label name="SizeId" class="form-label">Kích thước</label>
+                                    <select name="SizeId" class="form-control">
+                                        <option value="">-- Chọn kích thước --</option>
+                                        @foreach (var size in ViewBag.Size)
+                                        {
+                                            <option value="@size.SizeId" selected="@(size.SizeId == ViewBag?.ProductDetail?.SizeId)">@size.SizeName</option>
+
+                                        }
+                                    </select>
+
+                                    <span name="SizeId" class="text-danger"></span>
+                                </div>
+                            </div>
+                           
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                               
+                                 <div class="mb-3">
+                                    <label asp-for="Description" class="form-label">Mô tả chung</label>
+                                    <input asp-for="Description" class="form-control"  value=@ViewBag.Product.Description></input>
+                                    <span asp-validation-for="Description" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-6">
@@ -87,6 +123,24 @@
                             </div>
 
 
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label name="Feature" class="form-label">Mô tả tính năng</label>
+                                    <textarea name="Feature" class="form-control">@ViewBag?.ProductDetail?.Feature</textarea>
+                                    <span name="Feature" class="text-danger"></span>
+
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label name="Attributes" class="form-label">Mô tả đặc điểm</label>
+                                    <textarea name="Attributes" class="form-control">@ViewBag?.ProductDetail?.Attributes</textarea>
+                                    <span name="Attributes" class="text-danger"></span>
+
+                                </div>
                             </div>
                         </div>
                        <div class="mb-3">
@@ -104,7 +158,7 @@
                                             </div>
 
                                         </div>
-                                        <label class="form-label">Ảnh sản phẩm</label>
+                                        <label class="form-label">Ảnh sản phẩm <span class="required-star">*</span></label>
 
                                         <!-- Display the image -->
                                         <img src="/Images/@image.Path" alt="Image" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
@@ -150,12 +204,7 @@
             </div>
         </div>
     </div>
-    @if (ViewBag.ErrorMessage != null)
-    {
-        <div class="alert alert-danger">
-            @ViewBag.ErrorMessage
-        </div>
-    }
+   
 </form>
 <script>
     function validateFileType(input) {
@@ -173,3 +222,8 @@
         }
     }
 </script>
+<style>
+    .required-star {
+        color: red;
+    }
+</style>
