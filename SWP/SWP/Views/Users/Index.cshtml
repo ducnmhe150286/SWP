@@ -17,7 +17,13 @@
         <!-- sidebar -->
         <!-- content -->
         <div class="col-lg-9">
-          
+            <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
+                <div class="ms-auto">
+                    <div class="btn-group shadow-0 border">
+                        <a asp-controller="Users" asp-action="Add" class="btn btn-primary shadow-0 me-1">Create user</a>
+                    </div>
+                </div>
+            </header>
 
             <!-- Search form -->
             <form method="post" asp-controller="Users" asp-action="Index" class="mb-4">
