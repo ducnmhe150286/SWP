@@ -33,10 +33,20 @@
                         <div class="row">
                             <div class="col-6">
                                 
-                                <div class="mb-3">
+                               @* <div class="mb-3">
                                     <label asp-for="IsSale" class="form-label">Khuyến mại</label>
                                     <input asp-for="IsSale" class=" form-control" />
                                     <span asp-validation-for="IsSale" class="text-danger"></span>
+                                </div>*@
+                                <div class="mb-3">
+                                    <label asp-for="Status" class="form-label">Trạng thái</label>
+                                    <select asp-for="Status" class="form-control">
+                                        <option value="1" selected>Hoạt động</option>
+                                        @*                                        <option value="2">Hết hàng</option>
+                                        *@
+                                        <option value="0">Ngừng hoạt động</option>
+                                    </select>
+                                    <span asp-validation-for="Status" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-6">
@@ -49,11 +59,23 @@
                         </div>
                         <div class="row">
                             <div class="col-6">
+                               @* <div class="mb-3">
+                                    <label name="SizeId" class="form-label">Kích thước</label>
+                                    <select name="SizeId" class="form-control">
+                                        <option value="">-- Chọn kích thước --</option> <!-- Tùy chọn mặc định không chọn kích thước -->
+                                        @foreach (var size in ViewBag.Size)
+                                        {
+                                            <option value="@size.SizeId">@size.SizeName</option>
+                                        }
+                                    </select>
+                                    <span name="SizeId" class="text-danger"></span>
+                                </div>*@
                                 <div class="mb-3">
-                                    <label asp-for="Quantity" class="form-label">Số lượng <span class="required-star">*</span></label>
-                                    <input asp-for="Quantity" class="form-control" type="number" min="0" required oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')" pattern="\d+" title="Số lượng phải là số nguyên không âm" />
-                                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                                    <label asp-for="Description" class="form-label">Mô tả chung</label>
+                                    <textarea asp-for="Description" class="form-control"></textarea>
+                                    <span asp-validation-for="Description" class="text-danger"></span>
                                 </div>
+
                             </div>
                             <div class="col-6">
                                 <div class="mb-3">
@@ -68,7 +90,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                       @* <div class="row">
                             <div class="col-6">
                                 <div class="mb-3">
                                     <label  name="ColorId" class="form-label">Màu sắc</label>
@@ -81,48 +103,11 @@
                                     </select>
                                     <span name="ColorId" class="text-danger"></span>
                                 </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="mb-3">
-                                    <label name="SizeId" class="form-label">Kích thước</label>
-                                    <select name="SizeId" class="form-control">
-                                        <option value="">-- Chọn kích thước --</option> <!-- Tùy chọn mặc định không chọn kích thước -->
-                                        @foreach (var size in ViewBag.Size)
-                                        {
-                                            <option value="@size.SizeId">@size.SizeName</option>
-                                        }
-                                    </select>
-                                    <span name="SizeId" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="mb-3">
-                                    <label asp-for="Description" class="form-label">Mô tả chung</label>
-                                    <textarea asp-for="Description" class="form-control"></textarea>
-                                    <span asp-validation-for="Description" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="mb-3">
-                                    <label asp-for="Status" class="form-label">Trạng thái</label>
-                                    <select asp-for="Status" class="form-control">
-                                        <option value="1" selected >Hoạt động</option>
-@*                                        <option value="2">Hết hàng</option>
-*@                                        <option value="0">Ngừng hoạt động</option>
-                                    </select>
-                                    <span asp-validation-for="Status" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-                      
-                        <div class="row">
-                            <div class="col-6">
                                 <div class="mb-3">
                                     <label name="Feature" class="form-label">Mô tả tính năng</label>
                                     <textarea name="Feature" class="form-control"></textarea>
                                 </div>
+                              
                             </div>
                             <div class="col-6">
                                 <div class="mb-3">
@@ -130,12 +115,38 @@
                                     <textarea name="Attributes" class="form-control"></textarea>
                                 </div>
                             </div>
+                        </div>*@
+                        <div class="row">
+                            <div class="col-6">
+                                
+                            </div>
+                            <div class="col-6">
+                               @* <div class="mb-3">
+                                    <label name="Attributes" class="form-label">Mô tả đặc điểm</label>
+                                    <textarea name="Attributes" class="form-control"></textarea>
+                                </div>*@
+                            </div>
                         </div>
-                        <div class="mb-3">
+                      
+                        <div class="row">
+                         @*   <div class="col-6">
+                                <div class="mb-3">
+                                    <label name="Feature" class="form-label">Mô tả tính năng</label>
+                                    <textarea name="Feature" class="form-control"></textarea>
+                                </div>
+                            </div>*@
+                            @*<div class="col-6">
+                                <div class="mb-3">
+                                    <label name="Attributes" class="form-label">Mô tả đặc điểm</label>
+                                    <textarea name="Attributes" class="form-control"></textarea>
+                                </div>
+                            </div>*@
+                        </div>
+                      @*  <div class="mb-3">
                             <label name="imageFiles" class="form-label">Ảnh sản phẩm <span class="required-star">*</span></label>
                             <input name="imageFiles" type="file" class="form-control" multiple required accept="image/*" onchange="validateFileType(this)" />
                             <span name="imageFiles" class="text-danger"></span>
-                        </div>
+                        </div>*@
                         <div class="mb-3 text-end">
                             <button type="submit" class=" btn btn-primary">Tạo mới</button>
                         </div>

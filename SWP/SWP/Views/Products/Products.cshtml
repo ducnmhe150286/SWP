@@ -102,104 +102,90 @@
 *@                        
                         <th>Màu sắc</th>
                         <th>Kích cỡ</th>
-                    <th>Trạng thái</th>
+                        <th>Trạng thái</th>
                         <th>Ngày tạo</th>
-                       @* <th>Người tạo</th>
-                        <th>Người cập nhật</th>*@
+                      
                         <th style="width: 100px;">Action</th> 
                     </tr>
                 </thead>
                 <tbody class ="text-center">
-                     
-                        @foreach (Product item in ViewBag.Products)
-                        {
-                            <tr>
-                                <td>
-                                    @if (item.ProductImages != null && item.ProductImages.Any())
+                    @foreach (Product item in ViewBag.Products)
+                    {
+                        <tr>
+                            <td>
+                                @if (item.ProductDetails != null && item.ProductDetails.Any() && item.ProductDetails.First().ProductImages != null && item.ProductDetails.First().ProductImages.Any())
+                                {
+                                    @foreach (var image in item.ProductDetails.First().ProductImages)
                                     {
-                                        @foreach (var image in item.ProductImages)
-                                        {
+                                        <img src="/Images/@image.Path" alt="Image" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
+                                        <br />
+                                    }
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
+                            <td>@item.ProductName</td>
+                            <td>@item.Description</td>
+                            <td>@item.Brand.BrandName</td>
+                            <td>@item.Price</td>
+                            <td>
+                                @{
+                                    int totalQuantity = item.ProductDetails != null ? item.ProductDetails.Sum(pd => pd.Quantity ?? 0) : 0;
+                                    @totalQuantity
+                                }
+                            </td>
+                            <td>@item.Category.CategoryName</td>
 
-                                            <img src="/Images/@image.Path" alt="Image" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
+                            <td>
+                                @{
+                                    string allColors = item.ProductDetails != null ? string.Join(", ", item.ProductDetails.Select(pd => pd.Color != null ? pd.Color.ColorName : "-").Distinct()) : "-";
+                                    @allColors
+                                }
+                            </td>
+                            <td>
+                                @{
+                                    string allSizes = item.ProductDetails != null ? string.Join(", ", item.ProductDetails.Select(pd => pd.Size != null ? pd.Size.SizeName : "-").Distinct()) : "-";
+                                    @allSizes
+                                }
+                            </td>
+                            <td>
+                                @{
+                                    string statusText = "";
+                                    switch (item.Status)
+                                    {
+                                        case 1:
+                                            statusText = "-";
+                                            break;
+                                        case 0:
+                                            statusText = "Ngừng hoạt động";
+                                            break;
+                                        default:
+                                            statusText = "Không xác định";
+                                            break;
+                                    }
+                                    @statusText
+                                }
+                            </td>
+                            <td>
+                                @(item.CreatedDate.HasValue ? item.CreatedDate.Value.ToString("dd/MM/yyyy") : "")
+                            </td>
+                            <td>
+                                <a href="@Url.Action("EditProduct", "Products", new { id = item.ProductId })" class="btn btn-primary mb-1">
+                                    <span class="bi bi-pencil">Sửa</span>
+                                </a>
+                                <a href="#" class="btn btn-danger" onclick="confirmDelete(@item.ProductId)">
+                                    <span class="bi bi-trash">Xóa</span>
+                                </a>
+                                <a href="@Url.Action("ViewDetailProduct", "Products", new { id = item.ProductId })" class="btn btn-success mb-1">
+                                    <span class="bi bi-pencil">Nhập</span>
+                                </a>
+                            </td>
 
-                                            <br />
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <span>-</span>
-                                    }
-                                </td>
-                                <td>@item.ProductName</td>
-                                <td>@item.Description</td>
-                                <td>@item.Brand.BrandName</td>
-                                <td>@item.Price</td>
-                                <td>@item.Quantity</td>
-                                <td>@item.Category.CategoryName</td>
-                                @*                            <td>@item.IsSale</td>
-                        *@
-                                <td>
-                                    @{
-                                        string statusText = "";
-                                        switch (item.Status)
-                                        {
-                                            case 1:
-                                                statusText = item.Quantity == 0 ? "Hết hàng" : "Hoạt động";
-                                                break;
-                                            case 0:
-                                                statusText = "Ngừng hoạt động";
-                                                break;
-                                            default:
-                                                statusText = "Không xác định";
-                                                break;
-                                        }
-                                        @statusText
-                                    }
-                                </td>
-                                <td>
-                                    @if (item.ProductDetails != null && item.ProductDetails.Any())
-                                    {
-                                        @foreach (var productDetail in item.ProductDetails)
-                                        {
-                                            <span>@productDetail.Color?.ColorName</span>
-                                            <br />
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <span>-</span>
-                                    }
-                                </td>
-                                <td>@if (item.ProductDetails != null && item.ProductDetails.Any())
-                                    {
-                                        @foreach (var productDetail in item.ProductDetails)
-                                        {
-                                            <span>@productDetail.Size?.SizeName</span>
-                                            <br />
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <span>-</span>
-                                    }
-                                </td>
-                                <td>@(
-                                    item.CreatedDate.HasValue ? item.CreatedDate.Value.ToString("dd/MM/yyyy") : ""
-                                    )</td>
-                                @* <td>@item.CreatedBy</td>
-                            <td>@item.UpdateBy</td>*@
-                                <td>
-                                    <a href="@Url.Action("EditProduct", "Products", new { id = item.ProductId })" class="btn btn-primary mb-1">
-                                        <span class="bi bi-pencil">Sửa</span>
-                                    </a>
-                                    <a href="#" class="btn btn-danger" onclick="confirmDelete(@item.ProductId)">
-                                        <span class="bi bi-trash">Xóa</span>
-                                    </a>
-                                </td>
+                        </tr>
+                    }
 
-                            </tr>
-                        }
-                    
                 </tbody>
             </table>
         </div>

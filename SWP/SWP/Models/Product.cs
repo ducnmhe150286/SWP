@@ -8,7 +8,6 @@ namespace SWP.Models
         public Product()
         {
             ProductDetails = new HashSet<ProductDetail>();
-            ProductImages = new HashSet<ProductImage>();
         }
 
         public int ProductId { get; set; }
@@ -16,7 +15,6 @@ namespace SWP.Models
         public string? Description { get; set; }
         public int BrandId { get; set; }
         public decimal? Price { get; set; }
-        public int? Quantity { get; set; }
         public int CategoryId { get; set; }
         public bool? IsSale { get; set; }
         public int? Status { get; set; }
@@ -27,6 +25,5 @@ namespace SWP.Models
         public virtual Brand Brand { get; set; } = null!;
         public virtual Category Category { get; set; } = null!;
         public virtual ICollection<ProductDetail> ProductDetails { get; set; }
-        public virtual ICollection<ProductImage> ProductImages { get; set; }
     }
 }
