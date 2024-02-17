@@ -113,9 +113,9 @@
                     {
                         <tr>
                             <td>
-                                @if (item.ProductDetails != null && item.ProductDetails.Any() && item.ProductDetails.First().ProductImages != null && item.ProductDetails.First().ProductImages.Any())
+                                @if (item.ProductImages != null && item.ProductImages.Any())
                                 {
-                                    @foreach (var image in item.ProductDetails.First().ProductImages)
+                                    @foreach (var image in item.ProductImages)
                                     {
                                         <img src="/Images/@image.Path" alt="Image" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
                                         <br />
@@ -129,7 +129,7 @@
                             <td>@item.ProductName</td>
                             <td>@item.Description</td>
                             <td>@item.Brand.BrandName</td>
-                            <td>@item.Price</td>
+                            <td>@item.Price?.ToString("N0")</td>
                             <td>
                                 @{
                                     int totalQuantity = item.ProductDetails != null ? item.ProductDetails.Sum(pd => pd.Quantity ?? 0) : 0;
@@ -156,7 +156,7 @@
                                     switch (item.Status)
                                     {
                                         case 1:
-                                            statusText = "-";
+                                            statusText = "Hoạt động";
                                             break;
                                         case 0:
                                             statusText = "Ngừng hoạt động";
@@ -175,10 +175,10 @@
                                 <a href="@Url.Action("EditProduct", "Products", new { id = item.ProductId })" class="btn btn-primary mb-1">
                                     <span class="bi bi-pencil">Sửa</span>
                                 </a>
-                                <a href="#" class="btn btn-danger" onclick="confirmDelete(@item.ProductId)">
+                               @* <a href="#" class="btn btn-danger" onclick="confirmDelete(@item.ProductId)">
                                     <span class="bi bi-trash">Xóa</span>
-                                </a>
-                                <a href="@Url.Action("ViewDetailProduct", "Products", new { id = item.ProductId })" class="btn btn-success mb-1">
+                                </a>*@
+                                <a href="@Url.Action("DetailProduct", "Products", new { id = item.ProductId })" class="btn btn-success mb-1">
                                     <span class="bi bi-pencil">Nhập</span>
                                 </a>
                             </td>

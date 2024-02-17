@@ -38,7 +38,7 @@ namespace SWP.Controllers
                     .Include(p => p.Brand)
                     .Include(p => p.Category)
                     .Include(p => p.ProductDetails)
-                    .ThenInclude(pd => pd.ProductImages)
+                    .Include(p => p.ProductImages)
                     .Include(p => p.ProductDetails)
                     .ThenInclude(pd => pd.Color)
                     .Include(p => p.ProductDetails)
@@ -116,11 +116,10 @@ namespace SWP.Controllers
             }
             return View();
         }
-        public IActionResult ViewDetailProduct(int id)
+        public IActionResult DetailProduct(int id)
         {
             using (var context = new SWPContext())
             {
-                // Lấy thông tin product theo id
                 var product = context.Products
                     .Include(p => p.ProductDetails)
                     .ThenInclude(pd => pd.Color)
@@ -128,16 +127,19 @@ namespace SWP.Controllers
                     .ThenInclude(pd => pd.Size)
                     .FirstOrDefault(p => p.ProductId == id);
 
-                // Lấy danh sách màu sắc và kích thước (cần truyền vào ViewBag)
-                var colors = context.Colors.ToList();
-                var sizes = context.Sizes.ToList();
+                var allProductDetails = product?.ProductDetails.ToList();
+                var colorList = context.Colors.Where(c => c.Status == 1).ToList();
+                var sizeList = context.Sizes.Where(s => s.Status == 1).ToList();
 
-                ViewBag.Colors = colors;
-                ViewBag.Sizes = sizes;
-
+                ViewBag.AllProductDetails = allProductDetails;
+                ViewBag.Colors = colorList;
+                ViewBag.Sizes = sizeList;
+                ViewBag.Product = product;
+                ViewData["ErrorMessage"] = TempData["ErrorMessage"] as string;
                 return View();
             }
         }
+
 
         public IActionResult GetImage(string imageName)
         {
@@ -191,44 +193,44 @@ namespace SWP.Controllers
                     newProduct.CategoryId = newProduct.CategoryId;
                     context.Products.Add(newProduct);
                     context.SaveChanges();
-                    //string wwwrootFolder = _webHostEnvironment.WebRootPath;
-                    //string imagesFolder = Path.Combine(wwwrootFolder, "Images");
+                    string wwwrootFolder = _webHostEnvironment.WebRootPath;
+                    string imagesFolder = Path.Combine(wwwrootFolder, "Images");
 
-                    //if (!Directory.Exists(imagesFolder))
-                    //{
-                    //    Directory.CreateDirectory(imagesFolder);
-                    //}
+                    if (!Directory.Exists(imagesFolder))
+                    {
+                        Directory.CreateDirectory(imagesFolder);
+                    }
 
-                    //foreach (var file in imageFiles)
-                    //{
-                    //    if (file.Length > 0)
-                    //    {
-                    //        // Tạo một tên tệp duy nhất để tránh xung đột
-                    //        string uniqueFileName = GetUniqueFileName(file.FileName);
+                    foreach (var file in imageFiles)
+                    {
+                        if (file.Length > 0)
+                        {
+                            // Tạo một tên tệp duy nhất để tránh xung đột
+                            string uniqueFileName = GetUniqueFileName(file.FileName);
 
-                    //        // Xây dựng đường dẫn đầy đủ để lưu ảnh trong thư mục Images
-                    //        string imagePath = Path.Combine(imagesFolder, uniqueFileName);
+                            // Xây dựng đường dẫn đầy đủ để lưu ảnh trong thư mục Images
+                            string imagePath = Path.Combine(imagesFolder, uniqueFileName);
 
-                    //        using (var stream = new FileStream(imagePath, FileMode.Create))
-                    //        {
-                    //            file.CopyTo(stream);
-                    //        }
+                            using (var stream = new FileStream(imagePath, FileMode.Create))
+                            {
+                                file.CopyTo(stream);
+                            }
 
-                    //        // Chỉ lưu tên tệp trong cột Path của cơ sở dữ liệu
-                    //        var productImage = new ProductImage
-                    //        {
-                    //            //ProductId = newProduct.ProductId,
-                    //            Path = uniqueFileName, // Chỉ lưu tên tệp
-                    //            CreateDate = DateTime.Now,
-                    //            CreatedBy = null,
-                    //            UpdateBy = null,
-                    //            Status = 1,
-                    //        };
-                    //        context.ProductImages.Add(productImage);
-                    //    }
-                    //}
+                            // Chỉ lưu tên tệp trong cột Path của cơ sở dữ liệu
+                            var productImage = new ProductImage
+                            {
+                                ProductId = newProduct.ProductId,
+                                Path = uniqueFileName, // Chỉ lưu tên tệp
+                                CreateDate = DateTime.Now,
+                                CreatedBy = null,
+                                UpdateBy = null,
+                                Status = 1,
+                            };
+                            context.ProductImages.Add(productImage);
+                        }
+                    }
 
-                    //context.SaveChanges();
+                    context.SaveChanges();
                     //if (ColorId.HasValue || SizeId.HasValue || !string.IsNullOrWhiteSpace(Feature) || !string.IsNullOrWhiteSpace(Attributes))
                     //{
                     //    int generatedProductId = newProduct.ProductId;
@@ -267,7 +269,7 @@ namespace SWP.Controllers
                 var product = context.Products
                     .Include(p => p.Brand)
                     .Include(p => p.Category)
-                    //.Include(p => p.ProductImages)
+                    .Include(p => p.ProductImages)
                     .Include(p => p.ProductDetails)
                     .FirstOrDefault(p => p.ProductId == id);
 
@@ -320,82 +322,75 @@ namespace SWP.Controllers
                         existingProduct.ProductName = updatedProduct.ProductName;
                         existingProduct.Description = updatedProduct.Description;
                         existingProduct.Price = updatedProduct.Price;
-                        //existingProduct.Quantity = updatedProduct.Quantity;
                         existingProduct.IsSale = updatedProduct.IsSale;
                         existingProduct.Status = updatedProduct.Status;
                         existingProduct.BrandId = updatedProduct.BrandId;
                         existingProduct.CategoryId = updatedProduct.CategoryId;
+                        existingProduct.Feature = updatedProduct.Feature;
+                        existingProduct.Attributes = updatedProduct.Attributes;
+
+
+
 
                         // Kiểm tra xem có tệp tin mới được chọn hay không
-                        //if (imageFiles != null && imageFiles.Count > 0)
-                        //{
-                        //    // Xóa toàn bộ ảnh cũ
-                        //    foreach (var oldImage in existingProductImage.ProductImages)
-                        //    {
-                        //        var fullPath = Path.Combine(_webHostEnvironment.WebRootPath, "Images", oldImage.Path);
-                        //        if (System.IO.File.Exists(fullPath))
-                        //        {
-                        //            System.IO.File.Delete(fullPath);
-                        //        }
-                        //    }
-
-                        //    // Xóa toàn bộ ảnh cũ từ cơ sở dữ liệu
-                        //    existingProductImage.ProductImages.Clear();
-
-                        //    // Thêm ảnh mới
-                        //    foreach (var file in imageFiles)
-                        //    {
-                        //        if (file.Length > 0)
-                        //        {
-                        //            string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(file.FileName);
-                        //            string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Images", uniqueFileName);
-
-                        //            using (var stream = new FileStream(imagePath, FileMode.Create))
-                        //            {
-                        //                file.CopyTo(stream);
-                        //            }
-
-                        //            // Lưu thông tin ảnh vào cơ sở dữ liệu
-                        //            var productImage = new ProductImage
-                        //            {
-                        //                Path = uniqueFileName,
-                        //                CreateDate = DateTime.Now,
-                        //                CreatedBy = null,
-                        //                UpdateBy = null,
-                        //                Status = 1,
-                        //            };
-
-                        //            existingProductImage.ProductImages.Add(productImage);
-                        //        }
-                        //    }
-                        //}
-                        var productDetailEntity = context.ProductDetails.FirstOrDefault(pd => pd.ProductId == updatedProduct.ProductId);
-                        if (productDetailEntity != null)
+                        if (imageFiles != null && imageFiles.Count > 0)
                         {
-                            productDetailEntity.ColorId = ColorId;
-                            productDetailEntity.SizeId = SizeId;
-                            productDetailEntity.Feature = Feature;
-                            productDetailEntity.Attributes = Attributes;
-                            productDetailEntity.UpdateBy = null;
-                            productDetailEntity.Status = 1;
-                        }
-                        else
-                        {
-                            // Nếu chi tiết sản phẩm chưa tồn tại, tạo mới
-                            var newProductDetail = new ProductDetail
+                            // Xóa toàn bộ ảnh cũ
+                            foreach (var oldImage in existingProductImage.ProductImages)
                             {
-                                ProductId = updatedProduct.ProductId,
-                                ColorId = ColorId,
-                                SizeId = SizeId,
-                                Feature = Feature,
-                                Attributes = Attributes,
-                                CreatedDate = DateTime.Now,
-                                CreatedBy = null,
-                                UpdateBy = null,
-                                Status = 1,
-                            };
-                            context.ProductDetails.Add(newProductDetail);
+                                var fullPath = Path.Combine(_webHostEnvironment.WebRootPath, "Images", oldImage.Path);
+                                if (System.IO.File.Exists(fullPath))
+                                {
+                                    System.IO.File.Delete(fullPath);
+                                }
+                            }
+
+                            // Xóa toàn bộ ảnh cũ từ cơ sở dữ liệu
+                            existingProductImage.ProductImages.Clear();
+
+                            // Thêm ảnh mới
+                            foreach (var file in imageFiles)
+                            {
+                                if (file.Length > 0)
+                                {
+                                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(file.FileName);
+                                    string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Images", uniqueFileName);
+
+                                    using (var stream = new FileStream(imagePath, FileMode.Create))
+                                    {
+                                        file.CopyTo(stream);
+                                    }
+
+                                    // Lưu thông tin ảnh vào cơ sở dữ liệu
+                                    var productImage = new ProductImage
+                                    {
+                                        Path = uniqueFileName,
+                                        CreateDate = DateTime.Now,
+                                        CreatedBy = null,
+                                        UpdateBy = null,
+                                        Status = 1,
+                                    };
+
+                                    existingProductImage.ProductImages.Add(productImage);
+                                }
+                            }
                         }
+
+                        //else
+                        //{
+                        //    // Nếu chi tiết sản phẩm chưa tồn tại, tạo mới
+                        //    var newProductDetail = new ProductDetail
+                        //    {
+                        //        ProductId = updatedProduct.ProductId,
+                        //        ColorId = ColorId,
+                        //        SizeId = SizeId,
+                        //        CreatedDate = DateTime.Now,
+                        //        CreatedBy = null,
+                        //        UpdateBy = null,
+                        //        Status = 1,
+                        //    };
+                        //    context.ProductDetails.Add(newProductDetail);
+                        //}
 
 
                         context.SaveChanges();
@@ -413,6 +408,64 @@ namespace SWP.Controllers
             }
         }
 
+        [HttpPost]
+
+        public IActionResult UpdateDetailProduct(ProductDetail updatedDetail, List<int> ColorId, List<int> SizeId, List<int> Quanties)
+        {
+            try
+            {
+                using (var context = new SWPContext())
+                {
+                    for (int i = 0; i < ColorId.Count; i++)
+                    {
+                        var existingDetail = context.ProductDetails
+                            .FirstOrDefault(pd => pd.ProductId == updatedDetail.ProductId && pd.ColorId == ColorId[i] && pd.SizeId == SizeId[i]);
+
+                        if (existingDetail != null)
+                        {
+                            // Update existing detail
+                            existingDetail.Quantity = Quanties[i];
+                            existingDetail.UpdateBy = null; // Set the update user as needed
+                            existingDetail.Status = 1; // Set the status as needed
+                        }
+                        else
+                        {
+                            // Create new detail
+                            var newProductDetail = new ProductDetail
+                            {
+                                ProductId = updatedDetail.ProductId,
+                                ColorId = ColorId[i],
+                                SizeId = SizeId[i],
+                                Quantity = Quanties[i],
+                                CreatedDate = DateTime.Now,
+                                CreatedBy = null, // Set the creator user as needed
+                                UpdateBy = null, // Set the update user as needed
+                                Status = 1, // Set the status as needed
+                            };
+
+                            context.ProductDetails.Add(newProductDetail);
+                        }
+                    }
+
+                    context.SaveChanges();
+                }
+
+                TempData["SuccessMessage"] = "Nhập sản phẩm thành công!";
+
+                // Redirect to the appropriate action or view
+                // For example, you might redirect to the product details view
+                return RedirectToAction("Products");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Có lỗi xảy ra khi nhập sản phẩm: " + ex.Message;
+
+                // Redirect to the appropriate action or view
+                // For example, you might redirect to the product details view
+                return RedirectToAction("DetailProduct", new { id = updatedDetail.ProductId });
+            }
+        }
+
 
         [HttpGet]
         public IActionResult DeleteProduct(int id)
@@ -420,14 +473,14 @@ namespace SWP.Controllers
             using (var context = new SWPContext())
             {
                 var productToDelete = context.ProductDetails
-                    .Include(pd => pd.ProductImages)
+                    .Include(pd => pd.Product.ProductImages)
                     .Where(pd => pd.ProductId == id)
                     .FirstOrDefault();
 
                 if (productToDelete != null && productToDelete.Quantity == 0)
                 {
                     // Xóa tất cả ProductImages liên quan
-                    foreach (var productImage in productToDelete.ProductImages)
+                    foreach (var productImage in productToDelete.Product.ProductImages)
                     {
                         // Xóa ảnh từ thư mục
                         var fullPath = Path.Combine(_webHostEnvironment.WebRootPath, "Images", productImage.Path);
@@ -438,7 +491,7 @@ namespace SWP.Controllers
                     }
 
                     // Xóa tất cả ProductImages từ cơ sở dữ liệu
-                    context.ProductImages.RemoveRange(productToDelete.ProductImages);
+                    context.ProductImages.RemoveRange(productToDelete.Product.ProductImages);
 
                     // Xóa sản phẩm chính
                     context.ProductDetails.Remove(productToDelete);

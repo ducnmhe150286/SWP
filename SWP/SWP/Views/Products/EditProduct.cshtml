@@ -5,7 +5,7 @@
         <div class="row">
             <div class="">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body" style="max-height: 550px; overflow-y: auto;">
                         <h5 class="card-title">Cập nhật sản phẩm</h5>
                         <h5 style="color: red;">@ViewData["ErrorMessage"]</h5>
                         <div class="row">
@@ -33,7 +33,7 @@
                             <div class="col-6">
                                 <div class="mb-3">
                                     <label asp-for="Price" class="form-label">Giá<span class="required-star">*</span></label>
-                                    <input asp-for="Price" class="form-control" type="text" value="@ViewBag.Product.Price" required />
+                                <input asp-for="Price" class="form-control" type="text" value="@string.Format("{0:N0}", ViewBag.Product.Price)" required />
                                     <span asp-validation-for="Price" class="text-danger"></span>
                                 </div>
                             </div>
@@ -51,6 +51,14 @@
                             </div>
                         </div>
                         <div class="row">
+                           
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label asp-for="Description" class="form-label">Mô tả chung</label>
+                                    <input asp-for="Description" class="form-control" value=@ViewBag.Product.Description></input>
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+                            </div>
                             <div class="col-6">
                                 <div class="mb-3">
                                     <label asp-for="Status" class="form-label">Trạng thái</label>
@@ -65,32 +73,42 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label asp-for="Description" class="form-label">Mô tả chung</label>
-                                    <input asp-for="Description" class="form-control" value=@ViewBag.Product.Description></input>
-                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                    <label asp-for="Feature" class="form-label">Mô tả tính năng</label>
+                                    <textarea asp-for="Feature" class="form-control">@ViewBag.Product.Feature</textarea>
+                                    <span asp-validation-for="Feature" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label asp-for="Attributes" class="form-label">Mô tả đặc điểm</label>
+                                    <textarea asp-for="Attributes" class="form-control">@ViewBag.Product.Attributes</textarea>
+                                    <span asp-validation-for="Attributes" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3">
-                            @*<div class="mb-3">
-                                @if (ViewBag.Product.ProductImages != null)
+                                               <div class="mb-3">
+                        <label class="form-label">Ảnh sản phẩm <span class="required-star">*</span></label>
+                        <div class="row">
+                            @if (ViewBag.Product.ProductImages != null)
+                            {
+                                foreach (var image in ViewBag.Product.ProductImages)
                                 {
-                                    foreach (var image in ViewBag.Product.ProductImages)
-                                    {
-                                        <div class="row">
-                                            <div class="col-3"></div>
-                                            <div class="col-9">
-                                                <label class="form-label">Ảnh sản phẩm <span class="required-star">*</span></label>
-                                                <img src="/Images/@image.Path" alt="Image" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
-                                                <input type="text" class="form-control" value="@image.Path" readonly style="display: none;" />
-                                                <button type="button" class="ms-2 btn btn-primary" onclick="showFileInput(this)">Sửa ảnh</button>
-                                                <input name="imageFiles" type="file" class="form-control mt-3" style="display: none;" accept="image/*" onchange="validateFileType(this)" />
-                                                <span name="imageFiles" class="text-danger"></span>
-                                            </div>
-                                        </div>
-                                    }
+                                    <div class="col-3">
+                                        <img src="/Images/@image.Path" alt="Image" class="img-thumbnail product-image" style="max-width: 100px; max-height: 100px;" data-image-path="@image.Path" />
+                                        <input type="text" class="form-control" value="@image.Path" readonly style="display: none;" />
+                                        <span name="imageFiles" class="text-danger"></span>
+                                    </div>
                                 }
-                            </div>*@
+                            }
+                        </div>
+                    </div>
+
+                             <div class="mb-3 text-end">
+                                <button type="button" class="ms-2 btn btn-primary" onclick="editImage(this)">Sửa ảnh</button>
+                                <input name="imageFiles" type="file" class="form-control mt-3 image-file-input" style="display: none;" accept="image/*" onchange="validateFileType(this)" />
+
+                            </div>
                             <script>
                                 function showFileInput(button) {
                                     var fileInput = button.nextElementSibling;
@@ -102,11 +120,14 @@
                                 }
                             </script>
                             <input asp-for="ProductId" value="@ViewBag.Product.ProductId" type="hidden" class="form-control" />
-                            <div class="mb-3 text-end">
-                                <button type="submit" class="btn btn-primary">Cập nhật</button>
-                            </div>
+                         
                         </div>
+                        
                     </div>
+                  
+                </div>
+                <div class="mb-3 text-end mt-4 me-3">
+                    <button type="submit" class="btn btn-primary">Cập nhật</button>
                 </div>
             </div>
         </div>
@@ -128,6 +149,18 @@
         }
     }
 </script>
+<script>
+    function editImage(button) {
+        var parentDiv = button.closest('.row');
+        var image = parentDiv.querySelector('.product-image');
+        var fileInput = parentDiv.querySelector('.image-file-input');
+
+        // Show the file input and hide the image
+        fileInput.style.display = 'block';
+        image.style.display = 'none';
+    }
+</script>
+
 <style>
     .required-star {
         color: red;

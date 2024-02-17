@@ -8,6 +8,7 @@ namespace SWP.Models
         public Product()
         {
             ProductDetails = new HashSet<ProductDetail>();
+            ProductImages = new HashSet<ProductImage>();
         }
 
         public int ProductId { get; set; }
@@ -21,9 +22,12 @@ namespace SWP.Models
         public DateTime? CreatedDate { get; set; }
         public string? CreatedBy { get; set; }
         public string? UpdateBy { get; set; }
+        public string? Feature { get; set; }
+        public string? Attributes { get; set; }
 
         public virtual Brand Brand { get; set; } = null!;
         public virtual Category Category { get; set; } = null!;
         public virtual ICollection<ProductDetail> ProductDetails { get; set; }
+        public virtual ICollection<ProductImage> ProductImages { get; set; }
     }
 }

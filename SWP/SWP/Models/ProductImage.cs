@@ -11,8 +11,8 @@ namespace SWP.Models
         public string? CreatedBy { get; set; }
         public string? UpdateBy { get; set; }
         public string? Path { get; set; }
-        public int? ProductDetailId { get; set; }
+        public int? ProductId { get; set; }
 
-        public virtual ProductDetail? ProductDetail { get; set; }
+        public virtual Product? Product { get; set; }
     }
 }
