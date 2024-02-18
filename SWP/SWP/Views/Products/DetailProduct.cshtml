@@ -7,6 +7,7 @@
                 <div class="card">
                     <div class="card-body" style="max-height: 550px; overflow-y: auto;">
                         <h5 class="card-title">Nhập sản phẩm</h5>
+                        <h5 style="color: red;">@ViewData["ErrorMessage"]</h5>
                         <div class="row">
                             @if (ViewBag.AllProductDetails == null || ViewBag.AllProductDetails.Count == 0)
                             {
@@ -38,7 +39,8 @@
                                     <div class="col-3">
                                         <div class="mb-3">
                                             <label asp-for="Quantity" class="form-label">Số lượng<span class="required-star">*</span></label>
-                                            <input name="Quanties" class="form-control" type="number" min="0" name="Quantities" required />
+@*                                            <input name="Quanties" class="form-control" type="number" min="0" name="Quantities" required />
+*@                                            <input name="Quanties" class="form-control" type="number" min="0" required oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')" pattern="\d+" title="Số lượng phải là số nguyên không âm" />
                                             <span asp-validation-for="Quantity" class="text-danger"></span>
                                         </div>
                                     </div>
