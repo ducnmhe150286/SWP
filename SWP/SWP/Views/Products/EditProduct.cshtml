@@ -87,7 +87,7 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                                               <div class="mb-3">
+                       <div class="mb-3">
                         <label class="form-label">Ảnh sản phẩm <span class="required-star">*</span></label>
                         <div class="row">
                             @if (ViewBag.Product.ProductImages != null)
@@ -106,7 +106,7 @@
 
                              <div class="mb-3 text-end">
                                 <button type="button" class="ms-2 btn btn-primary" onclick="editImage(this)">Sửa ảnh</button>
-                                <input name="imageFiles" type="file" class="form-control mt-3 image-file-input" style="display: none;" accept="image/*" onchange="validateFileType(this)" />
+                                <input name="imageFiles" type="file" class="form-control mt-3 image-file-input" style="display: none;" accept="image/*" onchange="validateFileType(this)" multiple />
 
                             </div>
                             <script>
@@ -157,7 +157,6 @@
 
         // Show the file input and hide the image
         fileInput.style.display = 'block';
-        image.style.display = 'none';
     }
 </script>
 

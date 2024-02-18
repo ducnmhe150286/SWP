@@ -300,21 +300,19 @@ namespace SWP.Controllers
             {
                 using (var context = new SWPContext())
                 {
-
                     // Kiểm tra xem tên sản phẩm đã được cập nhật có tồn tại cho một sản phẩm khác không
                     if (context.Products.Any(p => p.ProductName == updatedProduct.ProductName &&
-                                      p.BrandId == updatedProduct.BrandId &&
-                                      p.CategoryId == updatedProduct.CategoryId &&
-                                      p.ProductId != updatedProduct.ProductId))
+                                            p.BrandId == updatedProduct.BrandId &&
+                                            p.CategoryId == updatedProduct.CategoryId &&
+                                            p.ProductId != updatedProduct.ProductId))
                     {
                         TempData["ErrorMessage"] = "Tên sản phẩm đã tồn tại trong cùng một danh mục và thương hiệu.";
                         return RedirectToAction("EditProduct", new { id = updatedProduct.ProductId });
                     }
 
-
                     var existingProduct = context.Products.Find(updatedProduct.ProductId);
                     var existingProductImage = context.Products
-                        //.Include(p => p.ProductImages)
+                        .Include(p => p.ProductImages)
                         .FirstOrDefault(p => p.ProductId == updatedProduct.ProductId);
 
                     if (existingProduct != null)
@@ -329,10 +327,7 @@ namespace SWP.Controllers
                         existingProduct.Feature = updatedProduct.Feature;
                         existingProduct.Attributes = updatedProduct.Attributes;
 
-
-
-
-                        // Kiểm tra xem có tệp tin mới được chọn hay không
+                        // Kiểm tra có tệp tin mới được chọn hay không
                         if (imageFiles != null && imageFiles.Count > 0)
                         {
                             // Xóa toàn bộ ảnh cũ
@@ -376,34 +371,16 @@ namespace SWP.Controllers
                             }
                         }
 
-                        //else
-                        //{
-                        //    // Nếu chi tiết sản phẩm chưa tồn tại, tạo mới
-                        //    var newProductDetail = new ProductDetail
-                        //    {
-                        //        ProductId = updatedProduct.ProductId,
-                        //        ColorId = ColorId,
-                        //        SizeId = SizeId,
-                        //        CreatedDate = DateTime.Now,
-                        //        CreatedBy = null,
-                        //        UpdateBy = null,
-                        //        Status = 1,
-                        //    };
-                        //    context.ProductDetails.Add(newProductDetail);
-                        //}
-
-
                         context.SaveChanges();
                     }
                 }
-                TempData["SuccessMessage"] = "Cập nhật sản phẩm thành công!";
 
+                TempData["SuccessMessage"] = "Cập nhật sản phẩm thành công!";
                 return RedirectToAction("Products");
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "Có lỗi xảy ra khi cập nhật sản phẩm: ";
-
+                TempData["ErrorMessage"] = "Có lỗi xảy ra khi cập nhật sản phẩm: " + ex.Message;
                 return RedirectToAction("EditProduct", new { id = updatedProduct.ProductId });
             }
         }
@@ -416,6 +393,18 @@ namespace SWP.Controllers
             {
                 using (var context = new SWPContext())
                 {
+                    // Validate for duplicate Color and Size combinations
+                    var duplicateCombination = ColorId
+                        .Zip(SizeId, (color, size) => new { ColorId = color, SizeId = size })
+                        .GroupBy(x => new { x.ColorId, x.SizeId })
+                        .Any(g => g.Count() > 1);
+
+                    if (duplicateCombination)
+                    {
+                        TempData["ErrorMessage"] = "Không thể nhập cùng một kích thước và màu sắc cho sản phẩm.";
+                        return RedirectToAction("DetailProduct", new { id = updatedDetail.ProductId });
+                    }
+
                     for (int i = 0; i < ColorId.Count; i++)
                     {
                         var existingDetail = context.ProductDetails
@@ -465,6 +454,7 @@ namespace SWP.Controllers
                 return RedirectToAction("DetailProduct", new { id = updatedDetail.ProductId });
             }
         }
+
 
 
         [HttpGet]
