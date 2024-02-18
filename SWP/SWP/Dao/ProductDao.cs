@@ -36,11 +36,11 @@ namespace SWP.Dao
             }
         }
 
-        public List<Product> getProductByCategory(int categoryId)
+        public List<Product> getProductByCategory(Product pro)
         {
             try
             {
-                var listPro = _context.Products.Include(x => x.ProductImages).Where(x => x.CategoryId == categoryId).ToList();
+                var listPro = _context.Products.Include(x => x.ProductImages).Where(x => x.CategoryId == pro.CategoryId && x.ProductId != pro.ProductId).ToList();
                 return listPro;
             }
             catch (Exception)

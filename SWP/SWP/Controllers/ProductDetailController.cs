@@ -13,7 +13,7 @@ namespace SWP.Controllers
         public IActionResult Index(int productId)
         {
             var pro = proDetail.getProductById(productId);
-            var listProSimilar = proDetail.getProductByCategory(pro.CategoryId);
+            var listProSimilar = proDetail.getProductByCategory(pro);
             ViewData["listPro"] = listProSimilar; 
             return View(pro);
         }
