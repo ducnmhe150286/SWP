@@ -1,0 +1,32 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model SWP.Models.Size
+
+<h2>CẬP NHẬT SIZE</h2>
+
+@using (Html.BeginForm("Edit", "Size", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.HiddenFor(model => model.SizeId)
+        @Html.LabelFor(model => model.SizeName)
+        @Html.TextBoxFor(model => model.SizeName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.SizeName, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Status)
+        @Html.DropDownListFor(model => model.Status, new List<SelectListItem>
+    {
+    new SelectListItem { Text = "Hoạt động", Value = "1"},
+    new SelectListItem { Text = "Không hoạt động", Value = "0" }
+    }, "Chọn trạng thái", new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+    </div>
+
+    <button type="submit" class="btn btn-primary">Cập nhật</button>
+}
