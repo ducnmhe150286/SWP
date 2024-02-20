@@ -77,40 +77,44 @@
                     </div>
 
                     <hr />
-
-                    <div class="row mb-4">
-                        <div class="col-md-4 col-6">
-                            <label class="mb-2">Kích thước</label>
-                            <select class="form-select border border-secondary" style="height: 35px;">
-                                @foreach(var size in Model.ProductDetails.DistinctBy(x=>x.SizeId)){
-                                    <option>@size.Size.SizeName</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="col-md-4 col-6">
-                            <label class="mb-2">Màu sắc</label>
-                            <select class="form-select border border-secondary" style="height: 35px;">
-                                @foreach (var size in Model.ProductDetails.DistinctBy(x => x.ColorId))
-                                {
-                                    <option>@size.Color.ColorName</option>
-                                }
-                            </select>
-                        </div>
-                        <!-- col.// -->
-                        <div class="col-md-4 col-6 mb-3">
-                            <label class="mb-2 d-block">Số lượng</label>
-                            <div class="input-group mb-3" style="width: 170px;">
-                                <button class="btn btn-outline-secondary button-minus" type="button" id="decrementBtn" data-mdb-ripple-color="dark" data-field="quantity">
-                                    <i class="fa fa-minus"></i>
-                                </button>
-                                <input type="number" class="quantity-field form-control text-center border border-secondary" step="1" max="10" value="1" name="quantity" aria-label="Quantity" aria-describedby="decrementBtn incrementBtn" />
-                                <button class="btn btn-outline-secondary button-plus" type="button" id="incrementBtn" data-mdb-ripple-color="dark" data-field="quantity">
-                                    <i class="fa fa-plus"></i>
-                                </button>
+                    <form asp-controller="Cart" asp-action="Index">
+                        <input type="hidden" name="productId" value="@Model.ProductId"/>
+                        <div class="row mb-4">
+                            <div class="col-md-4 col-6">
+                                <label class="mb-2">Kích thước</label>
+                                <select name="size" class="form-select border border-secondary" style="height: 35px;">
+                                    @foreach (var size in Model.ProductDetails.DistinctBy(x => x.SizeId))
+                                    {
+                                        <option>@size.Size.SizeName</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4 col-6">
+                                <label class="mb-2">Màu sắc</label>
+                                <select name="color" class="form-select border border-secondary" style="height: 35px;">
+                                    @foreach (var size in Model.ProductDetails.DistinctBy(x => x.ColorId))
+                                    {
+                                        <option>@size.Color.ColorName</option>
+                                    }
+                                </select>
+                            </div>
+                            <!-- col.// -->
+                            <div class="col-md-4 col-6 mb-3">
+                                <label class="mb-2 d-block">Số lượng</label>
+                                <div class="input-group mb-3" style="width: 170px;">
+                                    <button class="btn btn-outline-secondary button-minus" type="button" id="decrementBtn" data-mdb-ripple-color="dark" data-field="quantity">
+                                        <i class="fa fa-minus"></i>
+                                    </button>
+                                    <input type="number" class="quantity-field form-control text-center border border-secondary" step="1" max="10" value="1" name="quantity" aria-label="Quantity" aria-describedby="decrementBtn incrementBtn" />
+                                    <button class="btn btn-outline-secondary button-plus" type="button" id="incrementBtn" data-mdb-ripple-color="dark" data-field="quantity">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <a href="#" class="btn btn-primary shadow-0"> <i class="me-1 fa fa-shopping-basket"></i> Thêm vào giỏ hàng </a>
+                        <button class="btn btn-primary shadow-0" type="submit"> <i class="me-1 fa fa-shopping-basket"></i> Thêm vào giỏ hàng </button>
+                    </form>
+                    
                 </div>
             </main>
         </div>

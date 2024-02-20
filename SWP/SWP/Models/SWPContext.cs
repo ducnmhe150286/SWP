@@ -18,6 +18,7 @@ namespace SWP.Models
 
         public virtual DbSet<Blog> Blogs { get; set; } = null!;
         public virtual DbSet<Brand> Brands { get; set; } = null!;
+        public virtual DbSet<CartItem> CartItems { get; set; } = null!;
         public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<Color> Colors { get; set; } = null!;
         public virtual DbSet<FeedBack> FeedBacks { get; set; } = null!;
@@ -34,7 +35,7 @@ namespace SWP.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer("Server=localhost;database=SWP;Integrated security=true;TrustServerCertificate=true;");
             }
         }
@@ -70,6 +71,29 @@ namespace SWP.Models
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.UpdateBy).HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<CartItem>(entity =>
+            {
+                entity.HasKey(e => new { e.ProductId, e.CustomerId });
+
+                entity.ToTable("CartItem");
+
+                entity.Property(e => e.CreateDate).HasColumnType("datetime");
+
+                entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Customer)
+                    .WithMany(p => p.CartItems)
+                    .HasForeignKey(d => d.CustomerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__CartItem__CartId__5EBF139D");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.CartItems)
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__CartItem__Produc__5FB337D6");
             });
 
             modelBuilder.Entity<Category>(entity =>
@@ -244,8 +268,6 @@ namespace SWP.Models
             {
                 entity.ToTable("Role");
 
-                entity.Property(e => e.RoleId).ValueGeneratedNever();
-
                 entity.Property(e => e.CreatedBy).HasMaxLength(255);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
@@ -282,16 +304,15 @@ namespace SWP.Models
 
                 entity.Property(e => e.Email).HasMaxLength(255);
 
-                entity.Property(e => e.FirstName)
-                    .HasMaxLength(10)
-                    .IsFixedLength();
+                entity.Property(e => e.FirstName).HasMaxLength(50);
 
                 entity.Property(e => e.Image).HasMaxLength(255);
 
-                entity.Property(e => e.LastName).HasMaxLength(255);
+                entity.Property(e => e.LastName).HasMaxLength(50);
 
                 entity.Property(e => e.Otp)
                     .HasMaxLength(50)
+                    .IsUnicode(false)
                     .HasColumnName("otp");
 
                 entity.Property(e => e.OtpExpired)
