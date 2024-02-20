@@ -1,8 +1,1055 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    Layout = null; // This assumes you don't want to use a layout page
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Website Title</title>
+
+    <style>
+      * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+
+nav {
+  flex: 1;
+  text-align: center;
+}
+
+nav ul {
+  display: inline-block;
+  list-style-type: none;
+}
+
+nav ul li {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+a {
+  text-decoration: none;
+  color: #555;
+}
+
+p {
+  color: #555;
+}
+
+.container {
+  max-width: 1300px;
+  margin: auto;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.col-2 {
+  flex-basis: 50%;
+  min-width: 300px;
+}
+
+.col-2 img {
+  max-width: 100%;
+  padding: 50px 0;
+}
+
+.col-2 h1 {
+  font-size: 50px;
+  line-height: 60px;
+  margin: 25px 0;
+}
+
+.btn {
+  display: inline-block;
+  background: #ff523b;
+  color: #ffffff;
+  padding: 8px 30px;
+  margin: 30px 0;
+/*  border-radius: 30px;
+*/  transition: background 0.5s;
+}
+
+.btn:hover {
+  background: #563434;
+}
+
+.header {
+  background: radial-gradient(#fff, #ffd6d6);
+}
+
+.header .row {
+  margin-top: 70px;
+}
+
+.categories {
+  margin: 70px 0;
+}
+
+.col-3 {
+  flex-basis: 30%;
+  min-width: 250px;
+  margin-bottom: 30px;
+}
+
+.col-3 img {
+  width: 100%;
+}
+
+.small-container {
+  max-width: 1080px;
+  margin: auto;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+.col-4 {
+  flex-basis: 25%;
+  padding: 10px;
+  min-width: 200px;
+  margin-bottom: 50px;
+  transition: transform 0.5s;
+}
+
+.col-4 img {
+  width: 100%;
+}
+
+.title {
+  text-align: center;
+            margin: 50px auto 50px; /* Adjust the margin-top value as needed */
+            position: relative;
+  line-height: 60px;
+  color: #555;
+}
+.title::after {
+  content: "";
+  background: #ff523b;
+  width: 80px;
+  height: 5px;
+  border-radius: 5px;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+h4 {
+  color: #555;
+  font-weight: normal;
+}
+
+.col-4 p {
+  font-size: 14px;
+}
+
+.rating .fas {
+  color: #ff523b;
+}
+
+.rating .far {
+  color: #ff523b;
+}
+
+.col-4:hover {
+  transform: translateY(-5px);
+}
+
+/* Offer */
+
+.offer {
+  background: radial-gradient(#fff, #ffd6d6);
+  margin-top: 80px;
+  padding: 30px 0;
+}
+
+.col-2 .offer-img {
+  padding: 50px;
+}
+
+small {
+  color: #555;
+}
+
+/* testimonial */
+
+.testimonial {
+  padding-top: 100px;
+}
+
+.testimonial .col-3 {
+  text-align: center;
+  padding: 40px 20px;
+  box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.5s;
+}
+
+.testimonial .col-3 img {
+  width: 100px;
+  margin-top: 20px;
+  border-radius: 50%;
+}
+
+.testimonial .col-3:hover {
+  transform: translateY(-10px);
+}
+
+.fa-quote-left {
+  font-size: 34px;
+  color: #ff523b;
+}
+
+.col-3 p {
+  font-size: 14px;
+  margin: 12px 0;
+  color: #777777;
+}
+
+.testimonial .col-3 h3 {
+  font-weight: 600;
+  color: #555;
+  font-size: 16px;
+}
+
+.brands {
+  margin: 100px auto;
+}
+
+.col-5 {
+  width: 160px;
+}
+
+.col-5 img {
+  width: 100%;
+  cursor: pointer;
+  filter: grayscale(100%);
+}
+
+.col-5 img:hover {
+  width: 100%;
+  cursor: pointer;
+  filter: grayscale(0);
+}
+
+/* footer */
+
+.footer {
+  background: #000;
+  color: #8a8a8a;
+  font-size: 14px;
+  padding: 60px 0 20px;
+  margin-top:30px;
+}
+
+.footer p {
+  color: #8a8a8a;
+}
+
+.footer h3 {
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.footer-col-1,
+.footer-col-2,
+.footer-col-3,
+.footer-col-4 {
+  min-width: 250px;
+  margin-bottom: 20px;
+}
+
+.footer-col-1 {
+  flex-basis: 30%;
+}
+
+.footer-col-2 {
+  flex: 1;
+  text-align: center;
+}
+
+.footer-col-2 img {
+  width: 180px;
+  margin-bottom: 20px;
+}
+
+.footer-col-3,
+.footer-col-4 {
+  flex-basis: 12%;
+  text-align: center;
+}
+
+ul {
+  list-style-type: none;
+}
+
+.app-logo {
+  margin-top: 20px;
+}
+.app-logo img {
+  width: 140px;
+}
+
+.footer hr {
+  border: none;
+  background: #b5b5b5;
+  height: 1px;
+  margin: 20px 0;
+}
+
+.copyright {
+  text-align: center;
+}
+
+.menu-icon {
+  width: 28px;
+  margin-left: 20px;
+  display: none;
+}
+
+/* media query for menu */
+
+
+
+/* all products page */
+
+.row-2 {
+  justify-content: space-between;
+  margin: 100px auto 50px;
+}
+
+select {
+  border: 1px solid #ff523b;
+  padding: 5px;
+  border-radius:30px;
+}
+
+select:focus {
+  outline: none;
+}
+
+.page-btn {
+  margin: 0 auto 80px;
+}
+
+.page-btn span {
+  display: inline-block;
+  border: 1px solid #ff523b;
+  margin-left: 10px;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  cursor: pointer;
+}
+
+.page-btn span:hover {
+  background: #ff523b;
+  color: #ffffff;
+}
+
+/* single product details */
+
+.single-product {
+  margin-top: 80px;
+}
+
+.single-product .col-2 img {
+  padding: 0;
+}
+
+.single-product .col-2 {
+  padding: 20px;
+}
+
+.single-product h4 {
+  margin: 20px 0;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.single-product select {
+  display: block;
+  padding: 10px;
+  margin-top: 20px;
+}
+
+.single-product input {
+  width: 50px;
+  height: 40px;
+  padding-left: 10px;
+  font-size: 20px;
+  margin-right: 10px;
+  border: 1px solid #ff523b;
+}
+
+input:focus {
+  outline: none;
+}
+
+.single-product .fas {
+  color: #ff523b;
+  margin-left: 10px;
+}
+
+.small-img-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.small-img-col {
+  flex-basis: 24%;
+  cursor: pointer;
+}
+
+/* cart items */
+
+.cart-page {
+  margin: 90px auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cart-info {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+th {
+  text-align: left;
+  padding: 5px;
+  color: #ffffff;
+  background: #ff523b;
+  font-weight: normal;
+}
+td {
+  padding: 10px 5px;
+}
+
+td input {
+  width: 40px;
+  height: 30px;
+  padding: 5px;
+}
+
+td a {
+  color: #ff523b;
+  font-size: 12px;
+}
+
+td img {
+  width: 80px;
+  height: 80px;
+  margin-right: 10px;
+}
+
+.total-price {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.total-price table {
+  border-top: 3px solid #ff523b;
+  width: 100%;
+  max-width: 400px;
+}
+
+td:last-child {
+  text-align: right;
+}
+
+th:last-child {
+  text-align: right;
+}
+/* account page */
+.account-page {
+  padding: 50px 0;
+  background: radial-gradient(#fff, #ffd6d6);
+}
+
+.form-container {
+  background: #ffffff;
+  width: 300px;
+  height: 400px;
+  position: relative;
+  text-align: center;
+  padding: 20px 0;
+  margin: auto;
+  box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.form-container span {
+  font-weight: bold;
+  padding: 0 10px;
+  color: #555555;
+  cursor: pointer;
+  width: 100px;
+  display: inline-block;
+}
+
+.form-btn {
+  display: inline-block;
+}
+
+.form-container form {
+  max-width: 300px;
+  padding: 0 20px;
+  position: absolute;
+  top: 130px;
+  transition: transform 1s;
+}
+
+form input {
+  width: 100%;
+  height: 30px;
+  margin: 10px 0;
+  padding: 0 10px;
+  border: 1px solid #ccc;
+}
+
+form .btn {
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  margin: 10px 0;
+}
+
+form .btn:focus {
+  outline: none;
+}
+
+#LoginForm {
+  left: -300px;
+}
+
+#RegForm {
+  left: 0;
+}
+
+form a {
+  font-size: 12px;
+}
+
+#Indicator {
+  width: 100px;
+  border: none;
+  background: #ff523b;
+  height: 3px;
+  margin-top: 8px;
+  transform: translateX(100px);
+  transition: transform 1s;
+}
+
+      .col-4 {
+        flex-basis: 25%;
+        padding: 10px;
+        min-width: 200px;
+        margin-bottom: 20px; /* Add margin to separate the cards */
+        transition: transform 0.3s;
+    }
+
+    .product-card {
+        border: 1px solid #ddd;
+        padding: 15px;
+        text-align: center;
+    }
+
+    .product-card img {
+        width: 100%;
+        height: 240px; /* Adjust the height as needed */
+        object-fit: cover; /* Ensure the image covers the container */
+        margin-bottom: 10px;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+    }
+        /* Add this to your existing styles or create a new section */
+        .btn-buy-now {
+            background-color: #ff523b; /* Red background color */
+            color: #ffffff; /* White text color */
+            padding: 8px 16px; /* Adjust padding as needed */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .btn-buy-now:hover {
+                background-color: #563434; /* Darker red on hover */
+            }
+
+.current-page {
+    border-bottom: 2px solid orange; /* Màu và kiểu đường gạch chân có thể thay đổi theo ý muốn của bạn */
+}
+
+}
+
+
+    </style>
+</head>
+<body>
+<div class="header">
+  <div class="container">
+    <div class="navbar">
+      <div class="logo">
+@*        <a href="index.html"><img src="https://i.ibb.co/kDVwgwp/logo.png" alt="RedStore" width="125px" /></a>
+*@      </div>
+      <nav>
+        <ul id="MenuItems">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Sản phẩm</a></li>
+          <li><a href="#">Blob</a></li>
+          <li><a href="#">Contact</a></li>
+@*          <li><a href="account.html">Account</a></li>
+*@        </ul>
+      </nav>
+      <a href="cart.html"><img src="https://i.ibb.co/PNjjx3y/cart.png" alt="" width="30px" height="30px" /></a>
+      <img src="https://i.ibb.co/6XbqwjD/menu.png" alt="" class="menu-icon" onclick="menutoggle()" />
+    </div>
+            <div class="row">
+                <div class="col-2">
+                    <h1>
+                        Tăng Cường Sức Khỏe Của Bạn <br />
+                        Với Trang Phục Đồ Tập Boxing!
+                    </h1>
+                    <p>
+                        Đến với chúng tôi để khám phá bộ sưu tập đồ tập Boxing chất lượng cao.
+                        Chúng tôi mang đến cho bạn sự thoải mái và phong cách trong mỗi buổi tập.
+                    </p>
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="btn">Khám Phá Ngay &#8594;</a>
+                </div>
+                <div class="col-2">
+                    <img src="/Images/banner.jpeg" alt="Đồ Tập Boxing" />
+                </div>
+            </div>
+
+  </div>
 </div>
+
+<!-- Featured categories -->
+    @*<div class="categories">
+        <div class="small-container">
+            <div class="row">
+                @foreach (var category in ViewBag.Categories)
+                {
+                    <div class="col-3">
+                        <p>@category.CategoryName</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>*@
+  
+
+
+<!-- Featured products -->
+<div class="small-container">
+  <h2 class="title">Sản Phẩm Chào Bán</h2>
+            
+
+<form action="@Url.Action("Index", "Home")" method="get" class="mt-3">
+            <input type="hidden" name="categoryFilter" value="@ViewBag.CategoryFilter" />
+            <input type="hidden" name="brandFilter" value="@ViewBag.BrandFilter" />
+            <div class="row mb-3 mt-5 mb-5">
+                <div class="">
+                    <label for="categoryFilter" class="form-label">Danh mục:</label>
+                    <select id="categoryFilter" name="categoryFilter" class="form-select w-100">
+                        <option value="">Tất cả</option>
+                        @foreach (var category in ViewBag.Categories)
+                        {
+                            <option value="@category.CategoryId" selected="@(category.CategoryId == ViewBag.CategoryFilter)">@category.CategoryName</option>
+                       }
+                    </select>
+                </div>
+                <div class="">
+                    <label for="brandFilter" class="form-label">Thương hiệu:</label>
+                    <select id="brandFilter" name="brandFilter" class="form-select w-100">
+                        <option value="">Tất cả</option>
+                        @foreach (var brand in ViewBag.Brands)
+                        {
+                            <option value="@brand.BrandId" selected="@(brand.BrandId == ViewBag.brandFilter)">@brand.BrandName</option>
+                        }
+                    </select>
+                </div>
+                <div class="">
+                    @*                <label for="searchString" class="form-label">Tìm kiếm:</label>
+                    *@                <div class="row g-2 align-items-center">
+                        <div class="col-8">
+        <input type="text" id="searchString" name="searchString" class="form-control custom-rounded-left" placeholder="Nhập từ khóa..." value="@ViewData["SearchString"]">
+                        </div>
+                        <div class="col-1">
+                            <button type="submit" class="mt-1 btn btn-primary btn-sm">Tìm kiếm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+       <div class="d-flex justify-content-center">
+    <h2 class="mess" style="color: red; text-align: center;">@ViewData["ErrorMessage"]</h2>
+    <h2 class="mess" style="color: green; text-align: center;">@ViewData["SuccessMessage"]</h2>
+</div>
+
+            
+        <div class="row" style="padding-top: 30px;">
+            @foreach (Product product in ViewBag.ProductList)
+            {
+                <div class="col-4 product-card">
+                    @if (product.ProductImages != null && product.ProductImages.Any())
+                    {
+                        <a href="">
+                            <img src="/Images/@product.ProductImages.First().Path" alt="Image" class="img-thumbnail" width="180" height="240" />
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="">
+                            <img src="default_image_url" alt="Default Image" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
+                        </a>
+                    }
+
+                    <a href="">
+                        <h4>@product.ProductName</h4>
+                    </a>
+
+                    <!-- Your other code here -->
+
+                    <p>@string.Format("{0:N0}", product.Price)₫</p>
+                    <!-- Add "Buy Now" button -->
+                    <button class="btn-buy-now">Buy Now</button>
+
+                </div>
+            }
+        </div>
+<div class="mt-3 d-flex justify-content-center">
+            <nav class="text-center" aria-label="Page navigation">
+                <ul class="pagination">
+                    @if (ViewBag.ProductList.HasPreviousPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.ProductList.PageIndex - 1 })" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    }
+                    @for (int i = 1; i <= ViewBag.ProductList.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == ViewBag.ProductList.PageIndex ? "current-page" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                        </li>
+                    }
+                    @if (ViewBag.ProductList.HasNextPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.ProductList.PageIndex + 1 })" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+
+
+
+
+
+
+ @* <h2 class="title">Latest Products</h2>
+  <div class="row">
+    <div class="col-4">
+      <img src="https://i.ibb.co/bQ5t8bR/product-5.jpg" alt="" />
+      <h4>Red Printed T-shirt</h4>
+      <div class="rating">
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="far fa-star"></i>
+      </div>
+      <p>₹500.00</p>
+    </div>
+
+    <div class="col-4">
+      <img src="https://i.ibb.co/vVpTyBD/product-6.jpg" alt="" />
+      <h4>Red Printed T-shirt</h4>
+      <div class="rating">
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="far fa-star"></i>
+        <i class="far fa-star"></i>
+      </div>
+      <p>₹500.00</p>
+    </div>
+
+    <div class="col-4">
+      <img src="https://i.ibb.co/hR5FGwH/product-7.jpg" alt="" />
+      <h4>Red Printed T-shirt</h4>
+      <div class="rating">
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star-half-alt"></i>
+      </div>
+      <p>₹500.00</p>
+    </div>
+
+    <div class="col-4">
+      <img src="https://i.ibb.co/QfCgdXZ/product-8.jpg" alt="" />
+      <h4>Red Printed T-shirt</h4>
+      <div class="rating">
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="far fa-star"></i>
+        <i class="far fa-star"></i>
+        <i class="far fa-star"></i>
+      </div>
+      <p>₹500.00</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-4">
+      <img src="https://i.ibb.co/nw5xZwk/product-9.jpg" alt="" />
+      <h4>Red Printed T-shirt</h4>
+      <div class="rating">
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="far fa-star"></i>
+      </div>
+      <p>₹500.00</p>
+    </div>
+
+    <div class="col-4">
+      <img src="https://i.ibb.co/9HCsmjf/product-10.jpg" alt="" />
+      <h4>Red Printed T-shirt</h4>
+      <div class="rating">
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="far fa-star"></i>
+        <i class="far fa-star"></i>
+      </div>
+      <p>₹500.00</p>
+    </div>
+
+    <div class="col-4">
+      <img src="https://i.ibb.co/JQ2MBHR/product-11.jpg" alt="" />
+      <h4>Red Printed T-shirt</h4>
+      <div class="rating">
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star-half-alt"></i>
+      </div>
+      <p>₹500.00</p>
+    </div>
+
+    <div class="col-4">
+      <img src="https://i.ibb.co/nRZMs6Y/product-12.jpg" alt="" />
+      <h4>Red Printed T-shirt</h4>
+      <div class="rating">
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="far fa-star"></i>
+        <i class="far fa-star"></i>
+        <i class="far fa-star"></i>
+      </div>
+      <p>₹500.00</p>
+    </div>
+  </div>*@
+</div>
+<!-- offer -->
+@*<div class="offer">
+  <div class="small-container">
+    <div class="row">
+      <div class="col-2">
+        <img src="https://i.ibb.co/HF5TncZ/exclusive.png" alt="" class="offer-img" />
+      </div>
+      <div class="col-2">
+        <p>Exclusively Available on RedStore</p>
+        <h1>Smart Band 4</h1>
+        <small>The Mi Smart Band 4 features a 39.9% larger (than Mi Band 3)
+          AMOLED color full-touch display with adjustable brightness, so
+          everything is clear as can be.</small>
+        <br />
+        <a href="#" class="btn">Buy Now &#8594;</a>
+      </div>
+    </div>
+  </div>
+</div>*@
+
+<!-- Testimonial -->
+@*<div class="testimonial">
+  <div class="small-container">
+    <div class="row">
+      <div class="col-3">
+        <i class="fas fa-quote-left"></i>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          Perferendis, quae molestias error id est voluptatibus quos amet
+          numquam aspernatur nam cumque ullam? Veritatis eveniet et, maxime
+          eaque soluta quas modi.
+        </p>
+        <div class="rating">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="far fa-star"></i>
+          <i class="far fa-star"></i>
+          <i class="far fa-star"></i>
+        </div>
+        <img src="https://i.ibb.co/zfXD2Tx/user-1.png" alt="" />
+        <h3>Marta W.</h3>
+      </div>
+
+      <div class="col-3">
+        <i class="fas fa-quote-left"></i>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          Perferendis, quae molestias error id est voluptatibus quos amet
+          numquam aspernatur nam cumque ullam? Veritatis eveniet et, maxime
+          eaque soluta quas modi.
+        </p>
+        <div class="rating">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="far fa-star"></i>
+          <i class="far fa-star"></i>
+          <i class="far fa-star"></i>
+        </div>
+        <img src="https://i.ibb.co/FVyK1KM/user-2.png" alt="" />
+        <h3>Rula P.</h3>
+      </div>
+
+      <div class="col-3">
+        <i class="fas fa-quote-left"></i>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          Perferendis, quae molestias error id est voluptatibus quos amet
+          numquam aspernatur nam cumque ullam? Veritatis eveniet et, maxime
+          eaque soluta quas modi.
+        </p>
+        <div class="rating">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="far fa-star"></i>
+          <i class="far fa-star"></i>
+          <i class="far fa-star"></i>
+        </div>
+        <img src="https://i.ibb.co/jZ3tQqK/user-3.png" alt="" />
+        <h3>Vika Z.</h3>
+      </div>
+    </div>
+  </div>
+</div>
+*@<!-- brands -->
+@*<div class="brands">
+  <div class="small-container">
+    <div class="row">
+                @foreach(var  brand in ViewBag.Brands)
+                {
+                    <div class="col-5">
+                        @brand.BrandName
+                    </div>
+                }
+    </div>
+  </div>
+</div>*@
+<!-- Footer -->
+<div class="mt-4 footer">
+  <div class="container">
+    <div class="row">
+      <div class="footer-col-1">
+        <h3>Download Our App</h3>
+        <p>Download App for Android and iso mobile phone.</p>
+        <div class="app-logo">
+          <img src="https://i.ibb.co/KbPTYYQ/play-store.png" alt="" />
+          <img src="https://i.ibb.co/hVM4X2p/app-store.png" alt="" />
+        </div>
+      </div>
+
+      <div class="footer-col-2">
+@*        <img src="https://i.ibb.co/j3FNGj7/logo-white.png" alt="" />
+           
+*@  
+            <h3>Boxing Shop</h3>
+    <p>
+          Our Purpose Is To Sustainably Make the Pleasure and Benefits of
+          Sports Accessible to the Many.
+        </p>
+      </div>
+
+      <div class="footer-col-3">
+        <h3>Useful Links</h3>
+        <ul>
+          <li>Coupons</li>
+          <li>Blog Post</li>
+          <li>Return Policy</li>
+          <li>Join Affiliate</li>
+        </ul>
+      </div>
+
+      <div class="footer-col-4">
+        <h3>Follow us</h3>
+        <ul>
+          <li>Facebook</li>
+          <li>Twitter</li>
+          <li>Instagram</li>
+          <li>YouTube</li>
+        </ul>
+      </div>
+    </div>
+    <hr />
+    <p class="copyright">Copyright &copy; 2021 - Red Store</p>
+  </div>
+</div>
+
+<!-- js for toggle menu -->
+
+
+
+    <script>
+        // Paste your JavaScript code here
+        var MenuItems = document.getElementById('MenuItems');
+        MenuItems.style.maxHeight = '0px';
+
+        function menutoggle() {
+            if (MenuItems.style.maxHeight == '0px') {
+                MenuItems.style.maxHeight = '200px';
+            } else {
+                MenuItems.style.maxHeight = '0px';
+            }
+        }
+    </script>
+
+</body>
+</html>
