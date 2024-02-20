@@ -627,7 +627,7 @@ form a {
 @*          <li><a href="account.html">Account</a></li>
 *@        </ul>
       </nav>
-      <a href="cart.html"><img src="https://i.ibb.co/PNjjx3y/cart.png" alt="" width="30px" height="30px" /></a>
+      <a asp-controller="Cart" asp-action="GetCartItem"><img src="https://i.ibb.co/PNjjx3y/cart.png" alt="" width="30px" height="30px" /></a>
       <img src="https://i.ibb.co/6XbqwjD/menu.png" alt="" class="menu-icon" onclick="menutoggle()" />
     </div>
             <div class="row">
@@ -721,18 +721,18 @@ form a {
                 <div class="col-4 product-card">
                     @if (product.ProductImages != null && product.ProductImages.Any())
                     {
-                        <a href="">
+                        <a asp-controller="ProductDetail" asp-action="Index" asp-route-productId="@product.ProductId">
                             <img src="/Images/@product.ProductImages.First().Path" alt="Image" class="img-thumbnail" width="180" height="240" />
                         </a>
                     }
                     else
                     {
-                        <a href="">
+                        <a asp-controller="ProductDetail" asp-action="Index" asp-route-productId="@product.ProductId">
                             <img src="default_image_url" alt="Default Image" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
                         </a>
                     }
 
-                    <a href="">
+                    <a asp-controller="ProductDetail" asp-action="Index" asp-route-productId="@product.ProductId">
                         <h4>@product.ProductName</h4>
                     </a>
 

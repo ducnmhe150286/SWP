@@ -235,6 +235,22 @@ namespace SWP.Dao
                 return null;
             }
         }
+
+        public User GetUserByEmail(string email)
+        {
+            try
+            {
+                using (var connection = new SWPContext())
+                {
+                    var user = connection.Users.Where(x => x.Email == email).FirstOrDefault();
+                    return user;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         public static void SaveUser(User user)
         {
             try
