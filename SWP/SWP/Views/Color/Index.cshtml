@@ -1,0 +1,169 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model List<Color>
+<h2 class="product-category-heading">QUẢN LÝ MÀU SẮC</h2>
+<div>
+    <div class="custom-container">
+        <a asp-action="AddColor">Thêm mới</a>
+    </div>
+</div>
+
+<style>
+    .product-category-heading {
+        color: #333; /* Màu chữ */
+        font-family: 'Arial', sans-serif; /* Font chữ */
+        font-size: 24px; /* Kích thước chữ */
+        font-weight: bold; /* Độ đậm của chữ */
+        text-transform: uppercase; /* Chuyển chữ thành chữ in hoa */
+        margin-bottom: 20px; /* Khoảng cách dưới */
+        border-bottom: 2px solid #333; /* Đường gạch chân */
+        padding-bottom: 5px; /* Khoảng cách từ chữ đến đường gạch chân */
+    }
+
+    .custom-container {
+        text-align: right; /* Căn phải nội dung bên trong */
+        margin-top: 10px; /* Khoảng cách từ trên xuống */
+    }
+
+        .custom-container a {
+            color: #fff; /* Màu chữ */
+            background-color: #007bff; /* Màu nền */
+            padding: 10px 20px; /* Kích thước nút */
+            text-decoration: none; /* Loại bỏ gạch chân chữ */
+            border-radius: 5px; /* Bo góc */
+        }
+
+            .custom-container a:hover {
+                background-color: #0056b3; /* Màu nền khi di chuột qua */
+            }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 5px;
+    }
+
+    .btn {
+        padding: 8px 12px;
+        cursor: pointer;
+        border: none;
+        border-radius: 4px;
+    }
+
+    .btn-warning {
+        background-color: #ffc107;
+        color: #212529;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        color: #fff;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+    }
+
+    .close {
+        cursor: pointer;
+    }
+</style>
+<table>
+    <thead>
+        <tr>
+            <th>Tên Màu Sắc</th>
+            <th>Trạng Thái</th>
+            <th>Ngày Tạo</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var color in Model)
+        {
+            <tr>
+
+                <td>@color.ColorName</td>
+                <td>
+                    @if (color.Status == 1)
+                    {
+                        <p>Hoạt Động</p>
+                    }
+                    else
+                    {
+                        <p>Không Hoạt Động</p>
+                    }
+                </td>
+                <td>@color.CreatedDate</td>
+                <td>
+                    <div class="btn-group" role="group" aria-label="Action Buttons">
+                        <a asp-controller="Color" asp-action="Edit" asp-route-id="@color.ColorId" class="btn btn-warning">Cập nhật</a>
+                        <button type="button" class="btn btn-danger delete-button" data-toggle="modal" data-target="#deleteModal-@color.ColorId">Xóa</button>
+                    </div>
+                </td>
+            </tr>
+
+            <!-- Delete Modal -->
+            <div class="modal" id="deleteModal-@color.ColorId">
+                <div class="modal-content">
+                    <span class="close" data-dismiss="modal">&times;</span>
+                    <p>
+                        Bạn có chắc là muốn xóa màu này?
+                    </p>
+                    <form asp-controller="Color" asp-action="Delete" asp-route-id="@color.ColorId" method="post">
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </tbody>
+</table>
+<script>
+    var deleteButtons = document.querySelectorAll('.delete-button');
+    deleteButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            var modalId = button.getAttribute('data-target').replace('#', '');
+            var modal = document.getElementById(modalId);
+            modal.style.display = 'flex';
+        });
+    });
+
+    var closeButtons = document.querySelectorAll('.close');
+    closeButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            var modal = button.closest('.modal');
+            modal.style.display = 'none';
+        });
+    });
+</script>
