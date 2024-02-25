@@ -393,27 +393,23 @@ namespace SWP.Controllers
             {
                 using (var context = new SWPContext())
                 {
-                    // Validate for duplicate Color and Size combinations
-                    var duplicateCombination = ColorId
+                    var groupedData = ColorId
                         .Zip(SizeId, (color, size) => new { ColorId = color, SizeId = size })
-                        .GroupBy(x => new { x.ColorId, x.SizeId })
-                        .Any(g => g.Count() > 1);
+                        .Zip(Quanties, (pair, quantity) => new { ColorId = pair.ColorId, SizeId = pair.SizeId, Quantity = quantity })
+                        .GroupBy(group => new { group.ColorId, group.SizeId })
+                        .ToList();
 
-                    if (duplicateCombination)
+                    foreach (var group in groupedData)
                     {
-                        TempData["ErrorMessage"] = "Không thể nhập cùng một kích thước và màu sắc cho sản phẩm.";
-                        return RedirectToAction("DetailProduct", new { id = updatedDetail.ProductId });
-                    }
+                        var totalQuantity = group.Sum(g => g.Quantity);
 
-                    for (int i = 0; i < ColorId.Count; i++)
-                    {
                         var existingDetail = context.ProductDetails
-                            .FirstOrDefault(pd => pd.ProductId == updatedDetail.ProductId && pd.ColorId == ColorId[i] && pd.SizeId == SizeId[i]);
+                            .FirstOrDefault(pd => pd.ProductId == updatedDetail.ProductId && pd.ColorId == group.Key.ColorId && pd.SizeId == group.Key.SizeId);
 
                         if (existingDetail != null)
                         {
                             // Update existing detail
-                            existingDetail.Quantity = Quanties[i];
+                            existingDetail.Quantity = totalQuantity;
                             existingDetail.UpdateBy = null; // Set the update user as needed
                             existingDetail.Status = 1; // Set the status as needed
                         }
@@ -423,9 +419,9 @@ namespace SWP.Controllers
                             var newProductDetail = new ProductDetail
                             {
                                 ProductId = updatedDetail.ProductId,
-                                ColorId = ColorId[i],
-                                SizeId = SizeId[i],
-                                Quantity = Quanties[i],
+                                ColorId = group.Key.ColorId,
+                                SizeId = group.Key.SizeId,
+                                Quantity = totalQuantity,
                                 CreatedDate = DateTime.Now,
                                 CreatedBy = null, // Set the creator user as needed
                                 UpdateBy = null, // Set the update user as needed
