@@ -7,7 +7,6 @@ namespace SWP.Models
     {
         public Product()
         {
-            CartItems = new HashSet<CartItem>();
             ProductDetails = new HashSet<ProductDetail>();
             ProductImages = new HashSet<ProductImage>();
         }
@@ -28,7 +27,6 @@ namespace SWP.Models
 
         public virtual Brand Brand { get; set; } = null!;
         public virtual Category Category { get; set; } = null!;
-        public virtual ICollection<CartItem> CartItems { get; set; }
         public virtual ICollection<ProductDetail> ProductDetails { get; set; }
         public virtual ICollection<ProductImage> ProductImages { get; set; }
     }
