@@ -85,7 +85,7 @@
                                 <select name="size" class="form-select border border-secondary" style="height: 35px;">
                                     @foreach (var size in Model.ProductDetails.DistinctBy(x => x.SizeId))
                                     {
-                                        <option>@size.Size.SizeName</option>
+                                        <option value="@size.SizeId">@size.Size.SizeName</option>
                                     }
                                 </select>
                             </div>
@@ -94,7 +94,7 @@
                                 <select name="color" class="form-select border border-secondary" style="height: 35px;">
                                     @foreach (var size in Model.ProductDetails.DistinctBy(x => x.ColorId))
                                     {
-                                        <option>@size.Color.ColorName</option>
+                                        <option value="@size.ColorId">@size.Color.ColorName</option>
                                     }
                                 </select>
                             </div>

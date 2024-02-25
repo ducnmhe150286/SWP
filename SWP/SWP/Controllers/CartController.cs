@@ -13,14 +13,14 @@ namespace SWP.Controllers
             cartDao = new CartDao();
             userDao = new UsersDao();
         }
-        public IActionResult Index(int productId, int quantity)
+        public IActionResult Index(int productId, int quantity, int size , int color)
         {
             var customer = HttpContext.Session.GetString("USER_EMAIL");
             
             var cusId = userDao.GetUserByEmail(customer);
             if (cusId is not null && cusId.RoleId == 2 )
             {
-                var cartItem = cartDao.addToCart(productId, quantity, cusId.UserId);
+                var cartItem = cartDao.addToCart(productId, quantity, size, color, cusId.UserId);
                 var listItem = cartDao.GetAddItem(cusId.UserId);
                 ViewData["listItem"] = listItem;
                 return View();              
