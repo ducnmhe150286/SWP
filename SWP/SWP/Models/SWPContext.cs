@@ -75,7 +75,7 @@ namespace SWP.Models
 
             modelBuilder.Entity<CartItem>(entity =>
             {
-                entity.HasKey(e => new { e.ProductId, e.CustomerId });
+                entity.HasKey(e => new { e.DetailId, e.CustomerId });
 
                 entity.ToTable("CartItem");
 
@@ -87,13 +87,13 @@ namespace SWP.Models
                     .WithMany(p => p.CartItems)
                     .HasForeignKey(d => d.CustomerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CartItem__CartId__5EBF139D");
+                    .HasConstraintName("FK_CartItem_User");
 
-                entity.HasOne(d => d.Product)
+                entity.HasOne(d => d.Detail)
                     .WithMany(p => p.CartItems)
-                    .HasForeignKey(d => d.ProductId)
+                    .HasForeignKey(d => d.DetailId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CartItem__Produc__5FB337D6");
+                    .HasConstraintName("FK_CartItem_ProductDetail");
             });
 
             modelBuilder.Entity<Category>(entity =>

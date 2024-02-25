@@ -1,4 +1,6 @@
-﻿@{
+﻿@inject IHttpContextAccessor HttpContextAccessor;
+@addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
+@{
     Layout = null; // This assumes you don't want to use a layout page
 }
 <!DOCTYPE html>
@@ -88,6 +90,19 @@ p {
   margin: 30px 0;
 /*  border-radius: 30px;
 */  transition: background 0.5s;
+}
+
+        .btn1-buy-now {
+  display: inline-block;
+  background: #ff523b;
+  color: #ffffff;
+  padding: 8px 30px;
+  margin: 30px 0;
+/*  border-radius: 30px;
+*/  transition: background 0.5s;
+}
+.btn1-buy-now:hover {
+    background: #563434;
 }
 
 .btn:hover {
@@ -649,52 +664,42 @@ form a {
 
 }</style>
 </head>
+@{
+    string user = HttpContextAccessor.HttpContext.Session.GetString("USER_EMAIL") ?? "";
+    string userName = HttpContextAccessor.HttpContext.Session.GetString("USER_NAME") ?? "";
+    int role = HttpContextAccessor.HttpContext.Session.GetInt32("USER_ROLE") ?? 0;
+}
 <body>
 <div class="header">
   <div class="container">
-            <div class="navbar">
-                <div class="logo">
-                    <!-- <a href="index.html"><img src="https://i.ibb.co/kDVwgwp/logo.png" alt="RedStore" width="125px" /></a> -->
+    <div class="navbar">
+      <div class="logo">
+@*        <a href="index.html"><img src="https://i.ibb.co/kDVwgwp/logo.png" alt="RedStore" width="125px" /></a>
+*@      </div>
+      <nav>
+        <ul id="MenuItems">
+          <li><a href="#">Trang chủ</a></li>
+          <li><a href="#">Sản phẩm</a></li>
+          <li><a href="#">Blog</a></li>
+          <!-- <li><a href="#">Contact</a></li> -->
+@*          <li><a href="account.html">Account</a></li>
+*@        </ul>
+      </nav>
+      <a asp-controller="Cart" asp-action="GetCartItem"><img src="https://i.ibb.co/PNjjx3y/cart.png" alt="" width="30px" height="30px" /></a>
+      <img src="https://i.ibb.co/6XbqwjD/menu.png" alt="" class="menu-icon" onclick="menutoggle()" />
+                <div class="navbar-nav ml-auto pr-100">
+                    @if (role != 0)
+                    {
+                        <a asp-controller="ProfileUsers" asp-action="Index">@userName</a>
+                        <a asp-controller="Auth" asp-action="Logout">Logout</a>
+                    }
+                    else
+                    {
+                        <a href="/auth">Login</a>
+                    }
+
                 </div>
-                <nav>
-                    <ul id="MenuItems">
-                        <li><a href="#">Trang chủ</a></li>
-                        <li><a href="#">Sản phẩm</a></li>
-                        <li><a href="#">Blog</a></li>
-                    </ul>
-                   @* <ul class="navbar-nav ml-auto">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="categoryDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Danh mục
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="categoryDropdown">
-                                @foreach (var category in ViewBag.Categories)
-                                {
-                                    <a class="dropdown-item" href="#">@category.CategoryName</a>
-                                }
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="brandDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Thương hiệu
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="brandDropdown">
-                                @foreach (var brand in ViewBag.Brands)
-                                {
-                                    <a class="dropdown-item" href="#">@brand.BrandName</a>
-                                }
-                            </div>
-                        </li>
-                    </ul>*@
-                </nav>
-                <a asp-controller="Cart" asp-action="GetCartItem"><img src="https://i.ibb.co/PNjjx3y/cart.png" alt="" width="30px" height="30px" /></a>
-                <ul id="LoginItems" style="margin-left: 20px;">
-                    <li><a href="/Login">Đăng nhập</a></li> <!-- Thêm nút đăng nhập với đường dẫn "/Login" -->
-                </ul>
-                <img src="https://i.ibb.co/6XbqwjD/menu.png" alt="" class="menu-icon" onclick="menutoggle()" />
-            </div>
-
-
+    </div>
             <div class="row">
                 <div class="col-2">
                     <h1>
@@ -804,7 +809,7 @@ form a {
 
                     <p>@string.Format("{0:N0}", product.Price)₫</p>
                     <!-- Add "Buy Now" button -->
-                    <button class="btn-buy-now">Buy Now</button>
+                    <a asp-controller="ProductDetail" asp-action="Index" asp-route-productId="@product.ProductId" class="btn1-buy-now">Buy Now</a>
 
                 </div>
             }
