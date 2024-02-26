@@ -1,0 +1,86 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model SWP.Models.Blog
+<form enctype="multipart/form-data" asp-action="Details">
+    @if (Model != null)
+    {
+        <div class="row">
+
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Tiêu đề</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">@Model.Title</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Tóm tắt</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">@Model.ShortDescription</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Nội dung</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">@Model.Description</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Ngày tạo</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">@Model.CreateDate</p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Status</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <!-- Adjusted column width to make space for the button -->
+                                <p class="text-muted mb-0">
+                                    <select class="form-control form-control-lg" asp-for="Status">
+                                        <option value="1">Pubic</option>
+                                        <option value="0">Private</option>
+                                    </select>
+                                </p>
+                            </div>
+                           
+                        </div>
+
+                        <hr>
+
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-md-3">
+                        <div class="card mb-4 mb-md-0">
+
+                            <a class="btn btn-primary btn-lg" asp-area="" asp-controller="Details" asp-action="Manage">Return list</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+</form>

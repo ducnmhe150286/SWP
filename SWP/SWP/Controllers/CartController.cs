@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿/*using Microsoft.AspNetCore.Mvc;
 using SWP.Dao;
 using SWP.Models;
 
@@ -8,7 +8,7 @@ namespace SWP.Controllers
     {
         public CartDao cartDao;
         public UsersDao userDao;
-        public CartController()
+        public CartController()*//**//*
         {
             cartDao = new CartDao();
             userDao = new UsersDao();
@@ -50,3 +50,4 @@ namespace SWP.Controllers
         }
     }
 }
+*/

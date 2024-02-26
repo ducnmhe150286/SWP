@@ -8,26 +8,33 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using RestSharp;
 using SWP.Dto.Request.Users;
 using SWP.Models;
 using System.Collections.Generic;
 using SWP.Dao;
+using Microsoft.Extensions.Hosting;
 
 namespace SWP.Controllers
 {
    
     public class UsersController : Controller
     {
-        
+        private readonly IWebHostEnvironment _environment;
         private readonly UsersDao usersDao;
         private readonly RoleDao roleDao;
         private readonly IWebHostEnvironment _webHostEnvironment;
+
 
         public UsersController( UsersDao usersDao, IWebHostEnvironment webHostEnvironment)
         {
             usersDao = new UsersDao();
             _webHostEnvironment = webHostEnvironment;
+
+        public UsersController( UsersDao usersDao, IWebHostEnvironment environment)
+        {
+            usersDao = new UsersDao();
+            _environment = environment;
+
         }
         public async Task<List<Role>> GetAllRoles()
         { 
@@ -46,9 +53,15 @@ namespace SWP.Controllers
             var users = GetUsers().Result.ToList();
             if (users != null)
             {
+                
                 int startIndex = 6 * currentPage + 1;
                 ViewData["NumberOfPages"] = users.Count / 6;
+
                 users = users.Skip(6 * currentPage).Take(6).ToList();
+
+
+                
+
                 // Filter out users with Id equal to 1
                // users = users.Where(x => x.RoleId != 1).Skip(6 * currentPage).Take(6).ToList();
 
@@ -74,7 +87,6 @@ namespace SWP.Controllers
                     || x.PhoneNumber.Trim().Contains(search.Trim()) )
                      && (!status.HasValue || x.Status == status)).ToList();
                    
-                   
                 }
 
                 
@@ -97,7 +109,6 @@ namespace SWP.Controllers
         }
            
 
-
         public async Task<IActionResult> Details(int userId)
         {
             var users = UsersDao.GetUserById(userId);
@@ -111,15 +122,34 @@ namespace SWP.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
+        [ValidateAntiForgeryToken] 
         public async Task<ActionResult> Details(int userId, [Bind("UserId,Status")] UserRequest request)
+
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(int userId, [Bind("UserId,Status")] UserRequest request)
+
         {
             var users = UsersDao.GetUserById(userId);
 
             if (users != null)
             {
+
                 users.UserId = userId;
                 users.Status = request.Status;
+
+                users.UserId= userId;
+                /*users.Address = request.Address;
+                users.PhoneNumber= request.PhoneNumber;
+                users.LastName = request.LastName;
+                users.FirstName = request.FirstName;
+                users.Email = request.Email;
+                users.RoleId = request.RoleId;
+                users.Password= request.Password;
+                users.Image= request.Image;
+                users.Gender= request.Gender;*/
+                users.Status= request.Status;
+
                 UsersDao.UpdateUser(users);
             }
             var roles = RoleDao.GetAllRoles();
@@ -130,6 +160,7 @@ namespace SWP.Controllers
             ViewBag.RoleName = roleName;
             return View(users);
         }
+
         public IActionResult Add(int userId)
         {
             // Trả về view để hiển thị form thêm mới
@@ -185,6 +216,9 @@ namespace SWP.Controllers
         }
 
 
+
+       
+       
 
         public IActionResult Delete(int userId)
         {

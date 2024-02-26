@@ -1,0 +1,140 @@
+﻿@model IEnumerable<SWP.Models.Blog>
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<section class="">
+    <div class="container">
+
+        <!-- sidebar -->
+        <div class="col-lg-3">
+            <!-- Collapsible wrapper -->
+
+        </div>
+        <!-- sidebar -->
+        <!-- content -->
+        <div class="col-lg-9">
+            <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
+                <div class="ms-auto">
+                    <div class="btn-group shadow-0 border">
+                        <a asp-controller="Blog" asp-action="Create" class="btn btn-primary shadow-0 me-1">Tạo Blog mới</a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Search form -->
+            <form method="post" asp-controller="Blog" asp-action="Manage" class="mb-4">
+                <div class="input-group">
+                    <form class="form-inline">
+                        <label class="form-check-inline">Status</label>
+                        <div class="form-group mr-2">
+                            <select id="status" name="status" class="form-select">
+                                <option value="">Tất cả</option>
+                                <option value="1" selected="@(ViewBag.Status == 1)">Public</option>
+                                <option value="0" selected="@(ViewBag.Status == 0)">Private</option>
+                            </select>
+                        </div>
+                        <div class="form-group flex-grow-1">
+                            <input type="text" name="search" class="form-control" placeholder="tìm kiếm " value="@ViewBag.strSearch">
+                        </div>
+                        <button type="submit" class="btn btn-primary ml-2">Tìm kiếm</button>
+                    </form>
+                </div>
+            </form>
+
+            <div class="row">
+
+
+                @if (Model != null)
+                {
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Stt</th>
+                                <th>Tiêu đề</th>
+                                <th>Ngày tạo</th>
+                                <th>Trạng thái</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @{
+                                int startIndex = (int)ViewData["startIndex"];
+                            }
+
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+
+                                    <td>@startIndex</td>
+                                    <td><a asp-controller="Blog" asp-action="Details" asp-route-userId="@item.BlogId">@item.Title</a></td>
+                                    <td>@item.CreateDate</td>
+                                    @if (item.Status == 1)
+                                    {
+                                        <td>Public</td>
+                                    }
+                                    @if (item.Status != 1)
+                                    {
+                                        <td> Private</td>
+                                    }
+                                    <td>
+                                        <a asp-controller="Blog" asp-action="Edit" asp-route-userId="@item.BlogId" class="btn btn-primary shadow-0 me-1">Chỉnh sửa</a>
+                                    </td>
+                                    <td>
+                                        <a asp-controller="Blog" asp-action="Delete" asp-route-userId="@item.BlogId" class="btn btn-danger shadow-0 me-1" onclick="return confirmDelete()">Xóa</a>
+                                    </td>
+                                </tr>
+                                startIndex++;
+                            }
+                        </tbody>
+                    </table>
+                }
+
+
+                <hr />
+
+                <!-- Pagination -->
+                <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
+                    <ul class="pagination">
+                        @if (ViewBag.currentPage != 0)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-controller="Blog" asp-action="Manage" asp-route-currentPage="@(ViewBag.currentPage - 1)" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        }
+                        @for (int i = 1; i <= ViewBag.NumberOfPages; i++)
+                        {
+                            <li class="page-item "><a class="page-link" asp-controller="Blog" asp-action="Manage" asp-route-currentPage="@i">@i</a></li>
+                        }
+                        @if (ViewBag.currentPage < ViewBag.NumberOfPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-controller="Blog" asp-action="Manage" asp-route-currentPage="@(ViewBag.currentPage + 1)" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+                <!-- Pagination -->
+            </div>
+        </div>
+        <script>
+            function confirmDelete() {
+                if (confirm("Are you sure you want to delete this Blog?")) {
+                    // Thực hiện hành động xóa ở đây
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        </script>
+    </div>
+
+</section>

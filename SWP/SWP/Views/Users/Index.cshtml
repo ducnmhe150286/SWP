@@ -20,7 +20,7 @@
             <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
                 <div class="ms-auto">
                     <div class="btn-group shadow-0 border">
-                        <a asp-controller="Users" asp-action="Add" class="btn btn-primary shadow-0 me-1">Create user</a>
+                        <a asp-controller="Users" asp-action="Add" class="btn btn-primary shadow-0 me-1">Tạo người dùng mới</a>
                     </div>
                 </div>
             </header>
@@ -29,12 +29,12 @@
             <form method="post" asp-controller="Users" asp-action="Index" class="mb-4">
                 <div class="input-group">
                     <form class="form-inline">
-                        <label class="form-check-inline">Status</label>
+                        <label class="form-check-inline">Trạng thái</label>
                         <div class="form-group mr-2">
                             <select id="status" name="status" class="form-select">
                                 <option value="" >Tất cả</option>
-                                <option value="1" selected="@(ViewBag.Status == 1)">Active</option>
-                                <option value="0" selected="@(ViewBag.Status == 0)">Deactive</option>
+                                <option value="1" selected="@(ViewBag.Status == 1)">Hoạt động</option>
+                                <option value="0" selected="@(ViewBag.Status == 0)">Không hoạt động</option>
                             </select>
                         </div>
                         <div class="form-group flex-grow-1">
@@ -76,7 +76,11 @@
                                 <tr>
                                     
                                     <td>@startIndex</td>
+
                                     <td><img src="/uploads/@item.Image" style="width: 150px" class="card-img-top" /></td>
+
+                                    <td><img src="/uploads/@item.Image" class="card-img-top" /></td>
+
                                     <td><a asp-controller="Users" asp-action="Details" asp-route-userId="@item.UserId">@item.FirstName</a></td>
                                     <td><a asp-controller="Users" asp-action="Details" asp-route-userId="@item.UserId">@item.LastName</a></td>
                                     <td>@item.PhoneNumber</td>
