@@ -691,11 +691,11 @@ form a {
                     @if (role != 0)
                     {
                         <a asp-controller="ProfileUsers" asp-action="Index">@userName</a>
-                        <a asp-controller="Auth" asp-action="Logout">Logout</a>
+                        <a asp-controller="Auth" asp-action="Logout">Đăng xuất</a>
                     }
                     else
                     {
-                        <a href="/auth">Login</a>
+                        <a href="/auth">Đăng nhập</a>
                     }
 
                 </div>
@@ -809,7 +809,7 @@ form a {
 
                     <p>@string.Format("{0:N0}", product.Price)₫</p>
                     <!-- Add "Buy Now" button -->
-                    <a asp-controller="ProductDetail" asp-action="Index" asp-route-productId="@product.ProductId" class="btn1-buy-now">Buy Now</a>
+                    <a asp-controller="ProductDetail" asp-action="Index" asp-route-productId="@product.ProductId" class="btn1-buy-now">Mua ngay</a>
 
                 </div>
             }
