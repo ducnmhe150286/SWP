@@ -16,7 +16,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace SWP.Controllers
 {
-   
+
     public class UsersController : Controller
     {
         private readonly IWebHostEnvironment _environment;
@@ -25,45 +25,41 @@ namespace SWP.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
 
 
-        public UsersController( UsersDao usersDao, IWebHostEnvironment webHostEnvironment)
-        {
-            usersDao = new UsersDao();
-            _webHostEnvironment = webHostEnvironment;
 
-        public UsersController( UsersDao usersDao, IWebHostEnvironment environment)
+        public UsersController(UsersDao usersDao, IWebHostEnvironment environment)
         {
             usersDao = new UsersDao();
             _environment = environment;
 
         }
         public async Task<List<Role>> GetAllRoles()
-        { 
+        {
             var role = RoleDao.GetAllRoles();
             return role;
         }
 
         public async Task<List<User>> GetUsers()
         {
-           
+
             var user = UsersDao.GetAllUser();
-            return user ;
+            return user;
         }
         public async Task<IActionResult> Index(int currentPage)
         {
             var users = GetUsers().Result.ToList();
             if (users != null)
             {
-                
+
                 int startIndex = 6 * currentPage + 1;
                 ViewData["NumberOfPages"] = users.Count / 6;
 
                 users = users.Skip(6 * currentPage).Take(6).ToList();
 
 
-                
+
 
                 // Filter out users with Id equal to 1
-               // users = users.Where(x => x.RoleId != 1).Skip(6 * currentPage).Take(6).ToList();
+                // users = users.Where(x => x.RoleId != 1).Skip(6 * currentPage).Take(6).ToList();
 
                 ViewData["currentPage"] = currentPage;
                 ViewData["startIndex"] = startIndex;
@@ -78,18 +74,18 @@ namespace SWP.Controllers
             var users = GetUsers().Result.ToList();
             if (users != null)
             {
-               
+
                 ViewData["NumberOfPages"] = users.Count / 6;
 
                 if (search != null && !search.Equals("\\s+"))
                 {
-                    users = users.Where(x => (x.FirstName.ToLower().Trim().Contains(search.ToLower().Trim()) || x.LastName.ToLower().Trim().Contains(search.ToLower().Trim()) 
-                    || x.PhoneNumber.Trim().Contains(search.Trim()) )
+                    users = users.Where(x => (x.FirstName.ToLower().Trim().Contains(search.ToLower().Trim()) || x.LastName.ToLower().Trim().Contains(search.ToLower().Trim())
+                    || x.PhoneNumber.Trim().Contains(search.Trim()))
                      && (!status.HasValue || x.Status == status)).ToList();
-                   
+
                 }
 
-                
+
                 if (status.HasValue)
                 {
                     users = users.Where(x => x.Status == status).ToList();
@@ -103,11 +99,11 @@ namespace SWP.Controllers
                 ViewData["currentPage"] = currentPage;
                 ViewData["startIndex"] = startIndex;
                 return View(users);
-                
+
             }
             return View();
         }
-           
+
 
         public async Task<IActionResult> Details(int userId)
         {
@@ -123,9 +119,23 @@ namespace SWP.Controllers
 
         [HttpPost]
 
-        [ValidateAntiForgeryToken] 
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Details(int userId, [Bind("UserId,Status")] UserRequest request)
+        {
+            var users = UsersDao.GetUserById(userId);
+            var roles = RoleDao.GetAllRoles();
 
+            // Lấy roleName tương ứng với user
+            string roleName = roles.FirstOrDefault(r => r.RoleId == users.RoleId)?.RoleName;
+            users.UserId = userId;
+            users.Status = request.Status;
+
+
+            UsersDao.UpdateUser(users);
+            ViewBag.RoleName = roleName;
+            return View(users);
+        }
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int userId, [Bind("UserId,Status")] UserRequest request)
 
@@ -138,17 +148,6 @@ namespace SWP.Controllers
                 users.UserId = userId;
                 users.Status = request.Status;
 
-                users.UserId= userId;
-                /*users.Address = request.Address;
-                users.PhoneNumber= request.PhoneNumber;
-                users.LastName = request.LastName;
-                users.FirstName = request.FirstName;
-                users.Email = request.Email;
-                users.RoleId = request.RoleId;
-                users.Password= request.Password;
-                users.Image= request.Image;
-                users.Gender= request.Gender;*/
-                users.Status= request.Status;
 
                 UsersDao.UpdateUser(users);
             }
@@ -187,10 +186,10 @@ namespace SWP.Controllers
                         FirstName = request.FirstName,
                         LastName = request.LastName,
                         PhoneNumber = request.PhoneNumber,
-                       
+
                         Status = request.Status,
                         CreatedDate = DateTime.Now,
-                       
+
                     };
 
                     // Thêm user vào cơ sở dữ liệu
@@ -217,20 +216,20 @@ namespace SWP.Controllers
 
 
 
-       
-       
+
+
 
         public IActionResult Delete(int userId)
         {
-            
+
             var userid = UsersDao.GetUserById(userId);
             if (userid != null)
             {
-               UsersDao.DeleteUser(userid);
+                UsersDao.DeleteUser(userid);
             }
             return RedirectToAction("Index");
         }
-        
+
 
     }
 }
