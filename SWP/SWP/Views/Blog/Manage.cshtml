@@ -71,7 +71,7 @@
                                 <tr>
 
                                     <td>@startIndex</td>
-                                    <td><a asp-controller="Blog" asp-action="Details" asp-route-userId="@item.BlogId">@item.Title</a></td>
+                                    <td><a asp-controller="Blog" asp-action="Details" asp-route-blogId="@item.BlogId">@item.Title</a></td>
                                     <td>@item.CreateDate</td>
                                     @if (item.Status == 1)
                                     {
@@ -82,10 +82,10 @@
                                         <td> Private</td>
                                     }
                                     <td>
-                                        <a asp-controller="Blog" asp-action="Edit" asp-route-userId="@item.BlogId" class="btn btn-primary shadow-0 me-1">Chỉnh sửa</a>
+                                        <a asp-controller="Blog" asp-action="Edit" asp-route-blogId="@item.BlogId" class="btn btn-primary shadow-0 me-1">Chỉnh sửa</a>
                                     </td>
                                     <td>
-                                        <a asp-controller="Blog" asp-action="Delete" asp-route-userId="@item.BlogId" class="btn btn-danger shadow-0 me-1" onclick="return confirmDelete()">Xóa</a>
+                                        <a asp-controller="Blog" asp-action="Delete" asp-route-blogId="@item.BlogId" class="btn btn-danger shadow-0 me-1" onclick="return confirmDelete()">Xóa</a>
                                     </td>
                                 </tr>
                                 startIndex++;
