@@ -8,7 +8,6 @@ namespace SWP.Models
         public User()
         {
             Blogs = new HashSet<Blog>();
-            CartItems = new HashSet<CartItem>();
             FeedBacks = new HashSet<FeedBack>();
             Orders = new HashSet<Order>();
         }
@@ -32,7 +31,6 @@ namespace SWP.Models
 
         public virtual Role Role { get; set; } = null!;
         public virtual ICollection<Blog> Blogs { get; set; }
-        public virtual ICollection<CartItem> CartItems { get; set; }
         public virtual ICollection<FeedBack> FeedBacks { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
     }

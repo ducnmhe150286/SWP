@@ -33,11 +33,9 @@ namespace SWP.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=localhost;database=SWP;Integrated security=true;TrustServerCertificate=true;");
-            }
+            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            string ConnectionStr = config.GetConnectionString("SWP");
+            optionsBuilder.UseSqlServer(ConnectionStr);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -82,18 +80,6 @@ namespace SWP.Models
                 entity.Property(e => e.CreateDate).HasColumnType("datetime");
 
                 entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-
-                entity.HasOne(d => d.Customer)
-                    .WithMany(p => p.CartItems)
-                    .HasForeignKey(d => d.CustomerId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CartItem__CartId__5EBF139D");
-
-                entity.HasOne(d => d.Product)
-                    .WithMany(p => p.CartItems)
-                    .HasForeignKey(d => d.ProductId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CartItem__Produc__5FB337D6");
             });
 
             modelBuilder.Entity<Category>(entity =>

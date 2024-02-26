@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using RestSharp;
 using SWP.Dto.Request.Users;
 using SWP.Models;
 using System.Collections.Generic;
@@ -74,7 +73,6 @@ namespace SWP.Controllers
                     || x.PhoneNumber.Trim().Contains(search.Trim()) )
                      && (!status.HasValue || x.Status == status)).ToList();
                    
-                   
                 }
 
                 
@@ -97,7 +95,6 @@ namespace SWP.Controllers
         }
            
 
-
         public async Task<IActionResult> Details(int userId)
         {
             var users = UsersDao.GetUserById(userId);
@@ -111,7 +108,7 @@ namespace SWP.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken] 
         public async Task<ActionResult> Details(int userId, [Bind("UserId,Status")] UserRequest request)
         {
             var users = UsersDao.GetUserById(userId);

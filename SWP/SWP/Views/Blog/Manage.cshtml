@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SWP.Models.User>
+﻿@model IEnumerable<SWP.Models.Blog>
 
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -20,21 +20,21 @@
             <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
                 <div class="ms-auto">
                     <div class="btn-group shadow-0 border">
-                        <a asp-controller="Users" asp-action="Add" class="btn btn-primary shadow-0 me-1">Tạo người dùng mới</a>
+                        <a asp-controller="Blog" asp-action="Create" class="btn btn-primary shadow-0 me-1">Tạo Blog mới</a>
                     </div>
                 </div>
             </header>
 
             <!-- Search form -->
-            <form method="post" asp-controller="Users" asp-action="Index" class="mb-4">
+            <form method="post" asp-controller="Blog" asp-action="Manage" class="mb-4">
                 <div class="input-group">
                     <form class="form-inline">
-                        <label class="form-check-inline">Trạng thái</label>
+                        <label class="form-check-inline">Status</label>
                         <div class="form-group mr-2">
                             <select id="status" name="status" class="form-select">
-                                <option value="" >Tất cả</option>
-                                <option value="1" selected="@(ViewBag.Status == 1)">Hoạt động</option>
-                                <option value="0" selected="@(ViewBag.Status == 0)">Không hoạt động</option>
+                                <option value="">Tất cả</option>
+                                <option value="1" selected="@(ViewBag.Status == 1)">Public</option>
+                                <option value="0" selected="@(ViewBag.Status == 0)">Private</option>
                             </select>
                         </div>
                         <div class="form-group flex-grow-1">
@@ -44,59 +44,49 @@
                     </form>
                 </div>
             </form>
-            
+
             <div class="row">
-                
-                
+
+
                 @if (Model != null)
                 {
                     <table class="table">
                         <thead>
                             <tr>
                                 <th>Stt</th>
-                                <th>Ảnh đại diện</th>
-                                <th>Họ</th>
-                                <th>Tên</th>
-                                <th>Sđt</th>
-                                <th>Email</th>
+                                <th>Tiêu đề</th>
                                 <th>Ngày tạo</th>
                                 <th>Trạng thái</th>
-                               @* <th>Actions</th>*@
+                                <th>Actions</th>
                             </tr>
                         </thead>
-                       
+
                         <tbody>
                             @{
                                 int startIndex = (int)ViewData["startIndex"];
-                               
                             }
-                            
+
                             @foreach (var item in Model)
                             {
                                 <tr>
-                                    
+
                                     <td>@startIndex</td>
-                                    <td><img src="/uploads/@item.Image" style="width: 150px" class="card-img-top" /></td>
-                                    <td><a asp-controller="Users" asp-action="Details" asp-route-userId="@item.UserId">@item.FirstName</a></td>
-                                    <td><a asp-controller="Users" asp-action="Details" asp-route-userId="@item.UserId">@item.LastName</a></td>
-                                    <td>@item.PhoneNumber</td>
-                                    <td>@item.Email</td>
-                                    <td>@item.CreatedDate</td>
-                                    @if(item.Status == 1)
+                                    <td><a asp-controller="Blog" asp-action="Details" asp-route-userId="@item.BlogId">@item.Title</a></td>
+                                    <td>@item.CreateDate</td>
+                                    @if (item.Status == 1)
                                     {
-                                        <td>Active</td>
+                                        <td>Public</td>
                                     }
-                                    @if(item.Status != 1)
+                                    @if (item.Status != 1)
                                     {
-                                        <td> DeActive</td>
+                                        <td> Private</td>
                                     }
-                                    @* <td>
-                                        <a asp-controller="Users" asp-action="Edit" asp-route-userId="@item.UserId" class="btn btn-primary shadow-0 me-1">Edit</a>
-                                    </td>*@
-                                    @*<td>
-                                       <button  class="btn btn-danger shadow-0 me-1" onclick="delete(@item.UserId)">Delete</button>
-                                        <a asp-controller="Users" asp-action="Delete" asp-route-userId="@item.UserId" class="btn btn-danger shadow-0 me-1" onclick="return confirmDelete()">Delete</a>
-                                    </td>*@
+                                    <td>
+                                        <a asp-controller="Blog" asp-action="Edit" asp-route-userId="@item.BlogId" class="btn btn-primary shadow-0 me-1">Chỉnh sửa</a>
+                                    </td>
+                                    <td>
+                                        <a asp-controller="Blog" asp-action="Delete" asp-route-userId="@item.BlogId" class="btn btn-danger shadow-0 me-1" onclick="return confirmDelete()">Xóa</a>
+                                    </td>
                                 </tr>
                                 startIndex++;
                             }
@@ -113,40 +103,38 @@
                         @if (ViewBag.currentPage != 0)
                         {
                             <li class="page-item">
-                                <a class="page-link" asp-controller="Users" asp-action="Index" asp-route-currentPage="@(ViewBag.currentPage - 1)" aria-label="Previous">
+                                <a class="page-link" asp-controller="Blog" asp-action="Manage" asp-route-currentPage="@(ViewBag.currentPage - 1)" aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
                         }
                         @for (int i = 1; i <= ViewBag.NumberOfPages; i++)
                         {
-                            <li class="page-item "><a class="page-link" asp-controller="Users" asp-action="Index" asp-route-currentPage="@i">@i</a></li>
-
+                            <li class="page-item "><a class="page-link" asp-controller="Blog" asp-action="Manage" asp-route-currentPage="@i">@i</a></li>
                         }
-                        @if (ViewBag.currentPage < ViewBag.NumberOfPages )
+                        @if (ViewBag.currentPage < ViewBag.NumberOfPages)
                         {
                             <li class="page-item">
-                                <a class="page-link" asp-controller="Users" asp-action="Index" asp-route-currentPage="@(ViewBag.currentPage + 1)" aria-label="Next">
+                                <a class="page-link" asp-controller="Blog" asp-action="Manage" asp-route-currentPage="@(ViewBag.currentPage + 1)" aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
                             </li>
                         }
-
                     </ul>
                 </nav>
                 <!-- Pagination -->
             </div>
         </div>
-       <script>
-  function confirmDelete() {
-    if (confirm("Are you sure you want to delete this user?")) {
-      // Thực hiện hành động xóa ở đây
-      return true;
-    } else {
-      return false;
-    }
-  }
-</script>
+        <script>
+            function confirmDelete() {
+                if (confirm("Are you sure you want to delete this Blog?")) {
+                    // Thực hiện hành động xóa ở đây
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        </script>
     </div>
 
 </section>
