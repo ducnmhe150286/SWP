@@ -55,9 +55,6 @@ namespace SWP.Controllers
 
                 users = users.Skip(6 * currentPage).Take(6).ToList();
 
-
-
-
                 // Filter out users with Id equal to 1
                 // users = users.Where(x => x.RoleId != 1).Skip(6 * currentPage).Take(6).ToList();
 
@@ -186,7 +183,6 @@ namespace SWP.Controllers
                         FirstName = request.FirstName,
                         LastName = request.LastName,
                         PhoneNumber = request.PhoneNumber,
-
                         Status = request.Status,
                         CreatedDate = DateTime.Now,
 

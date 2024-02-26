@@ -44,6 +44,7 @@ namespace SWP.Controllers
                 //HttpContext.Session.SetString("USER_EMAIL", );
                 HttpContext.Session.SetInt32("USER_ROLE", role);
                 HttpContext.Session.SetString("USER_NAME", user.FirstName +" "+ user.LastName);
+                HttpContext.Session.SetInt32("USER_ID", user.UserId);
                 if (role == 1)
                 {
 					return Redirect("/Users");

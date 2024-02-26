@@ -12,6 +12,7 @@ using SWP.Dto.Request.Users;
 using SWP.Models;
 using System.Collections.Generic;
 using SWP.Dao;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 
 namespace SWP.Controllers
 {
@@ -31,7 +32,7 @@ namespace SWP.Controllers
         {
                 var list = context.Blogs.ToList();
                 return list;
-           
+            
         }
         public async Task<Blog> GetBlogById(int? id)
         {
@@ -63,6 +64,7 @@ namespace SWP.Controllers
 
                 ViewData["currentPage"] = currentPage;
                 ViewData["startIndex"] = startIndex;
+                return View(blog);
             }
             return View();
         }
@@ -102,39 +104,71 @@ namespace SWP.Controllers
         }
         public IActionResult Create()
         {
+            ViewBag.Error = "";
             return View();
         }
 
         // POST: Blog/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,ShortDescription,Description,Status,Image")] Blog blog)
+        public async Task<IActionResult> Create(List<IFormFile> files, [Bind("Title,ShortDescription,Description,Status,Image")] Blog blog)
         {
             if (ModelState.IsValid)
             {
-                /*if (blog.Image != null && blog.Image.Length > 0)
+               /* int roleId = (int)HttpContext.Session.GetInt32("USER_ROLE");
+                int userId = 0;
+                if(roleId ==   1) {
+                   userId = (int)HttpContext.Session.GetInt32("USER_ID");
+                }*/
+               
+                if (blog == null)
                 {
-                    var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "images");
-                    var imageName = Guid.NewGuid().ToString() + "_" + blog.Image.FileName;
-                    var fullPath = Path.Combine(imagePath, imageName);
+                    return Problem("Blog null");
+                }
+                string imageArray = "";
+                long size = files.Sum(f => f.Length);
 
-                    using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                var filePaths = new List<string>();
+                foreach (var formFile in files)
+                {
+                    if (formFile.Length > 0)
                     {
-                        await blog.Image.CopyToAsync(fileStream);
-                    }
+                        var fileName = formFile.FileName;
+                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", fileName);
 
-                    blog.Image = "/images/" + imageName;
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await formFile.CopyToAsync(stream);
+                        }
+
+                        filePaths.Add("/Images/" + fileName); // Store the relative path to the file
+                        imageArray += fileName + ",";
+                    }
+                }
+                
+
+                Blog _blog = new Blog();
+                _blog.Title = blog.Title;
+               _blog.Description = blog.Description;
+                _blog.ShortDescription = blog.ShortDescription;
+                _blog.Image = imageArray.Equals("")? "" : imageArray.Substring(0,imageArray.Length - 1);
+
+                if (_blog.Title == null)
+                {
+                    string error = "Title not null";
+                    ViewBag.Error = error;
+                    return View();
                 }
 
-                context.Add(blog);
+                context.Blogs.Add(_blog);
                 await context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));*/
+               
             }
             return RedirectToAction("Manage");
         }
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? blogId)
         {
-            var blog = await GetBlogById(id);
+            var blog = await GetBlogById(blogId);
 
             return View(blog);
         }
