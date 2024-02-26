@@ -33,9 +33,11 @@ namespace SWP.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-            string ConnectionStr = config.GetConnectionString("SWP");
-            optionsBuilder.UseSqlServer(ConnectionStr);
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=localhost;database=SWP;Integrated security=true;TrustServerCertificate=true;");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -73,13 +75,25 @@ namespace SWP.Models
 
             modelBuilder.Entity<CartItem>(entity =>
             {
-                entity.HasKey(e => new { e.ProductId, e.CustomerId });
+                entity.HasKey(e => new { e.DetailId, e.CustomerId });
 
                 entity.ToTable("CartItem");
 
                 entity.Property(e => e.CreateDate).HasColumnType("datetime");
 
                 entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Customer)
+                    .WithMany(p => p.CartItems)
+                    .HasForeignKey(d => d.CustomerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_CartItem_User");
+
+                entity.HasOne(d => d.Detail)
+                    .WithMany(p => p.CartItems)
+                    .HasForeignKey(d => d.DetailId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_CartItem_ProductDetail");
             });
 
             modelBuilder.Entity<Category>(entity =>

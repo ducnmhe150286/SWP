@@ -21,7 +21,7 @@ namespace SWP.Controllers
         }
 
 
-        public ActionResult Index(string categoryFilter, string brandFilter, string searchString, int page = 1)
+        public ActionResult Index(int? categoryFilter, int? brandFilter, string searchString, int page = 1)
         {
             int pageSize = 12;
 
@@ -35,15 +35,15 @@ namespace SWP.Controllers
                     .Where(p => p.Status == 1);
 
                 // Apply filters based on user input
-                if (!string.IsNullOrEmpty(categoryFilter))
+                if (categoryFilter.HasValue)
                 {
-                    int categoryId = int.Parse(categoryFilter);
+                    int categoryId = categoryFilter.Value;
                     query = query.Where(p => p.CategoryId == categoryId);
                 }
 
-                if (!string.IsNullOrEmpty(brandFilter))
+                if (brandFilter.HasValue)
                 {
-                    int brandId = int.Parse(brandFilter);
+                    int brandId = brandFilter.Value;
                     query = query.Where(p => p.BrandId == brandId);
                 }
 
@@ -74,7 +74,7 @@ namespace SWP.Controllers
 
             return View();
         }
-        
+
 
         public IActionResult Privacy()
 		{
