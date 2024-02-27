@@ -13,6 +13,7 @@ using SWP.Models;
 using System.Collections.Generic;
 using SWP.Dao;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+using SWP.Dto.Request.Blogs;
 
 namespace SWP.Controllers
 {
@@ -46,14 +47,34 @@ namespace SWP.Controllers
                 return null;
             }
         }
-        public IActionResult Index()
+        public  async Task<IActionResult> Index(int currentPage)
         {
-            return View();
-        }
+            var blog = context.Blogs.ToList();
+            if (blog != null)
+            {
 
-        public IActionResult Manage(int currentPage)
+                int startIndex = 6 * currentPage + 1;
+                ViewData["NumberOfPages"] = blog.Count / 6;
+
+                blog = blog.Skip(6 * currentPage).Take(6).ToList();
+
+                // Filter out users with Id equal to 1
+                // users = users.Where(x => x.RoleId != 1).Skip(6 * currentPage).Take(6).ToList();
+
+                ViewData["currentPage"] = currentPage;
+                ViewData["startIndex"] = startIndex;
+                return View(blog);
+            }
+            return View(blog);
+        }
+        public async Task<IActionResult> Post(int? blogId)
         {
-            var blog = GetBlogs().Result.ToList();
+            var blog = await GetBlogById(blogId);
+            return View(blog);
+        }
+        public async Task<IActionResult> Manage(int currentPage)
+        {
+            var blog = context.Blogs.ToList();
             if (blog != null)
             {
                 int startIndex = 6 * currentPage + 1;
@@ -104,7 +125,7 @@ namespace SWP.Controllers
         }
         public IActionResult Create()
         {
-            ViewBag.Error = "";
+            
             return View();
         }
 
@@ -155,12 +176,7 @@ namespace SWP.Controllers
                 _blog.UserId = blog.UserId;
                 _blog.Image = imageArray.Equals("") ? "" : imageArray.Substring(0, imageArray.Length - 1);
                 _blog.Status = blog.Status;
-                if (_blog.Title == null)
-                {
-                    string error = "Title not null";
-                    ViewBag.Error = error;
-                    return View();
-                }
+               
 
                 context.Blogs.Add(_blog);
                 await context.SaveChangesAsync();
@@ -184,18 +200,22 @@ namespace SWP.Controllers
             }
             return RedirectToAction("Manage");
         }
-        public IActionResult Edit()
+        public async Task<IActionResult> Edit(int? blogId)
         {
+            var blog = await GetBlogById(blogId);
             ViewBag.Error = "";
-            return View();
+            return View(blog);
         }
 
-        // POST: Blog/Create
+        // POST: Blog/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(List<IFormFile> files, int? blogId, [Bind("BlogId,Title,ShortDescription,Description,Status,Image")] Blog blog)
+        public async Task<IActionResult> Edit(List<IFormFile> files, int? blogId, [Bind("BlogId,Title,ShortDescription,Description,Status,Image")] BlogRequest blog)
         {
-
+            if (blog == null || blogId == null)
+            {
+                return NotFound();
+            }
             var _blog = await GetBlogById(blogId);
             /* int roleId = (int)HttpContext.Session.GetInt32("USER_ROLE");
              int userId = 0;
@@ -222,9 +242,12 @@ namespace SWP.Controllers
                     imageArray += fileName + ",";
                 }
             }
-            if (_blog != null)
+            if (_blog == null)
             {
-                _blog.BlogId = _blog.BlogId ;
+                return NotFound();
+            }
+            else
+            {
                 _blog.Title = blog.Title;
                 _blog.Description = blog.Description;
                 _blog.ShortDescription = blog.ShortDescription;
@@ -232,17 +255,15 @@ namespace SWP.Controllers
                 _blog.UserId = blog.UserId;
                 _blog.Image = imageArray.Equals("") ? "" : imageArray.Substring(0, imageArray.Length - 1);
                 _blog.Status = blog.Status;
-                if (_blog.Title == null)
+                if (!ModelState.IsValid)
                 {
-                    string error = "Title not null";
-                    ViewBag.Error = error;
-                    return View();
+                    return View(_blog); // Trả về view chỉnh sửa với các thông tin đã nhập và thông báo lỗi nếu có
                 }
             }
-            context.Entry<Blog>(blog).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            context.Update(_blog);
             await context.SaveChangesAsync();
 
-            return View(_blog);
+            return RedirectToAction("Manage");
         }
     }
 }

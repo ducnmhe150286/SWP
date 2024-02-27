@@ -1,6 +1,7 @@
 ﻿@model SWP.Models.Blog
 @using SWP.Models
 <form asp-action="Edit" enctype="multipart/form-data" method="post" asp-controller="Blog">
+    <input type="hidden" asp-for="BlogId" />
     @if(Model != null)
     {
         <div class="container">
@@ -9,8 +10,8 @@
 
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <label  class="control-label"> Tiêu đề</label>
-                        <input asp-for="Title" class="form-control" />
+                        <label class="control-label"> Tiêu đề <span class="required-star">*</span></label>
+                        <input asp-for="Title" class="form-control" required />
 
                     </div>
                     <div class="form-group">
@@ -18,8 +19,8 @@
                         <input asp-for="ShortDescription" class="form-control" />
 
                     </div>
-
-                    <div class="form-group">
+                    <div class="col-md-6">
+                        <div class="form-group">
                         <label  class="control-label"> Trạng thái</label>
                         <select asp-for="Status" class="form-control">
                             <option value="1">Public</option>
@@ -27,20 +28,22 @@
                         </select>
 
                     </div>
+                    </div>
+                    
                     <div class="form-group">
-                        <label  class="control-label">Ảnh đại diện</label>
-                        <input id="formFileLg" name="files" asp-for="Image" type="file" class="form-control" multiple />
+                        <label  class="control-label">Ảnh đại diện<span class="required-star">*</span></label>
+                        <input id="formFileLg" name="files" type="file" class="form-control" multiple onchange="handleFileSelection(this)" required />
 
                     </div>
                     <div class="form-group">
-                        <label class="form-label" >Nội dung</label>
-                        <textarea class="form-control" asp-for=Description id="editor">
+                        <label class="form-label">Nội dung<span class="required-star">*</span></label>
+                        <textarea class="form-control" asp-for=Description id="editor" required>
 
                        </textarea>
 
                     </div>
                     <div class="form-group">
-                        <input type="submit" value="Update" class="btn btn-primary" />
+                        <button type="submit" class="btn btn-success btn-lg">Update Blog</button>
                     </div>
 
                 </div>
@@ -56,3 +59,52 @@
 			console.error(error);
 		});
 </script>
+@section Scripts {
+<script>
+    function handleFileSelection(input) {
+        displaySelectedFiles(input);
+        validateFileType(input);
+    }
+
+    function displaySelectedImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#selectedImage').attr('src', e.target.result);
+                $('#selectedImageDiv').show(); // Show the div containing the image
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Call the displaySelectedImage function when a file is selected
+    $('input[type="file"]').change(function () {
+        displaySelectedImage(this);
+    });
+
+    // Call displaySelectedImage on page load to show image if it's already selected
+    $(document).ready(function () {
+        var input = $('input[type="file"]');
+        displaySelectedImage(input);
+    });
+    function validateFileType(input) {
+        const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
+        const files = input.files;
+
+        for (let i = 0; i < files.length; i++) {
+            const fileType = files[i].type;
+
+            if (!validImageTypes.includes(fileType)) {
+                alert("Chỉ chấp nhận file hình ảnh (JPEG, PNG, GIF).");
+                input.value = "";
+                return;
+            }
+        }
+    }
+</script>
+}
+<style>
+    .required-star {
+        color: red;
+    }
+</style>

@@ -1,4 +1,6 @@
-﻿namespace SWP.Dto.Request.Blogs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SWP.Dto.Request.Blogs
 {
     public class BlogRequest
     {
@@ -15,8 +17,21 @@
 
     }
     public class CreateBlogRequest
-    { 
+    {
 
+        public int BlogId { get; set; }
+
+        [Required(ErrorMessage = "Tiêu đề không được để trống.")]
+        public string Title { get; set; }
+
+        [Required(ErrorMessage = "Ảnh không được để trống.")]
+        public string Image { get; set; }
+
+        [Required(ErrorMessage = "Mô tả không được để trống.")]
+        public string Description { get; set; }
+        public string? ShortDescription { get; set; }
+        public DateTime? CreateDate { get; set; }
+        public int? Status { get; set; }
     }
 
     }
