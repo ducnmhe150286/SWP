@@ -5,7 +5,7 @@
 *@
 @{
 }
-
+<script src="https://cdn.ckeditor.com/ckeditor5/30.0.0/classic/ckeditor.js"></script>
 <section class="">
     <div class="container">
 
@@ -50,14 +50,14 @@
 
                 @if (Model != null)
                 {
-                    <table class="table">
+                    <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th>Stt</th>
                                 <th>Tiêu đề</th>
                                 <th>Ngày tạo</th>
                                 <th>Trạng thái</th>
-                                <th>Actions</th>
+                                <th>Tác vụ</th>
                             </tr>
                         </thead>
 
@@ -71,7 +71,7 @@
                                 <tr>
 
                                     <td>@startIndex</td>
-                                    <td><a asp-controller="Blog" asp-action="Details" asp-route-blogId="@item.BlogId">@item.Title</a></td>
+                                    <td>@item.Title</td>
                                     <td>@item.CreateDate</td>
                                     @if (item.Status == 1)
                                     {
@@ -83,8 +83,7 @@
                                     }
                                     <td>
                                         <a asp-controller="Blog" asp-action="Edit" asp-route-blogId="@item.BlogId" class="btn btn-primary shadow-0 me-1">Chỉnh sửa</a>
-                                    </td>
-                                    <td>
+                                    
                                         <a asp-controller="Blog" asp-action="Delete" asp-route-blogId="@item.BlogId" class="btn btn-danger shadow-0 me-1" onclick="return confirmDelete()">Xóa</a>
                                     </td>
                                 </tr>
