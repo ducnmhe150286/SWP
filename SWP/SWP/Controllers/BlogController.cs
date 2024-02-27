@@ -22,17 +22,17 @@ namespace SWP.Controllers
         //private readonly BlogDao blogDao;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public BlogController( IWebHostEnvironment webHostEnvironment)
+        public BlogController(IWebHostEnvironment webHostEnvironment)
         {
             // blogDao = new BlogDao();
             _webHostEnvironment = webHostEnvironment;
-            context= new SWPContext();
+            context = new SWPContext();
         }
         public async Task<List<Blog>> GetBlogs()
         {
-                var list = context.Blogs.ToList();
-                return list;
-            
+            var list = context.Blogs.ToList();
+            return list;
+
         }
         public async Task<Blog> GetBlogById(int? id)
         {
@@ -54,7 +54,7 @@ namespace SWP.Controllers
         public IActionResult Manage(int currentPage)
         {
             var blog = GetBlogs().Result.ToList();
-            if(blog != null)
+            if (blog != null)
             {
                 int startIndex = 6 * currentPage + 1;
                 ViewData["NumberOfPages"] = blog.Count / 6;
@@ -79,11 +79,11 @@ namespace SWP.Controllers
 
                 if (search != null && !search.Equals("\\s+"))
                 {
-                    blog = blog.Where(x => (x.Title.ToLower().Trim().Contains(search.ToLower().Trim()) )
+                    blog = blog.Where(x => (x.Title.ToLower().Trim().Contains(search.ToLower().Trim()))
                      && (!status.HasValue || x.Status == status)).ToList();
 
                 }
-                
+
 
                 if (status.HasValue)
                 {
@@ -115,12 +115,12 @@ namespace SWP.Controllers
         {
             if (ModelState.IsValid)
             {
-               /* int roleId = (int)HttpContext.Session.GetInt32("USER_ROLE");
-                int userId = 0;
-                if(roleId ==   1) {
-                   userId = (int)HttpContext.Session.GetInt32("USER_ID");
-                }*/
-               
+                /* int roleId = (int)HttpContext.Session.GetInt32("USER_ROLE");
+                 int userId = 0;
+                 if(roleId ==   1) {
+                    userId = (int)HttpContext.Session.GetInt32("USER_ID");
+                 }*/
+
                 if (blog == null)
                 {
                     return Problem("Blog null");
@@ -145,14 +145,16 @@ namespace SWP.Controllers
                         imageArray += fileName + ",";
                     }
                 }
-                
+
 
                 Blog _blog = new Blog();
                 _blog.Title = blog.Title;
-               _blog.Description = blog.Description;
+                _blog.Description = blog.Description;
                 _blog.ShortDescription = blog.ShortDescription;
-                _blog.Image = imageArray.Equals("")? "" : imageArray.Substring(0,imageArray.Length - 1);
-
+                _blog.CreateDate = DateTime.Now;
+                _blog.UserId = blog.UserId;
+                _blog.Image = imageArray.Equals("") ? "" : imageArray.Substring(0, imageArray.Length - 1);
+                _blog.Status = blog.Status;
                 if (_blog.Title == null)
                 {
                     string error = "Title not null";
@@ -162,7 +164,7 @@ namespace SWP.Controllers
 
                 context.Blogs.Add(_blog);
                 await context.SaveChangesAsync();
-               
+
             }
             return RedirectToAction("Manage");
         }
@@ -171,6 +173,76 @@ namespace SWP.Controllers
             var blog = await GetBlogById(blogId);
 
             return View(blog);
+        }
+        public async Task<IActionResult> Delete(int? blogId)
+        {
+            var blog = await GetBlogById(blogId);
+            if (blog != null)
+            {
+                context.Blogs.Remove(blog);
+                context.SaveChanges();
+            }
+            return RedirectToAction("Manage");
+        }
+        public IActionResult Edit()
+        {
+            ViewBag.Error = "";
+            return View();
+        }
+
+        // POST: Blog/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(List<IFormFile> files, int? blogId, [Bind("BlogId,Title,ShortDescription,Description,Status,Image")] Blog blog)
+        {
+
+            var _blog = await GetBlogById(blogId);
+            /* int roleId = (int)HttpContext.Session.GetInt32("USER_ROLE");
+             int userId = 0;
+             if(roleId ==   1) {
+                userId = (int)HttpContext.Session.GetInt32("USER_ID");
+             }*/
+            string imageArray = "";
+            long size = files.Sum(f => f.Length);
+
+            var filePaths = new List<string>();
+            foreach (var formFile in files)
+            {
+                if (formFile.Length > 0)
+                {
+                    var fileName = formFile.FileName;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await formFile.CopyToAsync(stream);
+                    }
+
+                    filePaths.Add("/Images/" + fileName); // Store the relative path to the file
+                    imageArray += fileName + ",";
+                }
+            }
+            if (_blog != null)
+            {
+                _blog.BlogId = _blog.BlogId ;
+                _blog.Title = blog.Title;
+                _blog.Description = blog.Description;
+                _blog.ShortDescription = blog.ShortDescription;
+                _blog.CreateDate = DateTime.Now;
+                _blog.UserId = blog.UserId;
+                _blog.Image = imageArray.Equals("") ? "" : imageArray.Substring(0, imageArray.Length - 1);
+                _blog.Status = blog.Status;
+                if (_blog.Title == null)
+                {
+                    string error = "Title not null";
+                    ViewBag.Error = error;
+                    return View();
+                }
+            }
+            context.Entry<Blog>(blog).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            await context.SaveChangesAsync();
+
+            return View(_blog);
         }
     }
 }
