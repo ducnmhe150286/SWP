@@ -1,5 +1,65 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@using SWP.Models
+@using System.Web
+@model IEnumerable<SWP.Models.Blog>
+@if (Model != null)
+{
+    <div class="container">
+        <div class="row justify-content-center">
+            @foreach (var item in Model)
+            {
+                <!-- Blog entry -->
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <img src="/Images/@item.Image"  class="card-img-top" style="width:50%">
+                        <div class="card-body">
+                             <h3 class="card-title blog-title" data-blog-id="@item.BlogId">@item.Title</h3>
+                            <p class="card-text">@item.ShortDescription </p>
+                            <p>Post on date: <span class="w3-opacity">@item.CreateDate.Value.ToString("yyyy/MM/dd")</span></p>
+                            <!-- You can uncomment the following code if you want to show a preview of the description -->
+                            @* <p class="card-text">@Html.Raw(HttpUtility.HtmlDecode(item.Description.Length < 100 ? item.Description : item.Description.Substring(0, 100)))</p> *@
+                        </div>
+                    </div>
+                </div>
+                <!-- END Blog entry -->
+            }
+        </div>
+    </div>
 }
+<!-- Pagination -->
+<nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
+    <ul class="pagination">
+        @if (ViewBag.currentPage != 0)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-controller="Blogs" asp-action="Index" asp-route-currentPage="@(ViewBag.currentPage - 1)" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        }
+        @for (int i = 1; i <= ViewBag.NumberOfPages; i++)
+        {
+            <li class="page-item "><a class="page-link" asp-controller="Blogs" asp-action="Index" asp-route-currentPage="@i">@i</a></li>
+
+        }
+        @if (ViewBag.currentPage < ViewBag.NumberOfPages)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-controller="Blogs" asp-action="Index" asp-route-currentPage="@(ViewBag.currentPage + 1)" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        }
+
+    </ul>
+</nav>
+<!-- Pagination -->
+<!-- JavaScript to handle title click and redirect -->
+<script>
+    var titles = document.querySelectorAll('.blog-title');
+    titles.forEach(function (title) {
+        title.addEventListener('click', function () {
+            var blogId = title.getAttribute('data-blog-id');
+            window.location.href = '/Blog/Post?blogId=' + blogId;
+        });
+    });
+</script>

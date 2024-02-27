@@ -1,0 +1,46 @@
+﻿@model SWP.Models.Blog
+
+@{
+    ViewData["Title"] = "Blog Post";
+}
+
+<div class="blog-post">
+    <h1>@Model.Title</h1>
+    <p class="blog-meta">Posted on <span>@Model.CreateDate.Value.ToString("yyyy/MM/dd")</span></p>
+    <p class="blog-description">@Html.Raw(Model.Description)</p>
+</div>
+<div class="form-group">
+    <a asp-action="Index" asp-controller="Blog">Danh sách blog</a>
+</div>
+<style>
+    .container {
+        max-width: 800px; /* Đặt kích thước tối đa cho container */
+        margin: 0 auto; /* Đặt margin tự động ở cả hai bên để căn giữa */
+        padding: 20px; /* Tạo khoảng cách giữa nội dung và cạnh của container */
+    }
+
+    .blog-post {
+        margin-bottom: 30px;
+        background-color: #f9f9f9; /* Màu nền cho bài viết */
+        padding: 20px; /* Tạo khoảng cách giữa nội dung và cạnh của bài viết */
+        border-radius: 8px; /* Bo tròn các cạnh */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Tạo hiệu ứng bóng đổ */
+    }
+
+    .blog-meta {
+        color: #777;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+        .blog-meta span {
+            font-weight: bold;
+            color: #333;
+        }
+
+    
+    .blog-description {
+        line-height: 1.6;
+    }
+    }
+</style>
