@@ -6,7 +6,7 @@
             <div class="">
                 <div class="card">
                     <div class="card-body" style="max-height: 550px; overflow-y: auto;">
-                        <h5 class="card-title">Nhập sản phẩm</h5>
+                        <h5 class="card-title">Sản phẩm hiện có</h5>
                         <h5 style="color: red;">@ViewData["ErrorMessage"]</h5>
                         <div class="row">
                             @if (ViewBag.AllProductDetails == null || ViewBag.AllProductDetails.Count == 0)
@@ -96,6 +96,8 @@
                                 </div>*@
                             </div>
                         </div>
+                        <hr />
+                        <h5>Nhập sản phẩm mới</h5>
                         <div class="mb-3 text-end">
                             <button type="button" class="btn btn-primary" onclick="addDetailRow()">Thêm</button>
                         </div>
