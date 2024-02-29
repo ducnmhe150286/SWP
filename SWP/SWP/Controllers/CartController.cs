@@ -1,4 +1,4 @@
-﻿/*using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SWP.Dao;
 using SWP.Models;
 
@@ -8,22 +8,22 @@ namespace SWP.Controllers
     {
         public CartDao cartDao;
         public UsersDao userDao;
-        public CartController()*//**//*
+        public CartController()
         {
             cartDao = new CartDao();
             userDao = new UsersDao();
         }
-        public IActionResult Index(int productId, int quantity, int size , int color)
+        public IActionResult Index(int productId, int quantity, int size, int color)
         {
             var customer = HttpContext.Session.GetString("USER_EMAIL");
-            
+
             var cusId = userDao.GetUserByEmail(customer);
-            if (cusId is not null && cusId.RoleId == 2 )
+            if (cusId is not null && cusId.RoleId == 2)
             {
                 var cartItem = cartDao.addToCart(productId, quantity, size, color, cusId.UserId);
                 var listItem = cartDao.GetAddItem(cusId.UserId);
                 ViewData["listItem"] = listItem;
-                return View();              
+                return View();
             }
             return RedirectToAction("Index", "Auth");
         }
@@ -41,13 +41,12 @@ namespace SWP.Controllers
             }
             return RedirectToAction("Index", "Auth");
         }
-        public IActionResult UpdateCartItem(int productId,int type)
+        public IActionResult UpdateCartItem(int productId, int type)
         {
             var customer = HttpContext.Session.GetString("USER_EMAIL");
             var cusId = userDao.GetUserByEmail(customer);
-                var update = cartDao.updateCartItem(productId, type, cusId.UserId);
+            var update = cartDao.updateCartItem(productId, type, cusId.UserId);
             return RedirectToAction("Index");
         }
     }
 }
-*/
