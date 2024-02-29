@@ -47,7 +47,7 @@ namespace SWP.Controllers
                 return null;
             }
         }
-        public  async Task<IActionResult> Index(int currentPage)
+        public  async Task<IActionResult> Index(int currentPage, int userId)
         {
             var blog = context.Blogs.ToList();
             if (blog != null)
@@ -60,7 +60,16 @@ namespace SWP.Controllers
 
                 // Filter out users with Id equal to 1
                 // users = users.Where(x => x.RoleId != 1).Skip(6 * currentPage).Take(6).ToList();
-
+                if (userId == 1)
+                {
+                    // Nếu không phải là admin, lọc ra những blog có status là 1
+                    blog = blog.Where(x => x.Status == 0).ToList();
+                }
+                else
+                {
+                    blog = blog.Where(x => x.Status ==1).ToList();
+                }
+               
                 ViewData["currentPage"] = currentPage;
                 ViewData["startIndex"] = startIndex;
                 return View(blog);

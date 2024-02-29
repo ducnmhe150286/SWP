@@ -23,8 +23,8 @@
                         <div class="form-group">
                         <label  class="control-label"> Trạng thái</label>
                         <select asp-for="Status" class="form-control">
-                            <option value="1">Public</option>
-                            <option value="0">Private</option>
+                            <option value="1">Công Khai</option>
+                            <option value="0">Riêng tư</option>
                         </select>
 
                     </div>
@@ -43,7 +43,8 @@
 
                     </div>
                     <div class="form-group">
-                        <button type="submit" class="btn btn-success btn-lg">Update Blog</button>
+                        <button type="submit" class="btn btn-success btn-lg">Cập nhật Blog</button>
+                        <a asp-action="Manage" asp-controller="Blog" class="btn btn-secondary">Trở lại</a>
                     </div>
 
                 </div>
