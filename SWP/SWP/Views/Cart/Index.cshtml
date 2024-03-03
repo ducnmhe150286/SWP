@@ -5,56 +5,57 @@
 }
 <div class="card">
     <div class="row">
-        <div class="col-md-8 cart">
-            <div class="title">
-                <div class="row">
-                    <div class="col"><h4><b>Giỏ hàng của tôi</b></h4></div>
-                    <div class="col align-self-center text-right text-muted"></div>
-                </div>
-            </div>
-            @foreach (var item in listItem)
-            {
-                
-                sum += (decimal)item.Detail.Product.Price * item.Quantity;
-                var temp = item.Detail.Product.Price * item.Quantity;
-
-                <div class="row border-top border-bottom">
-                    <div class="row main align-items-center">
-                        <div class="col-1">
-                            <input type="checkbox" data-val="@temp" id="checkbox_@item.Detail.DetailId" class="selectedItems" name="selectedItems" value="@temp" />
-                        </div>
-                        <div class="col-2"><img class="img-fluid" src="/Images/@item.Detail.Product.ProductImages.First().Path"></div>
-                        <div class="col">
-                            <div class="row text-muted">@item.Detail.Product.ProductName</div>
-                            <div class="row">@item.Detail.Product.Category.CategoryName</div>
-                            <div class="row">@item.Detail.Color.ColorName , @item.Detail.Size.SizeName</div>
-                        </div>
-                        <div class="col">
-
-                            <a asp-action="UpdateCartItem" asp-route-productId="@item.Detail.DetailId" asp-route-type="0">-</a>
-
-                            <a href="#" class="border">@item.Quantity</a>
-
-                            <a asp-action="UpdateCartItem" asp-route-productId="@item.Detail.DetailId" asp-route-type="1">+</a>
-
-                        </div>
-                        <div class="col">@string.Format("{0:N0}", @item.Detail.Product.Price) vnđ <a asp-action="UpdateCartItem" asp-route-productId="@item.Detail.DetailId" asp-route-type="2" class="close">&#10005;</a></div>
+            <div class="col-md-8 cart">
+                <div class="title">
+                    <div class="row">
+                        <div class="col"><h4><b>Giỏ hàng của tôi</b></h4></div>
+                        <div class="col align-self-center text-right text-muted"></div>
                     </div>
                 </div>
-            }
+            <form id="myform" method="post" asp-controller="CheckOut" asp-action="Index">
+                    @foreach (var item in listItem)
+                    {
 
-            
-            
-            <div class="back-to-shop"><a asp-controller="Home" asp-action="Index">&leftarrow;</a><span class="text-muted">Trở về trang chủ</span></div>
-        </div>
-        <div class="col-md-4 summary">
+                        sum += (decimal)item.Detail.Product.Price * item.Quantity;
+                        var temp = item.Detail.Product.Price * item.Quantity;
 
-            <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;  margin-top:auto;">
-                <div class="col">Tổng tiền</div>
-                <div class="col text-right"><b id="total_price"></b> vnđ</div>
+                        <div class="row border-top border-bottom">
+                            <div class="row main align-items-center">
+                                <div class="col-1">
+                                <input type="checkbox" data-value="@temp" id="checkbox_@item.Detail.DetailId" class="selectedItems" name="selectedItems" value="@item.Detail.DetailId" />
+                                </div>
+                                <div class="col-2"><img class="img-fluid" src="/Images/@item.Detail.Product.ProductImages.First().Path"></div>
+                                <div class="col">
+                                    <div class="row text-muted">@item.Detail.Product.ProductName</div>
+                                    <div class="row">@item.Detail.Product.Category.CategoryName</div>
+                                    <div class="row">@item.Detail.Color.ColorName , @item.Detail.Size.SizeName</div>
+                                </div>
+                                <div class="col">
+
+                                    <a asp-action="UpdateCartItem" asp-route-productId="@item.Detail.DetailId" asp-route-type="0">-</a>
+
+                                    <a href="#" class="border">@item.Quantity</a>
+
+                                    <a asp-action="UpdateCartItem" asp-route-productId="@item.Detail.DetailId" asp-route-type="1">+</a>
+
+                                </div>
+                                <div class="col">@string.Format("{0:N0}", @item.Detail.Product.Price) vnđ <a asp-action="UpdateCartItem" asp-route-productId="@item.Detail.DetailId" asp-route-type="2" class="close">&#10005;</a></div>
+                            </div>
+                        </div>
+                    }
+
+                </form>
+
+                <div class="back-to-shop"><a asp-controller="Home" asp-action="Index">&leftarrow;</a><span class="text-muted">Trở về trang chủ</span></div>
             </div>
-            <a href="Checkout.html" class="btn">Thanh toán</a>
-        </div>
+            <div class="col-md-4 summary">
+
+                <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;  margin-top:auto;">
+                    <div class="col">Tổng tiền</div>
+                    <div class="col text-right"><b id="total_price"></b> vnđ</div>
+                </div>
+            <input class="btn" form="myform" type="submit" value="Thanh toán"/>
+            </div>
     </div>
 
 </div>
@@ -232,17 +233,20 @@
 
 <script>
     $(document).ready(function(){
+        $('input[type=checkbox]').prop('checked', false);
+
+
         var sum = 0;
         var formattedValue = sum.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
         console.log('1')
         $("#total_price").text(formattedValue);
         $(".selectedItems").click(function () {
             var input = $(this);
-            console.log('this', this);
+            var value = input.data('value');
             if (input.is(":checked")) {
-                sum += parseFloat(input.val());
+                sum += parseFloat(value);
             }else{
-                sum -= parseFloat(input.val());
+                sum -= parseFloat(value);
             }
             var formattedValue = sum.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
             console.log('sum', sum);

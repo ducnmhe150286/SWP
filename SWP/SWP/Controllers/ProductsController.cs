@@ -493,6 +493,30 @@ namespace SWP.Controllers
 
             return RedirectToAction("Products");
         }
+        public IActionResult UpdateStatusProduct(int id)
+        {
+            using (var context = new SWPContext())
+            {
+                var productToUpdate = context.Products
+                    .Where(p => p.ProductId == id)
+                    .FirstOrDefault();
+
+                if (productToUpdate != null)
+                {
+                    // Cập nhật trạng thái: Chuyển đổi giữa 0 và 1
+                    productToUpdate.Status = (productToUpdate.Status == 1) ? 0 : 1;
+
+                    context.SaveChanges();
+                    TempData["SuccessMessage"] = "Cập nhật trạng thái sản phẩm thành công!";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Không tìm thấy sản phẩm.";
+                }
+            }
+
+            return RedirectToAction("Products");
+        }
 
 
 

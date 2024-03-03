@@ -6,12 +6,12 @@
             <div class="">
                 <div class="card">
                     <div class="card-body" style="max-height: 550px; overflow-y: auto;">
-                        <h5 class="card-title">Sản phẩm hiện có</h5>
+                        <h4 class="card-title">Sản phẩm hiện có</h4>
                         <h5 style="color: red;">@ViewData["ErrorMessage"]</h5>
                         <div class="row">
                             @if (ViewBag.AllProductDetails == null || ViewBag.AllProductDetails.Count == 0)
                             {
-                                <div class="row default-detail-row">
+                               @* <div class="row default-detail-row">
                                     <div class="col-4">
                                         <div class="mb-3">
                                             <label asp-for="ColorId" class="form-label">Màu sắc<span class="required-star">*</span></label>
@@ -39,13 +39,13 @@
                                     <div class="col-3">
                                         <div class="mb-3">
                                             <label asp-for="Quantity" class="form-label">Số lượng<span class="required-star">*</span></label>
-@*                                            <input name="Quanties" class="form-control" type="number" min="0" name="Quantities" required />
-*@                                            <input name="Quanties" class="form-control" type="number" min="0" required oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')" pattern="\d+" title="Số lượng phải là số nguyên không âm" />
+                                          <input name="Quanties" class="form-control" type="number" min="0" required oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')" pattern="\d+" title="Số lượng phải là số nguyên không âm" />
                                             <span asp-validation-for="Quantity" class="text-danger"></span>
                                         </div>
                                     </div>
                                     
-                                </div>
+                                </div>*@
+                                <h5 class="text-center" style="color:red">Không có dữ liệu</h5>
                             }
                             @foreach (var productDetail in ViewBag.AllProductDetails)
                             {
@@ -78,7 +78,7 @@
                                 <div class="col-4">
                                     <div class="mb-3">
                                         <label asp-for="Quantity" class="form-label">Số lượng<span class="required-star">*</span></label>
-                                        <input name="Quanties" class="form-control" type="number" min="0" value="@productDetail.Quantity" readonly required />
+                                        <input name="Quanties" class="form-control" type="text" pattern="\d*" title="Vui lòng chỉ nhập số nguyên không có dấu phẩy hoặc dấu chấm" value="@productDetail.Quantity" readonly required />
                                         <span asp-validation-for="Quantity" class="text-danger"></span>
 
                                         <!-- Add a hidden field for ProductDetailId -->
@@ -97,7 +97,7 @@
                             </div>
                         </div>
                         <hr />
-                        <h5>Nhập sản phẩm mới</h5>
+                        <h4>Nhập sản phẩm mới</h4>
                         <div class="mb-3 text-end">
                             <button type="button" class="btn btn-primary" onclick="addDetailRow()">Thêm</button>
                         </div>
@@ -171,7 +171,8 @@
                                 <div class="col-3">
                                     <div class="mb-3">
                                         <label asp-for="Quantity" class="form-label">Số lượng<span class="required-star">*</span></label>
-                                        <input name="Quanties" class="form-control" type="number" min="0"  name="Quantity" required />
+                                                        <input name="Quanties" class="form-control" type="number" oninput="validateInput(this)" title="Vui lòng chỉ nhập số nguyên không có dấu phẩy hoặc dấu chấm" required />
+
                                                 <span asp-validation-for="Quantity" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -197,6 +198,10 @@
         function removeDetailRow(button) {
             // Find the parent detail-row and remove it
             $(button).closest('.detail-row').remove();
+        }
+        function validateInput(input) {
+            // Loại bỏ mọi ký tự không phải là số
+            input.value = input.value.replace(/[^\d]/g, '');
         }
     </script>
 }
