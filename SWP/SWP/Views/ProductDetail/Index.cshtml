@@ -9,58 +9,37 @@
                 @if (Model.ProductImages.Any())
                 {
                     <div class="border rounded-4 mb-3 d-flex justify-content-center">
-                        <a data-fslightbox="mygalley" class="rounded-4" target="_blank" data-type="image">
-
+                        <a id="mainImage" data-fslightbox="mygalley" class="rounded-4" target="_blank" data-type="image">
                             <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4 fit" src="~/Images/@Model.ProductImages.First().Path" />
                         </a>
                     </div>
                     <div class="d-flex justify-content-center mb-3">
-                        @foreach (var item in Model.ProductImages)
+                        @foreach (var (item, index) in Model.ProductImages.Select((value, i) => (value, i)))
                         {
-                            <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" class="item-thumb">
+                            <a data-index="@index" data-fslightbox="mygalley" class="border mx-1 rounded-2 item-thumb" target="_blank" data-type="image">
                                 <img width="60" height="60" class="rounded-2" src="~/Images/@item.Path" />
                             </a>
                         }
-
-
                     </div>
                 }
                 else
                 {
                     <div class="border rounded-4 mb-3 d-flex justify-content-center">
-                    <a data-fslightbox="mygalley" class="rounded-4" target="_blank" data-type="image" >
-                        
-                        <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4 fit" src="" />
-                    </a>
+                        <a data-fslightbox="mygalley" class="rounded-4" target="_blank" data-type="image">
+                            <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4 fit" src="" />
+                        </a>
                     </div>
-                
                 }
-
-                <!-- thumbs-wrap.// -->
-                <!-- gallery-wrap .end// -->
             </aside>
+
             <main class="col-lg-6">
                 <div class="ps-lg-3">
                     <h4 class="title text-dark">
                         @Model.ProductName
                     </h4>
-                    <div class="d-flex flex-row my-3">
-                        <div class="text-warning mb-1 me-2">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <span class="ms-1">
-                                4.5
-                            </span>
-                        </div>
-                        <span class="text-muted"><i class="fas fa-shopping-basket fa-sm mx-1"></i>154 orders</span>
-                        <span class="text-success ms-2">In stock</span>
-                    </div>
 
                     <div class="mb-3">
-                        <span class="h5">@Model.Price vnđ</span>
+                        <span class="h5">@string.Format("{0:N0}", @Model.Price) vnđ</span>
                     </div>
 
                     <p>
@@ -78,7 +57,7 @@
 
                     <hr />
                     <form asp-controller="Cart" asp-action="Index">
-                        <input type="hidden" name="productId" value="@Model.ProductId"/>
+                        <input type="hidden" name="productId" value="@Model.ProductId" />
                         <div class="row mb-4">
                             <div class="col-md-4 col-6">
                                 <label class="mb-2">Kích thước</label>
@@ -114,7 +93,7 @@
                         </div>
                         <button class="btn btn-primary shadow-0" type="submit"> <i class="me-1 fa fa-shopping-basket"></i> Thêm vào giỏ hàng </button>
                     </form>
-                    
+
                 </div>
             </main>
         </div>
@@ -127,53 +106,17 @@
         <div class="row gx-4">
             <div class="col-lg-8 mb-4">
                 <div class="border rounded-2 px-3 py-2 bg-white">
-                    
+
                     <!-- Pills content -->
                     <div class="tab-content" id="ex1-content">
                         <div class="tab-pane fade show active" id="ex1-pills-1" role="tabpanel" aria-labelledby="ex1-tab-1">
-                            <p>
-                                With supporting text below as a natural lead-in to additional content. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                                enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                                pariatur.
-                            </p>
-                            <div class="row mb-2">
-                                <div class="col-12 col-md-6">
-                                    <ul class="list-unstyled mb-0">
-                                        <li><i class="fas fa-check text-success me-2"></i>Some great feature name here</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>Lorem ipsum dolor sit amet, consectetur</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>Duis aute irure dolor in reprehenderit</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>Optical heart sensor</li>
-                                    </ul>
-                                </div>
-                                <div class="col-12 col-md-6 mb-0">
-                                    <ul class="list-unstyled">
-                                        <li><i class="fas fa-check text-success me-2"></i>Easy fast and ver good</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>Some great feature name here</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>Modern style and design</li>
-                                    </ul>
-                                </div>
-                            </div>
+                            <h2>Mô tả sản phẩm </h2>
+                            @Model.Feature<br />
+                            <h2>Đặc điểm</h2>
+                            @Model.Attributes
+                        </div>
 
-                        </div>
-                        <div class="tab-pane fade mb-2" id="ex1-pills-2" role="tabpanel" aria-labelledby="ex1-tab-2">
-                            Tab content or sample information now <br />
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                            aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-                            officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                        </div>
-                        <div class="tab-pane fade mb-2" id="ex1-pills-3" role="tabpanel" aria-labelledby="ex1-tab-3">
-                            Another tab content or sample information now <br />
-                            Dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                            commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-                            mollit anim id est laborum.
-                        </div>
-                        <div class="tab-pane fade mb-2" id="ex1-pills-4" role="tabpanel" aria-labelledby="ex1-tab-4">
-                            Some other tab content or sample information now <br />
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                            aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-                            officia deserunt mollit anim id est laborum.
-                        </div>
+
                     </div>
                     <!-- Pills content -->
                 </div>
@@ -186,26 +129,29 @@
                             @if (listPro.Any())
                             {
                                 @foreach (var proSimilar in listPro)
-                            {
+                                {
                                     <div class="d-flex mb-3">
                                         <a asp-controller="ProductDetail" asp-action="Index" asp-route-productId="@proSimilar.ProductId" class="me-3">
-                                            @if(proSimilar.ProductImages.Any()){
+                                            @if (proSimilar.ProductImages.Any())
+                                            {
                                                 <img src="~/Images/@proSimilar.ProductImages.First().Path" style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
-                                            }else{
+                                            }
+                                            else
+                                            {
                                                 <img src="" style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
                                             }
-                                            
-                                </a>
-                                <div class="info">
-                                    <a href="#" class="nav-link mb-1">
-                                        @proSimilar.ProductName
-                                    </a>
-                                    <strong class="text-dark"> @proSimilar.Price vnđ</strong>
-                                </div>
-                            </div>
+
+                                        </a>
+                                        <div class="info">
+                                            <a href="#" class="nav-link mb-1">
+                                                @proSimilar.ProductName
+                                            </a>
+                                            <strong class="text-dark">@string.Format("{0:N0}", @proSimilar.Price) vnđ</strong>
+                                        </div>
+                                    </div>
+                                }
                             }
-                            }
-                            
+
 
                         </div>
                     </div>
@@ -214,6 +160,7 @@
         </div>
     </div>
 </section>
+
 
 @section Scripts {
     <script>
@@ -236,10 +183,10 @@
             var parent = $(e.target).closest('div');
             var currentVal = parseInt(parent.find('input[name=' + fieldName + ']').val(), 10);
 
-            if (!isNaN(currentVal) && currentVal > 0) {
+            if (!isNaN(currentVal) && currentVal > 1) {
                 parent.find('input[name=' + fieldName + ']').val(currentVal - 1);
             } else {
-                parent.find('input[name=' + fieldName + ']').val(0);
+                parent.find('input[name=' + fieldName + ']').val(1);
             }
         }
 
@@ -249,7 +196,11 @@
 
         $('.input-group').on('click', '.button-minus', function (e) {
             decrementValue(e);
+
+            
         });
 
-    </script>
+        
+    </script> 
 }
+
