@@ -55,7 +55,10 @@
                             <div class="col-6">
                                 <div class="mb-3">
                                     <label asp-for="Description" class="form-label">Mô tả chung</label>
-                                    <input asp-for="Description" class="form-control" value=@ViewBag.Product.Description></input>
+@*                                    <textarea asp-for="Description" class="form-control" id="descriptionTextArea">@ViewBag.Product.Description</textarea>
+*@
+                                    <input asp-for="Description" class="form-control" id="descriptionTextArea" value=@ViewBag.Product.Description></input>
+
                                     <span asp-validation-for="Description" class="text-danger"></span>
                                 </div>
                             </div>
@@ -74,14 +77,14 @@
                             <div class="col-6">
                                 <div class="mb-3">
                                     <label asp-for="Feature" class="form-label">Mô tả tính năng</label>
-                                    <textarea asp-for="Feature" class="form-control">@ViewBag.Product.Feature</textarea>
+                                    <input asp-for="Feature" class="form-control scrollable-input" value=@ViewBag.Product.Feature></input>
                                     <span asp-validation-for="Feature" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="mb-3">
                                     <label asp-for="Attributes" class="form-label">Mô tả đặc điểm</label>
-                                    <textarea asp-for="Attributes" class="form-control">@ViewBag.Product.Attributes</textarea>
+                                    <input asp-for="Attributes" class="form-control scrollable-input" value=@ViewBag.Product.Attributes></input>
                                     <span asp-validation-for="Attributes" class="text-danger"></span>
                                 </div>
                             </div>
@@ -158,10 +161,17 @@
         // Show the file input and hide the image
         fileInput.style.display = 'block';
     }
+    var descriptionValue = document.getElementById('descriptionTextArea').value;
+    console.log("descriptionTextArea: ", descriptionValue);
 </script>
 
 <style>
     .required-star {
         color: red;
+    }
+
+    .scrollable-input {
+        overflow-y: auto;
+        min-height: 70px;
     }
 </style>

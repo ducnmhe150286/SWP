@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SWP</title>
+    <title>@ViewData["Title"] - Boxing Shop</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SWP.styles.css" asp-append-version="true" />
@@ -26,8 +26,8 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SWP</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+@*                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"></a>
+*@                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -42,31 +42,32 @@
                         @if (role == 1)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Category</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Danh mục</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Brand" asp-action="Index">Brand</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Brand" asp-action="Index">Thương hiệu</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">ManageUsers</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Quản lý Người dùng</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Products">ManageProduct</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Products">Quản lý Sản phẩm</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Blog" asp-action="Manage">Quản lí Blog</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Blog" asp-action="Manage">Quản lý Blog</a>
                             </li>
+
                         }
                     </ul>
                     <div class="navbar-nav ml-auto pr-100">
                         @if (role != 0)
                         {
                             <p>Xin chào ,<a asp-controller="ProfileUsers" asp-action="Index">@userName</a>  - </p>
-                            <a asp-controller="Auth" asp-action="Logout">Logout</a>
+                            <a asp-controller="Auth" asp-action="Logout">Đăng xuất</a>
                         }
                         else
                         {
-                            <a href="/auth">Login</a>
+                            <a href="/auth">Đăng nhập</a>
                         }
 
                     </div>

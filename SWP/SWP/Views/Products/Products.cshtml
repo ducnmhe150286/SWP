@@ -3,12 +3,16 @@
 <html>
 <head>
     <!-- Thêm link Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.19.0/font/bootstrap-icons.css" rel="stylesheet">
+  @*  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.19.0/font/bootstrap-icons.css" rel="stylesheet">*@
 
     <style>
         .center-text {
             text-align: center;
+        }
+
+        .table-hover-pointer tbody tr:hover {
+            cursor: pointer;
         }
     </style>
 </head>
@@ -87,8 +91,8 @@
                   
             </div>
             </form>
-           
-        <table class="table table-bordered table-responsive w-100">
+
+            <table class="table table-bordered table-hover table-responsive w-100 table-hover-pointer">
                 <thead class="text-center">
                     <tr>
                         <th>Hình ảnh</th> 
@@ -100,14 +104,15 @@
                         <th>Danh mục</th>
 @*                        <th>Giảm giá</th>
                         *@
-                        <th>Trạng thái</th>
                         
                         <th>Màu sắc</th>
                         <th>Kích cỡ</th>
+
+                        <th>Trạng thái</th>
                     
                         <th>Ngày tạo</th>
                       
-                        <th style="width: 100px;">Action</th> 
+                        <th>Hành động</th> 
                     </tr>
                 </thead>
                 <tbody class ="text-center">
@@ -129,7 +134,23 @@
                                 }
                             </td>
                             <td>@item.ProductName</td>
-                            <td>@item.Description</td>
+                            <td>
+                                @{
+                                    string description = item.Description;
+                                    if (!string.IsNullOrEmpty(description))
+                                    {
+                                        if (description.Length > 50)
+                                        {
+                                            description = $"{description.Substring(0, 50)}...";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        description = "Không có mô tả"; 
+                                    }
+                                }
+                                <span title="@item.Description">@description</span>
+                            </td>
                             <td>@item.Brand.BrandName</td>
                             <td>@item.Price?.ToString("N0")</td>
                             <td>
@@ -173,16 +194,54 @@
                             <td>
                                 @(item.CreatedDate.HasValue ? item.CreatedDate.Value.ToString("dd/MM/yyyy") : "")
                             </td>
-                            <td>
+                         @*   <td>
                                 <a href="@Url.Action("EditProduct", "Products", new { id = item.ProductId })" class="btn btn-primary mb-1">
                                     <span class="bi bi-pencil">Sửa</span>
                                 </a>
-                               @* <a href="#" class="btn btn-danger" onclick="confirmDelete(@item.ProductId)">
-                                    <span class="bi bi-trash">Xóa</span>
-                                </a>*@
+                             
                                 <a href="@Url.Action("DetailProduct", "Products", new { id = item.ProductId })" class="btn btn-success mb-1">
                                     <span class="bi bi-pencil">Nhập</span>
                                 </a>
+                                 <a href="#" class="btn btn-danger" onclick="confirmDelete(@item.ProductId)">
+                            <span class="bi bi-trash">Ngừng hoạt động</span>
+                            </a>
+                            </td>*@
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        ...
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.Action("EditProduct", "Products", new { id = item.ProductId })">
+                                               Sửa sản phẩm
+                                            </a>
+
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.Action("DetailProduct", "Products", new { id = item.ProductId })">
+                                                Nhập sản phẩm
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+
+                                        <li>
+                                            @{if(item.Status == 1) {
+                                                    <a class="dropdown-item" href="#" onclick="openModal('@item.ProductId')">
+                                                Ngừng hoạt động
+                                            </a>
+                                            }else {
+                                                    <a class="dropdown-item" href="#" onclick="openModal('@item.ProductId')">
+                                                Hoạt động
+                                            </a>
+                                            }
+                                            }
+                                           
+                                        </li>
+                                    </ul>
+                                </div>
                             </td>
 
                         </tr>
@@ -223,15 +282,47 @@
                 </nav>
             </div>
 
-
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Trạng thái sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc muốn thay đổi trạng thái sản phẩm ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" onclick="saveChanges()">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
-        function confirmDelete(productId) {
-            var isConfirmed = confirm("Bạn có chắc muốn xóa sản phẩm này?");
-            if (isConfirmed) {
-                window.location.href = "@Url.Action("DeleteProduct", "Products")?id=" + productId;
-            }
+        //function confirmDelete(productId) {
+        //    var isConfirmed = confirm("Bạn có chắc muốn xóa sản phẩm này?");
+        //    if (isConfirmed) {
+        //        window.location.href = "@Url.Action("DeleteProduct", "Products")?id=" + productId;
+        //    }
+        //}
+        var currentProductId;
+
+        function openModal(productId) {
+            currentProductId = productId; // Lưu giá trị productId để sử dụng trong saveChanges
+            var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+            myModal.show();
+        }
+
+        function saveChanges() {
+            // Xử lý lưu thay đổi tại đây
+            // Sử dụng giá trị currentProductId
+            console.log("ProductId: " + currentProductId);
+            window.location.href = "@Url.Action("UpdateStatusProduct", "Products")?id=" + currentProductId;
+            var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+            myModal.hide();
         }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+@*    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+*@</body>
 </html>
