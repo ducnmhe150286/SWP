@@ -4,8 +4,11 @@ namespace SWP.Controllers
 {
     public class CheckOutController : Controller
     {
-        public IActionResult Index()
+        [HttpPost]
+        public IActionResult Index(List<int> selectedItems)
         {
+            //get detail
+            // formdata[]
             return View();
         }
     }
