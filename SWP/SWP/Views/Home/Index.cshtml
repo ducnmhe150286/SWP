@@ -1,4 +1,7 @@
-﻿@inject IHttpContextAccessor HttpContextAccessor;
+﻿@using SWP.Models
+@using System.Web
+@model IEnumerable<SWP.Models.Blog>
+@inject IHttpContextAccessor HttpContextAccessor;
 @addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     Layout = null; // This assumes you don't want to use a layout page
@@ -660,6 +663,33 @@ form a {
             color: #333;
         }
 
+        .custom-col-6 {
+            width: 50%;
+            box-sizing: border-box;
+            padding: 0 15px; /* Optional: add padding if needed */
+        }
+
+        .card-img-col {
+            width: 30%; /* Adjust the percentage as needed */
+            box-sizing: border-box;
+            border-right: 1px solid #ddd; /* Add a right border to the image */
+        }
+
+        .card-content-col {
+            width: 70%; /* Adjust the percentage as needed */
+            box-sizing: border-box;
+            text-align: center; /* Center-align the content inside card-content-col */
+        }
+
+        .card {
+            border: 1px solid #ddd; /* Add a border color of your choice */
+            margin-bottom: 20px; /* Add space between cards, adjust the value as needed */
+            cursor: pointer; /* Add pointer cursor on hover */
+        }
+        .xemthem{
+            padding-left:920px;
+        }
+
 
 
 }</style>
@@ -679,8 +709,8 @@ form a {
       <nav>
         <ul id="MenuItems">
           <li><a href="#">Trang chủ</a></li>
-                        <li><a href="#product">Sản phẩm</a></li>
-          <li><a href="/blog/index">Blog</a></li>
+          <li><a href="@Url.Action("ListProduct", "Home")">Sản phẩm</a></li>
+          <li><a href="@Url.Action("ListBlog", "Home")">Blog</a></li>
 
 @*          <li><a href="#">Contact</a></li>
 *@
@@ -743,9 +773,7 @@ form a {
 <!-- Featured products -->
 <div class="small-container">
   <h2 class="title">Sản Phẩm Chào Bán</h2>
-            
-
-<form action="@Url.Action("Index", "Home")" method="get" class="mt-3">
+        <form action="@Url.Action("Index", "Home")" method="get" class="mt-3" id="product">
            
             <div class="row mb-3 mt-5 mb-5">
                 <div class="">
@@ -788,7 +816,7 @@ form a {
 </div>
 
             
-        <div class="row" style="padding-top: 30px;" id="product">
+        <div class="row" style="padding-top: 30px;">
             @foreach (Product product in ViewBag.ProductList)
             {
                 <div class="col-4 product-card">
@@ -818,8 +846,8 @@ form a {
                 </div>
             }
         </div>
-<div class="mt-3 d-flex justify-content-center">
-            <nav class="text-center" aria-label="Page navigation">
+<div class="xemthem">
+            @*<nav class="text-center" aria-label="Page navigation">
                 <ul class="pagination">
                     @if (ViewBag.ProductList.HasPreviousPage)
                     {
@@ -832,7 +860,7 @@ form a {
                     @for (int i = 1; i <= ViewBag.ProductList.TotalPages; i++)
                     {
                         <li class="page-item @(i == ViewBag.ProductList.PageIndex ? "current-page" : "")">
-                            <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                            <a class="page-link" href="@Url.Action("Index", new { productPage = i })">@i</a>
                         </li>
                     }
                     @if (ViewBag.ProductList.HasNextPage)
@@ -844,8 +872,78 @@ form a {
                         </li>
                     }
                 </ul>
-            </nav>
+            </nav>*@
+            <a href="@Url.Action("ListProduct", "Home")">Xem thêm <span aria-hidden="true">&raquo;</span></a>
+
         </div>
+
+
+        <h2 class="title">Danh sách Blog</h2>
+        <div class="row justify-content-center" id="blog">
+
+            @foreach (Blog item in ViewBag.Blog)
+            {
+                <!-- Blog entry -->
+                <div class="custom-col-6">
+                    <!-- Each blog entry takes half of the row -->
+                    <div class="card mb-3" style="max-width: 540px;">
+                        <div class="row g-0">
+                            <div class="card-img-col">
+                                <img src="/Images/@item.Image" class="img-fluid rounded-start" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+
+                            <div class="card-content-col">
+                                <div class="card-body">
+                                    <h5 class="card-title blog-title" data-blog-id="@item.BlogId">@item.Title</h5>
+                                    <p class="card-text">@item.ShortDescription</p>
+                                    <p class="card-text"><small class="text-muted">@item.CreateDate.Value.ToString("yyyy/MM/dd")</small></p>
+                                    <!-- You can uncomment the following code if you want to show a preview of the description -->
+                                    @* <p class="card-text">@Html.Raw(HttpUtility.HtmlDecode(item.Description.Length < 100 ? item.Description : item.Description.Substring(0, 100)))</p> *@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END Blog entry -->
+            }
+
+        </div>
+        <div class="xemthem">
+           @* <nav class="text-center" aria-label="Blog navigation">
+                <ul class="pagination">
+                    @if (ViewBag.Blog.HasPreviousPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.Blog.PageIndex - 1 })" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    }
+                    @for (int i = 1; i <= ViewBag.Blog.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == ViewBag.Blog.PageIndex ? "current-page" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { blogPage = i })">@i</a>
+                        </li>
+                    }
+                    @if (ViewBag.Blog.HasNextPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.Blog.PageIndex + 1 })" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>*@
+            <a href="@Url.Action("ListBlog", "Home")">Xem thêm <span aria-hidden="true">&raquo;</span></a>
+        </div>
+
+
+
+
+
+           
+            
 
 
 
@@ -1106,7 +1204,6 @@ form a {
 
 
     <script>
-        // Paste your JavaScript code here
         var MenuItems = document.getElementById('MenuItems');
         MenuItems.style.maxHeight = '0px';
 
@@ -1129,9 +1226,10 @@ form a {
             // Nếu phần tử tồn tại
             if (productElement) {
                 // Cuộn trang đến vị trí của phần tử "product"
-                productElement.scrollIntoView({ behavior: "smooth" });
+                productElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
             }
         }
+
         function handleSearch() {
             var searchStringInput = document.getElementById("searchString");
             var currentUrl = new URL(window.location.href);
@@ -1148,7 +1246,30 @@ form a {
             // Chuyển hướng đến URL đã cập nhật
             window.location.href = currentUrl.href;
         }
+
+        // Function to handle pagination for "product" and "blog"
+        function handlePagination(section, pageIndex) {
+            var sectionElement = document.getElementById(section);
+            // Nếu phần tử tồn tại
+            if (sectionElement) {
+                // Cuộn trang đến vị trí của phần tử
+                sectionElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+            }
+
+            // You can add additional logic here to handle the pagination URL parameters
+            // and update the URL accordingly if needed.
+            // Example: currentUrl.searchParams.set(section + "Page", pageIndex);
+        }
+        var titles = document.querySelectorAll('.blog-title');
+        titles.forEach(function (title) {
+            title.addEventListener('click', function () {
+                var blogId = title.getAttribute('data-blog-id');
+                window.location.href = '/Blog/Post?blogId=' + blogId;
+            });
+        });
     </script>
+
+
 
 </body>
 </html>
