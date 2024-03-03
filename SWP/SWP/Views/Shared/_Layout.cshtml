@@ -4,17 +4,22 @@
 <!DOCTYPE html>
 
 <html lang="en">
+   
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Boxing Shop</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/SWP.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://cdn.ckeditor.com/ckeditor5/30.0.0/classic/ckeditor.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="~/SWP.styles.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="https://cdn.ckeditor.com/ckeditor5/30.0.0/classic/ckeditor.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     
 </head>
 <body>
@@ -24,11 +29,10 @@
         int role = HttpContextAccessor.HttpContext.Session.GetInt32("USER_ROLE") ?? 0;
 
     }
-    <header>
+@*    <div class="header">
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-@*                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"></a>
-*@                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -37,9 +41,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ </a>
                         </li>
-                       @* <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>*@
+                      
                         @if (role == 1)
                         {
                             <li class="nav-item">
@@ -79,7 +81,67 @@
                 </div>
             </div>
         </nav>
-    </header>
+    </div>
+*@
+    <div class="custom-header">
+        <div class="custom-navbar">
+            <div class="custom-logo">
+                <!-- Uncomment the line below if you want to include a logo -->
+                <!-- <a href="index.html"><img src="https://i.ibb.co/kDVwgwp/logo.png" alt="RedStore" width="125px" /></a> -->
+            </div>
+            <div class="custom-nav">
+                <ul id="MenuItems">
+                    @if (role == 1)
+                    {
+                        <li>
+                            <a asp-area="" asp-controller="Category" asp-action="Index" class="custom-navbar-link">Danh mục</a>
+                        </li>
+                        <li>
+                            <a asp-area="" asp-controller="Brand" asp-action="Index" class="custom-navbar-link">Thương hiệu</a>
+                        </li>
+                        <li>
+                            <a asp-area="" asp-controller="Users" asp-action="Index" class="custom-navbar-link">Quản lý Người dùng</a>
+                        </li>
+                        <li>
+                            <a asp-area="" asp-controller="Products" asp-action="Products" class="custom-navbar-link">Quản lý Sản phẩm</a>
+                        </li>
+                        <li>
+                            <a asp-area="" asp-controller="Blog" asp-action="Manage" class="custom-navbar-link">Quản lý Blog</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li><a href="@Url.Action("Index", "Home")" class="custom-navbar-link">Trang chủ</a></li>
+                        <li><a href="@Url.Action("ListProduct", "Home")" class="custom-navbar-link">Sản phẩm</a></li>
+                        <li><a href="@Url.Action("ListBlog", "Home")" class="custom-navbar-link">Blog</a></li>
+                    }
+                    <!-- Add more menu items as needed -->
+                </ul>
+            </div>
+
+            @if (role == 1)
+            {
+
+            }
+            else
+            {
+                <a asp-controller="Cart" asp-action="GetCartItem" class="custom-navbar-link"><img src="https://i.ibb.co/PNjjx3y/cart.png" alt="" width="30px" height="30px" /></a>
+                @*<img src="https://i.ibb.co/6XbqwjD/menu.png" alt="" class="menu-icon" onclick="menutoggle()" />*@
+            }
+
+            <div class="custom-navbar-nav ml-auto pr-100" style="margin-left: 10px">
+                @if (role != 0)
+                {
+                    <a asp-controller="ProfileUsers" asp-action="Index" class="custom-navbar-link">@userName</a>
+                    <a asp-controller="Auth" asp-action="Logout" class="custom-navbar-link">Đăng xuất</a>
+                }
+                else
+                {
+                    <a href="/auth" class="custom-navbar-link">Đăng nhập</a>
+                }
+            </div>
+        </div>
+    </div>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -92,8 +154,66 @@
     </div>
     </footer>*@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .custom-header {
+        background: radial-gradient(#fff, #ffd6d6);
+    }
+
+    body {
+        font-family: "Poppins", sans-serif;
+    }
+
+    .custom-navbar {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .custom-nav {
+        flex: 1;
+        text-align: center;
+    }
+
+    .custom-nav ul {
+        display: inline-block;
+        list-style-type: none;
+    }
+
+    .custom-nav ul li {
+        display: inline-block;
+        margin-right: 20px;
+    }
+
+    .custom-navbar-link {
+        text-decoration: none !important;
+        color: #555 !important;
+    }
+
+    .custom-paragraph {
+        color: #555;
+    }
+
+    .current-page {
+        border-bottom: 2px solid orange;
+    }
+
+    /* CSS for dropdown */
+    .custom-navbar-nav .custom-dropdown:hover .custom-dropdown-menu,
+    .custom-navbar-nav .custom-dropdown.show .custom-dropdown-menu {
+        display: block;
+    }
+</style>
+
 </html>
