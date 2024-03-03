@@ -679,11 +679,11 @@ form a {
       <nav>
         <ul id="MenuItems">
           <li><a href="#">Trang chủ</a></li>
-          <li><a href="#">Sản phẩm</a></li>
+                        <li><a href="#product">Sản phẩm</a></li>
           <li><a href="/blog/index">Blog</a></li>
 
-          <li><a href="#">Contact</a></li>
-
+@*          <li><a href="#">Contact</a></li>
+*@
           <!-- <li><a href="#">Contact</a></li> -->
 
 @*          <li><a href="account.html">Account</a></li>
@@ -691,7 +691,7 @@ form a {
       </nav>
       <a asp-controller="Cart" asp-action="GetCartItem"><img src="https://i.ibb.co/PNjjx3y/cart.png" alt="" width="30px" height="30px" /></a>
       <img src="https://i.ibb.co/6XbqwjD/menu.png" alt="" class="menu-icon" onclick="menutoggle()" />
-                <div class="navbar-nav ml-auto pr-100">
+                <div class="navbar-nav ml-auto pr-100" style="margin-left:10px">
                     @if (role != 0)
                     {
                         <a asp-controller="ProfileUsers" asp-action="Index">@userName</a>
