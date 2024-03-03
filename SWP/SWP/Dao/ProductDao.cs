@@ -40,7 +40,7 @@ namespace SWP.Dao
         {
             try
             {
-                var listPro = _context.Products.Include(x => x.ProductImages).Where(x => x.CategoryId == pro.CategoryId && x.ProductId != pro.ProductId).ToList();
+                var listPro = _context.Products.Include(x => x.ProductImages).Where(x => x.CategoryId == pro.CategoryId && x.ProductId != pro.ProductId).Take(4).ToList();
                 return listPro;
             }
             catch (Exception)
