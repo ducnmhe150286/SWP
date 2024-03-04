@@ -58,6 +58,10 @@ namespace SWP.Dao
                         .ThenInclude(x=>x.Product)
                         .ThenInclude(x=>x.Category)
                     .ToList();
+                if(data == null)
+                {
+                    return null;
+                }
                 return data;
             }
             catch (Exception)
