@@ -12,61 +12,64 @@
     <div class="card-body">
        
         <div class="row">
-            <form id="myform" method="post" asp-controller="CheckOut" asp-action="AddDB">
-            <div class="col-md-7">
-                <div class="left border">
-                    <div class="row">
-                        <span class="header">Thanh toán</span>
-                        
-                    </div>
-                    
-                        <div class="row">
-                             <span>Họ và Tên *:</span>
-                             <input name="customerName" value="@infor.FirstName @infor.LastName" placeholder="">
-                        </div>
-                        
-                        <span>Số điện thoại:</span>
-                        <input name="phoneNumber" value="@infor.PhoneNumber" placeholder="0912345678">
-                        <span>Địa chỉ:</span>
-                        <input name="address" value="@infor.Address" placeholder="Hà Nội/...">
-                         @foreach (var item in listItem)
-                    {
-                        <input type="hidden" name="listItem1" value="@item.DetailId" />
-                    }
-                </div>
-            </div>
-            <div class="col-md-5">
-                <div class="right border">
-                    <div class="header">Sản phẩm </div>
-                    
-                    @foreach (var item in listItem)
-                    {
-                        sum += (decimal)item.Detail.Product.Price * item.Quantity;
-                        <div class="row item">
-                            <div class="col-4 align-self-center">
-                                <img style="border-radius: 5px; border: 2px solid #ddd; padding: 5px; background-color: #f1f1f1;" width="50" height="50" class="img-fluid" src="/Images/@item.Detail.Product.ProductImages.First().Path">
+                    <div class="col-md-7">
+                        <div class="left border">
+                            <form id="myform" method="post" asp-controller="CheckOut" asp-action="AddDB">
+                            <div class="row">
+                                <span class="header">Thanh toán</span>
+
                             </div>
-                            <div class="col-8">
-                                <div class="row">@item.Detail.Product.ProductName</div>
-                                <div class="row">@string.Format("{0:N0}", @item.Detail.Product.Price) vnđ</div>
-                                <div class="row text-muted">Số lượng: @item.Quantity, @item.Detail.Color.ColorName , @item.Detail.Size.SizeName</div>
+
+                            <div class="row">
+                                <span>Họ và Tên *:</span>
+                                <input name="customerName" value="@infor.FirstName @infor.LastName" placeholder="">
                             </div>
+
+                            <span>Số điện thoại:</span>
+                            <input name="phoneNumber" value="@infor.PhoneNumber" placeholder="0912345678">
+                            <span>Địa chỉ:</span>
+                            <input name="address" value="@infor.Address" placeholder="Hà Nội/...">
+                            @foreach (var item in listItem)
+                            {
+                                <input type="hidden" name="listItem1" value="@item.DetailId" />
+                            }
+                            </form>
                         </div>
-                        <hr>
-                    }
-                    
-                    
-                    <hr>
-                    
-                    <div class="row lower">
-                        <div class="col text-left"><b>Tổng tiền</b></div>
-                        <div class="col text-right"><b>@string.Format("{0:N0}", @sum) vnđ</b></div>
                     </div>
-                    <input type="submit" class="btn">Đặt hàng</input>
-                    
+            
+                    <div class="col-md-5">
+                        <div class="right border">
+                            <div class="header">Sản phẩm </div>
+
+                            @foreach (var item in listItem)
+                            {
+                                sum += (decimal)item.Detail.Product.Price * item.Quantity;
+                                <div class="row item">
+                                    <div class="col-4 align-self-center">
+                                        <img style="border-radius: 5px; border: 2px solid #ddd; padding: 5px; background-color: #f1f1f1;" width="50" height="50" class="img-fluid" src="/Images/@item.Detail.Product.ProductImages.First().Path">
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="row">@item.Detail.Product.ProductName</div>
+                                        <div class="row">@string.Format("{0:N0}", @item.Detail.Product.Price) vnđ</div>
+                                        <div class="row text-muted">Số lượng: @item.Quantity, @item.Detail.Color.ColorName , @item.Detail.Size.SizeName</div>
+                                    </div>
+                                </div>
+                                <hr>
+                            }
+
+
+                            <hr>
+
+                            <div class="row lower">
+                                <div class="col text-left"><b>Tổng tiền</b></div>
+                                <div class="col text-right"><b>@string.Format("{0:N0}", @sum) vnđ</b></div>
+                            </div>
+                    <input form="myform" type="submit" value="Đặt hàng" class="btn"/>
+
+                        </div>
+                    </div>
                 </div>
-            </div>
-            </form>
+           
         </div>
     </div>
 
@@ -127,9 +130,7 @@
     .icons{
         margin-left: auto;
     }
-    form span{
-        color: rgb(179, 179, 179);
-    }
+    
     form{
         padding: 2vh 0;
     }

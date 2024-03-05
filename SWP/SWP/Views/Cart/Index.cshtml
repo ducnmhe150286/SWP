@@ -2,25 +2,47 @@
 @{
     var listItem = ViewData["listItem"] as List<CartItem>;
     decimal  sum = 0;
-    
+
 }
 <div class="card">
     <div class="row">
-            <div class="col-md-8 cart">
+        <div class="col-md-8 cart">
             <div class="title">
-                    <div class="row">
-                        <div class="col"><h4><b>Giỏ hàng của tôi</b></h4></div>
-                        <div class="col align-self-center text-right text-muted"></div>
-                    </div>
-                <div class="alert alert-warning d-flex align-items-center" role="alert">
-                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill" /></svg>
-                    <div>
-                        @ViewData["message"]
-                    </div>
+                <div class="row">
+                    <div class="col"><h4><b>Giỏ hàng của tôi</b></h4></div>
+                    <div class="col align-self-center text-right text-muted"></div>
                 </div>
+                @*@if (ViewData["message"] != null){
+                    <div id="error-message" class="alert alert-warning d-flex align-items-center" role="alert">
+                        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill" /></svg>
+                        <div >
+                            @ViewData["message"]
+                        </div>
+                    </div>
+                }*@
+                
             </div>
                  
+            <div class="row border-top ">
+
+                <div class="row main align-items-center">
+                    <div class="col-1">
+                       #
+                    </div>
+
+                    <div class="col-2">Ảnh</div>
+                    <div class="col">
+                        <div class="row">Sản Phảm</div>
+                     
+                    </div>
+                    <div class="col">
+                      Số lượng
+                    </div>
+                    <div class="col">Giá</div>
+                </div>
+            </div>
             <form id="myform" method="post" asp-controller="CheckOut" asp-action="Index">
+
                     @foreach (var item in listItem)
                     {
 
@@ -28,10 +50,12 @@
                         var temp = item.Detail.Product.Price * item.Quantity;
 
                         <div class="row border-top border-bottom">
+
                             <div class="row main align-items-center">
                                 <div class="col-1">
                                 <input type="checkbox" data-value="@temp" id="checkbox_@item.Detail.DetailId" class="selectedItems" name="selectedItems" value="@item.Detail.DetailId" />
                                 </div>
+
                                 <div class="col-2"><img class="img-fluid" src="/Images/@item.Detail.Product.ProductImages.First().Path"></div>
                                 <div class="col">
                                     <div class="row">@item.Detail.Product.ProductName</div>
@@ -260,9 +284,20 @@
             console.log('sum', sum);
             $("#total_price").text(formattedValue);
             if(sum==0){
-                alter("Vui lòng click add vào thanh toán");
+                $.toast({
+                    heading: 'Warning',
+                    text: 'Vui lòng click add vào thanh toán',
+                    showHideTransition: 'fade',
+                    icon: 'warning',
+                    position: 'top-right',
+                    loaderBg: '#f8b400',
+                    hideAfter: 3000  // 3 seconds
+                });
             }
         });
 
     });
+
+    
+
 </script>
