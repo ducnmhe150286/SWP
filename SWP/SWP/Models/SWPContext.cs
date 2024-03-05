@@ -144,29 +144,20 @@ namespace SWP.Models
             {
                 entity.ToTable("Order");
 
-                entity.Property(e => e.CreatedBy).HasMaxLength(255);
-
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
-
-                entity.Property(e => e.CustomerEmail).HasMaxLength(255);
-
                 entity.Property(e => e.CustomerName).HasMaxLength(255);
 
-                entity.Property(e => e.CustomerPhoneNumber).HasMaxLength(20);
+                entity.Property(e => e.OrderDate).HasColumnType("datetime");
 
                 entity.Property(e => e.PhoneNumber).HasMaxLength(20);
 
-                entity.Property(e => e.UpdatedBy).HasMaxLength(255);
+                entity.Property(e => e.ShipAddress).HasMaxLength(20);
 
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.Orders)
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK_Order_User");
+                entity.Property(e => e.ShipDate).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<Orderdetail>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => new { e.OrderId, e.DetailId });
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(255);
 
@@ -174,19 +165,12 @@ namespace SWP.Models
 
                 entity.Property(e => e.Discount).HasColumnType("decimal(18, 2)");
 
-                entity.Property(e => e.OrderId).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.TotalPrice).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.UpdateBy).HasMaxLength(255);
 
-                entity.HasOne(d => d.Detail)
-                    .WithMany()
-                    .HasForeignKey(d => d.DetailId)
-                    .HasConstraintName("FK_Orderdetails_ProductDetail");
-
                 entity.HasOne(d => d.Order)
-                    .WithMany()
+                    .WithMany(p => p.Orderdetails)
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Orderdetails_Order");
