@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SWP.Models;
 using System.Text.RegularExpressions;
@@ -22,6 +23,11 @@ namespace SWP.Controllers
         [HttpGet]
         public ActionResult AddSize()
         {
+            using (var context = new SWPContext())
+            {
+                var categories = context.Categories.ToList();
+                ViewBag.Categories = new SelectList(categories, "CategoryId", "CategoryName");
+            }
             return View();
         }
 
@@ -69,7 +75,7 @@ namespace SWP.Controllers
                 // Chuyển hướng đến trang danh sách (Index) để hiển thị danh sách cập nhật
                 return RedirectToAction("Index");
             }
-
+            
             // Nếu có lỗi, hiển thị lại trang AddCategory với thông tin nhập trước đó
             return View(newSize);
         }
