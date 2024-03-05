@@ -10,7 +10,6 @@ namespace SWP.Models
             Blogs = new HashSet<Blog>();
             CartItems = new HashSet<CartItem>();
             FeedBacks = new HashSet<FeedBack>();
-            Orders = new HashSet<Order>();
         }
 
         public int UserId { get; set; }
@@ -34,6 +33,5 @@ namespace SWP.Models
         public virtual ICollection<Blog> Blogs { get; set; }
         public virtual ICollection<CartItem> CartItems { get; set; }
         public virtual ICollection<FeedBack> FeedBacks { get; set; }
-        public virtual ICollection<Order> Orders { get; set; }
     }
 }

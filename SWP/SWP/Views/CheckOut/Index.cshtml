@@ -1,6 +1,7 @@
 ﻿@model CartItem
 @{
     var listItem = ViewData["listItem"] as List<CartItem>;
+    var infor = ViewData["infor"] as User;
     decimal sum = 0;
 }
 <div class="card">
@@ -11,30 +12,27 @@
     <div class="card-body">
        
         <div class="row">
+            <form id="myform" method="post" asp-controller="CheckOut" asp-action="AddDB">
             <div class="col-md-7">
                 <div class="left border">
                     <div class="row">
                         <span class="header">Thanh toán</span>
                         
                     </div>
-                    <form>
+                    
                         <div class="row">
-                            <div class="col-4">
-                                <span>Họ *:</span>
-                                <input placeholder="Nguyễn">
-                            </div>
-                            <div class="col-4">
-                                <span>Tên *:</span>
-                                <input placeholder="Nguyễn">
-                            </div>
+                             <span>Họ và Tên *:</span>
+                             <input name="customerName" value="@infor.FirstName @infor.LastName" placeholder="">
                         </div>
                         
                         <span>Số điện thoại:</span>
-                        <input placeholder="0912345678">
+                        <input name="phoneNumber" value="@infor.PhoneNumber" placeholder="0912345678">
                         <span>Địa chỉ:</span>
-                        <input placeholder="Hà Nội/...">
-
-                    </form>
+                        <input name="address" value="@infor.Address" placeholder="Hà Nội/...">
+                         @foreach (var item in listItem)
+                    {
+                        <input type="hidden" name="listItem1" value="@item.DetailId" />
+                    }
                 </div>
             </div>
             <div class="col-md-5">
@@ -64,10 +62,11 @@
                         <div class="col text-left"><b>Tổng tiền</b></div>
                         <div class="col text-right"><b>@string.Format("{0:N0}", @sum) vnđ</b></div>
                     </div>
-                    <button class="btn">Đặt hàng</button>
+                    <input type="submit" class="btn">Đặt hàng</input>
                     
                 </div>
             </div>
+            </form>
         </div>
     </div>
 
