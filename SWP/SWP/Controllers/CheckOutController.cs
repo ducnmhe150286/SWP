@@ -21,10 +21,10 @@ namespace SWP.Controllers
             var cusId = userDao.GetUserByEmail(customer);
             if (cusId is not null && cusId.RoleId == 2)
             {
-                /*if(selectedItems.Count == 0)
+                if(selectedItems.Count == 0)
                 {
                     return RedirectToAction("GetCartItem", "Cart", new { message = 1 });
-                }*/
+                }
                 var checkout = checkOutDao.getAddItem(cusId.UserId , selectedItems);
                 var infor = checkOutDao.getInformation(cusId.UserId);
                 ViewData["infor"] = infor;
