@@ -31,9 +31,9 @@ namespace SWP.Controllers
         public IActionResult GetCartItem(int? message)
         {
             var customer = HttpContext.Session.GetString("USER_EMAIL");
-            /*if (message == 1) {
+            if (message == 1) {
                 ViewData["message"] = "Vui long chon san pham thanh toán";
-            }*/
+            }
             var cusId = userDao.GetUserByEmail(customer);
             if (cusId is not null && cusId.RoleId == 2)
             {
