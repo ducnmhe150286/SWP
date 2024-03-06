@@ -13,23 +13,25 @@
         <form asp-action="Add">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="RoleId" class="control-label"></label>
+                <label  class="control-label">Vai trò</label>
                 @* <select asp-for="RoleId" class ="form-control" asp-items="ViewBag.RoleId"></select>*@
 
                 <select class="form-control form-control-lg" asp-for="RoleId">
-                    @foreach (var item in ViewBag.Role)
+                    @*@foreach (var item in ViewBag.Role)
                     {
                         <option value="@item.RoleId">@item.RoleName</option>
-                    }
+                    }*@
+                    <option value="1">Quản lí </option>
+                    <option value="2">Khách hàng</option>
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
+                <label  class="control-label">Họ</label>
                 <input asp-for="FirstName" class="form-control" />
                 <span asp-validation-for="FirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
+                <label  class="control-label">Tên</label>
                 <input asp-for="LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
@@ -41,7 +43,7 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="PhoneNumber" class="control-label"></label>
+                <label  class="control-label">Số điện thoại</label>
                 <input asp-for="PhoneNumber" class="form-control" />
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
@@ -52,24 +54,24 @@
             </div>*@
 
             <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
+                <label  class="control-label">Trạng thái</label>
 
                 <select class="form-control form-control-lg" asp-for="Status">
-                    <option value="1">Active</option>
-                    <option value="2">Deactive</option>
+                    <option value="1">Hoạt động</option>
+                    <option value="2">Không hoạt động</option>
 
                 </select>
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Tạo mới" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Trở lại danh sách</a>
 </div>
 
 @section Scripts {
