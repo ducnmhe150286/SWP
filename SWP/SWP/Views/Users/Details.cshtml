@@ -6,143 +6,152 @@
 }
 @using SWP.Models;
 
-<form  enctype="multipart/form-data" asp-action="Details">
-<section style="background-color: #eee;">
-    <div class="container py-5">
-        <div class="row">
-            <div class="col">
-            </div>
-        </div>
-        @if (Model != null)
-        {
+<form enctype="multipart/form-data" asp-action="Details">
+    <section style="background-color: #eee;">
+        <div class="container py-5">
             <div class="row">
-                <div class="col-lg-4">
-                    <div class="card mb-4">
-                        <div class="card-body text-center">
-                                <input type="hidden" asp-for="UserId" value="@Model.UserId"/>
-                            <img src="/uploads/@Model.Image" alt="avatar"
-                             class="rounded-circle img-fluid" style="width: 150px;">
-                            <h5 class="my-3">@Model.FirstName @Model.LastName</h5>
-                            
-                           @* <div class="d-flex justify-content-center mb-2">
-                                <a asp-controller="Users" asp-action="Edit" asp-route-userId="@Model.UserId" type="button" class="btn btn-primary">Update Profile</a>
-                            </div>*@
-                        </div>
-                    </div>
-                    <div class="card mb-4 mb-lg-0">
-                        <div class="card-body p-0">
-                            <ul class="list-group list-group-flush rounded-3">
-                                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                    @*<i class="fas fa-globe fa-lg text-warning"></i>*@
-                                   
-                                    Role: <p class="mb-0" > @ViewBag.RoleName
-                                        
-                                    </p>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                <div class="col">
                 </div>
-                <div class="col-lg-8">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <p class="mb-0">First Name</p>
-                                </div>
-                                <div class="col-sm-9">
-                                    <p class="text-muted mb-0">@Model.FirstName</p>
-                                </div>
+            </div>
+            @if (Model != null)
+            {
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="card mb-4">
+                            <div class="card-body text-center">
+                                <input type="hidden" asp-for="UserId" value="@Model.UserId" />
+                                <img src="/uploads/@Model.Image" alt="avatar"
+                                 class="rounded-circle img-fluid" style="width: 150px;">
+                                <h5 class="my-3">@Model.FirstName @Model.LastName</h5>
+
+                                @* <div class="d-flex justify-content-center mb-2">
+                            <a asp-controller="Users" asp-action="Edit" asp-route-userId="@Model.UserId" type="button" class="btn btn-primary">Update Profile</a>
+                            </div>*@
                             </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <p class="mb-0">Last Name</p>
-                                </div>
-                                <div class="col-sm-9">
-                                    <p class="text-muted mb-0">@Model.LastName</p>
-                                </div>
+                        </div>
+                        <div class="card mb-4 mb-lg-0">
+                            <div class="card-body p-0">
+                                <ul class="list-group list-group-flush rounded-3">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                        @*<i class="fas fa-globe fa-lg text-warning"></i>*@
+
+                                        Vai trò: @*@ViewBag.RoleName*@
+                                        @if (Model.RoleId == 1)
+                                        {
+                                            <p class="mb-0">  Quản lí</p>
+                                        }
+
+                                        else
+                                        {
+                                            <p class="mb-0">  Khách hàng</p>
+                                        }
+
+
+                                    </li>
+                                </ul>
                             </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <p class="mb-0">Email</p>
-                                </div>
-                                <div class="col-sm-9">
-                                    <p class="text-muted mb-0">@Model.Email</p>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <p class="mb-0">Phone</p>
-                                </div>
-                                <div class="col-sm-9">
-                                    <p class="text-muted mb-0">@Model.PhoneNumber</p>
-                                </div>
-                            </div>
-                            
-                            <hr>
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <p class="mb-0">Address</p>
-                                </div>
-                                <div class="col-sm-9">
-                                    <p class="text-muted mb-0">@Model.Address</p>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <p class="mb-0">CreateDate</p>
-                                </div>
-                                <div class="col-sm-9">
-                                    <p class="text-muted mb-0">@Model.CreatedDate</p>
-                                </div>
-                            </div>
-                            <hr>
-                           <form method="post" asp-action="Details" asp-controller="Users">
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="card mb-4">
+                            <div class="card-body">
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <p class="mb-0">Status</p>
+                                        <p class="mb-0">Họ</p>
                                     </div>
-                                    <div class="col-sm-6">
-                                        <!-- Adjusted column width to make space for the button -->
-                                        <p class="text-muted mb-0">
-                                            <select class="form-control form-control-lg" asp-for="Status">
-                                                <option value="1" >Active</option>
-                                                <option value="0" >Deactive</option>
-
-                                            </select>
-                                        </p>
-                                    </div>
-                                    <div class="col-sm-3 text-right">
-                                        <!-- Added new column for the button and aligned it to the right -->
-                                        @* <a asp-controller="Users" asp-action="Details" asp-route-userId="@Model.UserId" type="button" class="btn btn-primary">Update Status</a>*@
-                                        <button type="submit"  class="btn btn-success btn-lg" >Update User</button>
+                                    <div class="col-sm-9">
+                                        <p class="text-muted mb-0">@Model.FirstName</p>
                                     </div>
                                 </div>
-                           </form>
-                                
-                            
-                            <hr>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <p class="mb-0">Tên</p>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <p class="text-muted mb-0">@Model.LastName</p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <p class="mb-0">Email</p>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <p class="text-muted mb-0">@Model.Email</p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <p class="mb-0">Số điện thoại</p>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <p class="text-muted mb-0">@Model.PhoneNumber</p>
+                                    </div>
+                                </div>
 
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <p class="mb-0">Địa chỉ</p>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <p class="text-muted mb-0">@Model.Address</p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <p class="mb-0">Tạo ngày</p>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <p class="text-muted mb-0">@Model.CreatedDate</p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <form method="post" asp-action="Details" asp-controller="Users">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <p class="mb-0">Trạng thái</p>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <!-- Adjusted column width to make space for the button -->
+                                            <p class="text-muted mb-0">
+                                                <select class="form-control form-control-lg" asp-for="Status">
+                                                    <option value="1">Hoạt động</option>
+                                                    <option value="0">Không hoạt động</option>
+
+                                                </select>
+                                            </p>
+                                        </div>
+                                        <div class="col-sm-3 text-right">
+                                            <!-- Added new column for the button and aligned it to the right -->
+                                            @* <a asp-controller="Users" asp-action="Details" asp-route-userId="@Model.UserId" type="button" class="btn btn-primary">Update Status</a>*@
+                                            <button type="submit" class="btn btn-success btn-lg">Cập nhật trạng thái</button>
+                                        </div>
+                                    </div>
+                                </form>
+
+
+                                <hr>
+
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        
-                        <div class="col-md-3">
-                            <div class="card mb-4 mb-md-0">
-                                
-                                        <a class="btn btn-primary btn-lg" asp-area="" asp-controller="Users" asp-action="Index">Return list</a>
-                                
+                        <div class="row">
+
+                            <div class="col-md-3">
+                                <div class="card mb-4 mb-md-0">
+
+                                    <a class="btn btn-primary btn-lg" asp-area="" asp-controller="Users" asp-action="Index">Trở lại danh sách</a>
+
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        }
+            }
 
-    </div>
-</section>
+        </div>
+    </section>
 </form>

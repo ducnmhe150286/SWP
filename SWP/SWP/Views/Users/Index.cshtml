@@ -17,13 +17,13 @@
         <!-- sidebar -->
         <!-- content -->
         <div class="col-lg-9">
-            @*<header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
+            <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
                 <div class="ms-auto">
                     <div class="btn-group shadow-0 border">
                         <a asp-controller="Users" asp-action="Add" class="btn btn-primary shadow-0 me-1">Tạo người dùng mới</a>
                     </div>
                 </div>
-            </header>*@
+            </header>
 
             <!-- Search form -->
             <form method="post" asp-controller="Users" asp-action="Index" class="mb-4">
@@ -61,7 +61,7 @@
                                 <th>Email</th>
                                 <th>Ngày tạo</th>
                                 <th>Trạng thái</th>
-                                <th>Tác vụ</th>
+                                @*<th>Tác vụ</th>*@
                             </tr>
                         </thead>
                        
@@ -84,18 +84,18 @@
                                     <td>@item.CreatedDate</td>
                                     @if(item.Status == 1)
                                     {
-                                        <td>Active</td>
+                                        <td>Hoạt động</td>
                                     }
                                     @if(item.Status != 1)
                                     {
-                                        <td> DeActive</td>
+                                        <td> Không hoạt động</td>
                                     }
                                     @* <td>
                                         <a asp-controller="Users" asp-action="Edit" asp-route-userId="@item.UserId" class="btn btn-primary shadow-0 me-1">Edit</a>
                                     </td>*@
-                                    <td>
+                                    @*<td>
                                         <a asp-controller="Users" asp-action="Delete" asp-route-userId="@item.UserId" class="btn btn-danger shadow-0 me-1" onclick="return confirmDelete()">Delete</a>
-                                    </td>
+                                    </td>*@
                                 </tr>
                                 startIndex++;
                             }
