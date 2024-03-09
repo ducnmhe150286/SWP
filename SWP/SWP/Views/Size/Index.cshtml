@@ -106,18 +106,17 @@
     <table>
         <thead>
             <tr>
-                <th>Tên Danh Mục</th>
                 <th>Tên Size</th>
                 <th>Trạng Thái</th>
                 <th>Ngày Tạo</th>
-                <th>Thao Tác</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var size in Model)
             {
                 <tr>
-                    <td>@size.Category.CategoryName</td>
+
                     <td>@size.SizeName</td>
                     <td>
                         @if (size.Status == 1)
@@ -162,7 +161,6 @@
                 modal.style.display = 'flex';
             });
         });
-
         var closeButtons = document.querySelectorAll('.close');
         closeButtons.forEach(function (button) {
             button.addEventListener('click', function () {
