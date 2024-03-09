@@ -16,8 +16,7 @@ namespace SWP.Models
         public string? CreatedBy { get; set; }
         public string? UpdateBy { get; set; }
         public DateTime? CreatedDate { get; set; }
-        public int CategoryId { get; set; }
-        public virtual Category Category { get; set; }
+        
 
         public virtual ICollection<ProductDetail> ProductDetails { get; set; }
     }
