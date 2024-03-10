@@ -38,7 +38,7 @@ namespace SWP.Dao
                 throw;
             }
         }
-        public bool adddb(int cusId,string customerName, string phoneNumber, string address, List<int> detail)
+        public bool adddb(int cusId,string customerName, string phoneNumber, string address, List<int> detail, byte payment_method)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace SWP.Dao
                 order.PhoneNumber= phoneNumber;
                 order.UserId = cusId;
                 order.OrderDate = DateTime.Now;
-                order.PaymentMethod = 0;
+                order.PaymentMethod = payment_method;
                 order.Status = 0;
                 order.ShipAddress = address;
 
