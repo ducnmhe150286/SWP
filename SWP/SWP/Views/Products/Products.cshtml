@@ -14,6 +14,10 @@
         .table-hover-pointer tbody tr:hover {
             cursor: pointer;
         }
+
+        .btn-space {
+            margin-right: 5px; /* Điều chỉnh giá trị margin tùy ý */
+        }
     </style>
 </head>
 <body>
@@ -122,17 +126,15 @@
                             <td>
                                 @if (item.ProductImages != null && item.ProductImages.Any())
                                 {
-                                    @foreach (var image in item.ProductImages)
-                                    {
-                                        <img src="/Images/@image.Path" alt="Image" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
-                                        <br />
-                                    }
+                                    var firstImage = item.ProductImages.FirstOrDefault();
+                                    <img src="/Images/@firstImage.Path" alt="Image" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
                                 }
                                 else
                                 {
                                     <span>-</span>
                                 }
                             </td>
+
                             <td>@item.ProductName</td>
                             <td>
                                 @{
@@ -208,41 +210,42 @@
                             </td>*@
                             <td>
                                 <div class="btn-group" role="group">
-                                    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                        ...
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                        <li>
-                                            <a class="dropdown-item" href="@Url.Action("EditProduct", "Products", new { id = item.ProductId })">
-                                               Sửa sản phẩm
+                                    <a class="btn btn-primary btn-space" href="@Url.Action("EditProduct", "Products", new { id = item.ProductId })" title="Sửa sản phẩm">
+                                        Sửa
+                                    </a>
+                                    <a class="btn btn-primary btn-space" href="@Url.Action("DetailProduct", "Products", new { id = item.ProductId })" title="Nhập sản phẩm">
+                                        Nhập
+                                    </a>
+
+                                  
+
+                                        @{
+                                            if (item.Status == 1)
+                                            {
+
+                                            <a class="btn btn-primary btn-space"  href="#" onclick="openModal('@item.ProductId')" title="Ngừng kinh doanh sản phẩm">
+                                                Ngừng kinh doanh
+
                                             </a>
 
-                                        </li>
-                                        <li><hr class="dropdown-divider"></li>
-
-                                        <li>
-                                            <a class="dropdown-item" href="@Url.Action("DetailProduct", "Products", new { id = item.ProductId })">
-                                                Nhập sản phẩm
-                                            </a>
-                                        </li>
-                                        <li><hr class="dropdown-divider"></li>
-
-                                        <li>
-                                            @{if(item.Status == 1) {
-                                                    <a class="dropdown-item" href="#" onclick="openModal('@item.ProductId')">
-                                                Ngừng hoạt động
-                                            </a>
-                                            }else {
-                                                    <a class="dropdown-item" href="#" onclick="openModal('@item.ProductId')">
-                                                Hoạt động
-                                            </a>
                                             }
+                                            else
+                                            {
+
+                                                <a class="btn btn-primary btn-space" href="#" onclick="openModal('@item.ProductId')" title="Kinh doanh lại sản phẩm">
+
+                                                    Kinh doanh
+
+                                                </a>
+
                                             }
-                                           
-                                        </li>
-                                    </ul>
+
+                                        }
+                                   
                                 </div>
                             </td>
+
+
 
                         </tr>
                     }

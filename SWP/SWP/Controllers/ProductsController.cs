@@ -6,7 +6,9 @@ using SWP.Models;
 using SWP.Utilities;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
+using System.Text;
 
 namespace SWP.Controllers
 {
@@ -34,7 +36,7 @@ namespace SWP.Controllers
                 var brands = context.Brands.Where(b => b.Status == 1).ToList();
                 var categories = context.Categories.Where(c => c.Status == 1).ToList();
 
-                var productList = context.Products // Thay đổi từ ProductDetails sang Products
+                var query = context.Products
                     .Include(p => p.Brand)
                     .Include(p => p.Category)
                     .Include(p => p.ProductDetails)
@@ -44,21 +46,23 @@ namespace SWP.Controllers
                     .Include(p => p.ProductDetails)
                     .ThenInclude(pd => pd.Size)
                     .Where(p =>
-                        (string.IsNullOrEmpty(searchString) ||
-                         p.ProductName.Contains(searchString) ||
-                         p.Brand.BrandName.Contains(searchString) ||
-                         p.Category.CategoryName.Contains(searchString)) &&
-                        (!statusFilter.HasValue ||
-                         (
-                             (statusFilter != 2 && statusFilter != 1) ? p.ProductDetails.Any(pd => pd.Status == statusFilter) :
-                             (statusFilter == 1 ? p.ProductDetails.Any(pd => pd.Status == 1 && pd.Quantity > 0) : p.ProductDetails.All(pd => pd.Quantity == 0))
-                         )
-                        ) &&
+                        (!statusFilter.HasValue || p.ProductDetails.Any(pd => pd.Status == statusFilter)) &&
                         (!categoryFilter.HasValue || p.CategoryId == categoryFilter) &&
                         (!brandFilter.HasValue || p.BrandId == brandFilter)
-                    )
-                    .OrderByDescending(p => p.CreatedDate)
-                    .ToList();
+                    );
+
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    var combinedSearchString = RemoveDiacritics(searchString.ToLower());
+                    var searchWords = RemoveDiacritics(searchString.ToLower()).Split(' ');
+
+                    query = query.AsEnumerable()
+                                 .Where(p => RemoveDiacritics(p.ProductName.ToLower()).Contains(combinedSearchString) ||
+                                             searchWords.All(word => RemoveDiacritics(p.ProductName.ToLower()).Contains(word)))
+                                 .AsQueryable();
+                }
+
+                var productList = query.OrderByDescending(p => p.CreatedDate).ToList();
 
                 if (productList.Count == 0)
                 {
@@ -66,17 +70,6 @@ namespace SWP.Controllers
                 }
 
                 var paginatedList = PaginatedList<Product>.Create(productList.AsQueryable(), page, pageSize);
-
-                foreach (var product in productList)
-                {
-                    foreach (var productDetail in product.ProductDetails)
-                    {
-                        //foreach (var productImage in productDetail.ProductImages)
-                        //{
-                        //    productImage.Path = Path.Combine(productImage.Path);
-                        //}
-                    }
-                }
 
                 ViewBag.Categories = categories;
                 ViewBag.Brands = brands;
@@ -89,6 +82,27 @@ namespace SWP.Controllers
                 ViewData["SuccessMessage"] = TempData["SuccessMessage"] as string;
             }
             return View();
+        }
+
+
+        static string RemoveDiacritics(string text)
+        {
+            var normalizedString = text.Normalize(NormalizationForm.FormD);
+            var stringBuilder = new StringBuilder(capacity: normalizedString.Length);
+
+            for (int i = 0; i < normalizedString.Length; i++)
+            {
+                char c = normalizedString[i];
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+
+            return stringBuilder
+                .ToString()
+                .Normalize(NormalizationForm.FormC);
         }
 
         public IActionResult Index()

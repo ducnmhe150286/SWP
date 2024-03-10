@@ -71,7 +71,7 @@ namespace SWP.Controllers
 
                 }
 
-                var productList = query.ToList();
+                var productList = query.OrderByDescending(p => p.CreatedDate).ToList();
                 if (productList.Count == 0)
                 {
                     TempData["ErrorMessage"] = "Không có dữ liệu sản phẩm.";
@@ -142,7 +142,7 @@ namespace SWP.Controllers
 
                 }
 
-                var productList = query.ToList();
+                var productList = query.OrderByDescending(p => p.CreatedDate).ToList();
                 if (productList.Count == 0)
                 {
                     TempData["ErrorMessage"] = "Không có dữ liệu sản phẩm.";
@@ -169,7 +169,7 @@ namespace SWP.Controllers
 
             using (var context = new SWPContext())
             {
-                var blog = context.Blogs.Where(b => b.Status == 1).ToList();
+                var blog = context.Blogs.Where(b => b.Status == 1).OrderByDescending(p =>p.CreateDate).ToList();
                 // Pagination for Blog
                 var blogPaginatedList = PaginatedList<Blog>.Create(blog.AsQueryable(), blogPage, blogPageSize);
                 ViewBag.Blog = blogPaginatedList; // Use the paginated blog list here

@@ -91,7 +91,11 @@
                         </div>
                         <div class="mb-3">
                        <div class="mb-3">
-                        <label class="form-label">Ảnh sản phẩm <span class="required-star">*</span></label>
+                           <div class="mb-3">
+                                <label class="form-label">Sửa ảnh sản phẩm</label>
+                                <input name="imageFiles" type="file" class="form-control mt-3 image-file-input" accept="image/*" onchange="validateFileType(this)" multiple />
+                                </div>
+                        <label class="form-label">Ảnh sản phẩm hiện có <span class="required-star">*</span></label>
                         <div class="row">
                             @if (ViewBag.Product.ProductImages != null)
                             {
@@ -107,11 +111,11 @@
                         </div>
                     </div>
 
-                             <div class="mb-3 text-end">
+                          @*   <div class="mb-3 text-end">
                                 <button type="button" class="ms-2 btn btn-primary" onclick="editImage(this)">Sửa ảnh</button>
                                 <input name="imageFiles" type="file" class="form-control mt-3 image-file-input" style="display: none;" accept="image/*" onchange="validateFileType(this)" multiple />
 
-                            </div>
+                            </div>*@
                             <script>
                                 function showFileInput(button) {
                                     var fileInput = button.nextElementSibling;
