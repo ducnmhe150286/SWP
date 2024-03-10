@@ -59,7 +59,8 @@ namespace SWP.Controllers
 					.Take(5)
 					.ToList();
 
-				var allOrders = context.Orders.ToList();
+				var allOrders = context.Orders.OrderByDescending(g => g.OrderDate)
+.ToList();
 				var paginatedList = PaginatedList<Order>.Create(allOrders.AsQueryable(), page, pageSize);
 
 				// Gửi tổng tiền thu được, số lượng đơn hàng mới, tổng số người dùng, và top 5 sản phẩm đến view
