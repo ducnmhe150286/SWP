@@ -712,6 +712,34 @@ switchMode.addEventListener('change', function () {
 							}
 						</tbody>
 					</table>
+					<div class="d-flex justify-content-center mt-5">
+						<nav aria-label="Page navigation">
+							<ul class="pagination">
+								@if (ViewBag.AllOrders.HasPreviousPage)
+								{
+									<li class="page-item">
+										<a class="page-link" href="@Url.Action("Index", new { page = ViewBag.AllOrders.PageIndex - 1 })" aria-label="Previous">
+											<span aria-hidden="true">&laquo;</span>
+										</a>
+									</li>
+								}
+								@for (int i = 1; i <= ViewBag.AllOrders.TotalPages; i++)
+								{
+									<li class="page-item @(i == ViewBag.AllOrders.PageIndex ? "active" : "")">
+										<a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+									</li>
+								}
+								@if (ViewBag.AllOrders.HasNextPage)
+								{
+									<li class="page-item">
+										<a class="page-link" href="@Url.Action("Index", new { page = ViewBag.AllOrders.PageIndex + 1 })" aria-label="Next">
+											<span aria-hidden="true">&raquo;</span>
+										</a>
+									</li>
+								}
+							</ul>
+						</nav>
+					</div>
 				</div>
 
 				<div class="todo">
@@ -725,7 +753,7 @@ switchMode.addEventListener('change', function () {
 								<div class="product-info">
 								<div class="text">
 										<p>@product.ProductName</p>
-										<span>Đã bán: @product.TotalQuantity sản phẩm-</span>
+										<span>Đã bán: @product.TotalQuantity sản phẩm -</span>
 										<span>Doanh thu:@string.Format("{0:N0}", @product.TotalRevenue)₫</span>
 
 									</div>

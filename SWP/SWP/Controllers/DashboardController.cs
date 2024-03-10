@@ -8,10 +8,12 @@ namespace SWP.Controllers
 {
 	public class DashboardController : Controller
 	{
-		public IActionResult Index()
+		public IActionResult Index(int page = 1)
 		{
 			using (var context = new SWPContext())
 			{
+				int pageSize = 5;
+
 				decimal totalRevenue = context.Orders
 					.Where(o => o.Status == 3)
 					.SelectMany(o => o.Orderdetails)
@@ -58,10 +60,11 @@ namespace SWP.Controllers
 					.ToList();
 
 				var allOrders = context.Orders.ToList();
+				var paginatedList = PaginatedList<Order>.Create(allOrders.AsQueryable(), page, pageSize);
 
 				// Gửi tổng tiền thu được, số lượng đơn hàng mới, tổng số người dùng, và top 5 sản phẩm đến view
 				ViewBag.TotalRevenue = totalRevenue;
-				ViewBag.AllOrders = allOrders;
+				ViewBag.AllOrders = paginatedList;
 				ViewBag.NewOrders = newOrdersCount;
 				ViewBag.TotalUsers = totalUsersCount;
 				ViewBag.TopSellingProducts = topSellingProductsInfo;
