@@ -7,114 +7,142 @@
 <div class="card">
     <div class="card-top border-bottom text-center">
         <a asp-controller="Home" asp-action="Index"> Mua thêm sản phẩm</a>
-        
+
     </div>
     <div class="card-body">
-       
+
         <div class="row">
-                    <div class="col-md-7">
-                        <div class="left border">
-                            <form id="myform" method="post" asp-controller="CheckOut" asp-action="AddDB">
-                            <div class="row">
-                                <span class="header">Thanh toán</span>
+            <div class="col-md-7">
+                <div class="left border">
+                    <form id="myform" method="post" asp-controller="CheckOut" asp-action="AddDB">
+                        <div class="row">
+                            <span class="header">Thanh toán</span>
 
-                            </div>
-
-                            <div class="row">
-                                <span>Họ và Tên *:</span>
-                                <input name="customerName" value="@infor.FirstName @infor.LastName" placeholder="">
-                            </div>
-
-                            <span>Số điện thoại:</span>
-                            <input name="phoneNumber" value="@infor.PhoneNumber" placeholder="0912345678">
-                            <span>Địa chỉ:</span>
-                            <input name="address" value="@infor.Address" placeholder="Hà Nội/...">
-                            @foreach (var item in listItem)
-                            {
-                                <input type="hidden" name="listItem1" value="@item.DetailId" />
-                            }
-                            </form>
                         </div>
-                    </div>
-            
-                    <div class="col-md-5">
-                        <div class="right border">
-                            <div class="header">Sản phẩm </div>
-
-                            @foreach (var item in listItem)
+                        @if (TempData["error_infor"] != null)
                             {
-                                sum += (decimal)item.Detail.Product.Price * item.Quantity;
-                                <div class="row item">
-                                    <div class="col-4 align-self-center">
-                                        <img style="border-radius: 5px; border: 2px solid #ddd; padding: 5px; background-color: #f1f1f1;" width="50" height="50" class="img-fluid" src="/Images/@item.Detail.Product.ProductImages.First().Path">
-                                    </div>
-                                    <div class="col-8">
-                                        <div class="row">@item.Detail.Product.ProductName</div>
-                                        <div class="row">@string.Format("{0:N0}", @item.Detail.Product.Price) vnđ</div>
-                                        <div class="row text-muted">Số lượng: @item.Quantity, @item.Detail.Color.ColorName , @item.Detail.Size.SizeName</div>
-                                    </div>
+                                <div id="alertMessage" class="alert alert-danger" role="alert">
+                                @TempData["error_infor"]
                                 </div>
-                                <hr>
+
+                                <script>
+                                    setTimeout(function () {
+                                        $('#alertMessage').fadeOut('slow');
+                                    }, 2000);
+                                </script>
                             }
+                        <div class="row">
+                            <span>Họ và Tên <span class="required-star">*</span>:</span>
+                            <input name="customerName" value="@infor.FirstName @infor.LastName" placeholder="">
+                        </div>
 
+                        <span>Số điện thoại<span class="required-star">*</span>:</span>
+                        <input name="phoneNumber" value="@infor.PhoneNumber" placeholder="0912345678">
+                        <span>Địa chỉ<span class="required-star">*</span>:</span>
+                        <input name="address" value="@infor.Address" placeholder="Hà Nội/...">
+                        @foreach (var item in listItem)
+                        {
+                            <input type="hidden" name="listItem1" value="@item.DetailId" />
+                        }
+                    </form>
+                </div>
+            </div>
 
-                            <hr>
+            <div class="col-md-5">
+                <div class="right border">
+                    <div class="header">Sản phẩm </div>
 
-                            <div class="row lower">
-                                <div class="col text-left"><b>Tổng tiền</b></div>
-                                <div class="col text-right"><b>@string.Format("{0:N0}", @sum) vnđ</b></div>
+                    @foreach (var item in listItem)
+                    {
+                        sum += (decimal)item.Detail.Product.Price * item.Quantity;
+                        <div class="row item">
+                            <div class="col-4 align-self-center">
+                                <img style="border-radius: 5px; border: 2px solid #ddd; padding: 5px; background-color: #f1f1f1;" width="50" height="50" class="img-fluid" src="/Images/@item.Detail.Product.ProductImages.First().Path">
                             </div>
-                    <input form="myform" type="submit" value="Đặt hàng" class="btn"/>
+                            <div class="col-8">
+                                <div class="row">@item.Detail.Product.ProductName</div>
+                                <div class="row">@string.Format("{0:N0}", @item.Detail.Product.Price) vnđ</div>
+                                <div class="row text-muted">Số lượng: @item.Quantity, @item.Detail.Color.ColorName , @item.Detail.Size.SizeName</div>
+                            </div>
+                        </div>
+                        <hr>
+                    }
 
+
+                    <hr>
+
+                    <div class="row lower">
+                        <div class="col text-left"><b>Tổng tiền</b></div>
+                        <div class="col text-right"><b>@string.Format("{0:N0}", @sum) vnđ</b></div>
+                    </div>
+                    <div class="row">
+                        <span class="header">Phương thức thanh toán</span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-2 h-10">
+                            <input form="myform" type="radio" name="payment_method" value="0" checked>
+                        </div>
+                        <div class="col-10">
+                            Thanh toán khi nhận hàng
                         </div>
                     </div>
-                </div>
-           
-        </div>
-    </div>
 
-    <div>
+                    <input form="myform" type="submit" value="Đặt hàng" class="btn" />
+
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
+
 <style>
-    body{
+    body {
         min-height: 100vh;
         vertical-align: middle;
         font-family: sans-serif;
         font-size: 0.8rem;
         font-weight: bold;
-    }    
-    .card{
+    }
+
+    .card {
         max-width: 1000px;
         margin: auto;
     }
-    .card-top{
+
+    .card-top {
         padding: 0.7rem 5rem;
     }
-    .card-top a{
-        float: left;
-        margin-top: 0.7rem;
-    }
-    #logo{
+
+        .card-top a {
+            float: left;
+            margin-top: 0.7rem;
+        }
+
+    #logo {
         font-family: 'Dancing Script';
         font-weight: bold;
         font-size: 1.6rem;
     }
-    .card-body{
+
+    .card-body {
         padding: 0 5rem 5rem 5rem;
         background-size: cover;
         background-repeat: no-repeat;
     }
-    
-    .row{
+
+    .row {
         margin: 0;
     }
-    .upper{
+
+    .upper {
         padding: 1rem 0;
         justify-content: space-evenly;
     }
-    #three{
+
+    #three {
         border-radius: 1rem;
         width: 22px;
         height: 22px;
@@ -123,18 +151,21 @@
         text-align: center;
         display: inline-block;
     }
-    #payment{
+
+    #payment {
         margin: 0;
         color: blue;
     }
-    .icons{
+
+    .icons {
         margin-left: auto;
     }
-    
-    form{
+
+    form {
         padding: 2vh 0;
     }
-    input{
+
+    input {
         border: 1px solid rgba(0, 0, 0, 0.137);
         padding: 1vh;
         margin-bottom: 4vh;
@@ -142,37 +173,46 @@
         width: 100%;
         background-color: rgb(247, 247, 247);
     }
-    input:focus::-webkit-input-placeholder
-    {
-        color: transparent;
-    }
-    .header{
+
+        input:focus::-webkit-input-placeholder {
+            color: transparent;
+        }
+
+    .header {
         font-size: 1.5rem;
     }
-    .left{
+
+    .left {
         background-color: #ffffff;
         padding: 2vh;
     }
-    .left img{
-        width: 2rem;
-    }
-    .left.col-4{
-        padding-left: 0;
-    }
-    .right.item{
+
+        .left img {
+            width: 2rem;
+        }
+
+        .left.col-4 {
+            padding-left: 0;
+        }
+
+    .right.item {
         padding: 0.3rem 0;
     }
-    .right{
+
+    .right {
         background-color: #ffffff;
         padding: 2vh;
     }
-    .col - 8{
+
+    .col - 8 {
         padding: 0 1vh;
     }
-    .lower{
+
+    .lower {
         line-height: 2;
     }
-    .btn{
+
+    .btn {
         background-color: rgb(23, 4, 189);
         border-color: rgb(23, 4, 189);
         color: white;
@@ -182,36 +222,47 @@
         padding: 1.5vh;
         border-radius: 0;
     }
-    .btn:focus{
-        box-shadow: none;
-        outline: none;
-        box-shadow: none;
-        color: white;
-        -webkit-box-shadow: none;
-        -webkit-user-select: none;
-        transition: none;
-    }
-    .btn:hover{
-        color: white;
-    }
-    a{
+
+        .btn:focus {
+            box-shadow: none;
+            outline: none;
+            box-shadow: none;
+            color: white;
+            -webkit-box-shadow: none;
+            -webkit-user-select: none;
+            transition: none;
+        }
+
+        .btn:hover {
+            color: white;
+        }
+
+    a {
         color: black;
     }
-    a:hover{
-        color: black;
-        text-decoration: none;
-    }
-    input[type = checkbox]{
+
+        a:hover {
+            color: black;
+            text-decoration: none;
+        }
+
+    input[type = checkbox] {
         width: unset;
         margin-bottom: unset;
     }
-    #cvv{
+
+    #cvv {
         background-image: linear-gradient(to left, rgba(255, 255, 255, 0.575), rgba(255, 255, 255, 0.541)), url("https://img.icons8.com/material-outlined/24/000000/help.png");
         background-repeat: no-repeat;
         background-position-x: 95%;
         background-position-y: center;
     }
-    #cvv:hover{
 
+        #cvv:hover {
+        }
+
+    .required-star {
+        color: red;
     }
 </style>
+
