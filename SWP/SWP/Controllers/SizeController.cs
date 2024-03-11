@@ -8,14 +8,22 @@ namespace SWP.Controllers
 {
     public class SizeController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, int pageSize = 5)
         {
             using (var context = new SWPContext())
             {
-                var sizeList = context.Sizes.ToList();
+                var totalSizes = context.Sizes.Count();
 
-                ViewBag.Size = sizeList;
-                ViewData["Sizes"] = sizeList;
+                var sizeList = context.Sizes
+                    .OrderBy(s => s.SizeId)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                var totalPages = (int)Math.Ceiling((double)totalSizes / pageSize);
+
+                ViewBag.CurrentPage = page;
+                ViewBag.TotalPages = totalPages;
 
                 return View(sizeList);
             }
