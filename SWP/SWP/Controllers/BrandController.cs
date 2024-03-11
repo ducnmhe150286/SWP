@@ -7,14 +7,22 @@ namespace SWP.Controllers
 {
     public class BrandController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, int pageSize = 5)
         {
             using (var context = new SWPContext())
             {
-                var brandList = context.Brands.ToList();
+                var totalBrands = context.Brands.Count();
 
-                ViewBag.Brand = brandList;
-                ViewData["Brands"] = brandList;
+                var brandList = context.Brands
+                    .OrderBy(b => b.BrandId)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                var totalPages = (int)Math.Ceiling((double)totalBrands / pageSize);
+
+                ViewBag.CurrentPage = page;
+                ViewBag.TotalPages = totalPages;
 
                 return View(brandList);
             }

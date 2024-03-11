@@ -99,6 +99,31 @@
     .close {
         cursor: pointer;
     }
+
+    .pagination {
+        display: inline-block;
+        margin-top: 20px; /* Điều chỉnh khoảng cách giữa danh sách và nút phân trang */
+    }
+
+        .pagination a {
+            color: black;
+            float: left;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: background-color .3s;
+            border: 1px solid #ddd;
+            font-size: 16px; /* Điều chỉnh kích thước chữ */
+        }
+
+            .pagination a.active {
+                background-color: #4CAF50;
+                color: white;
+                border: 1px solid #4CAF50;
+            }
+
+            .pagination a:hover:not(.active) {
+                background-color: #ddd;
+            }
 </style>
 <table>
     <thead>
@@ -125,7 +150,7 @@
                         <p>Không Hoạt Động</p>
                     }
                 </td>
-                <td>@color.CreatedDate</td>
+                <td>@(color.CreatedDate.HasValue ? color.CreatedDate.Value.ToString("yyyy-MM-dd") : "N/A")</td>
                 <td>
                     <div class="btn-group" role="group" aria-label="Action Buttons">
                         <a asp-controller="Color" asp-action="Edit" asp-route-id="@color.ColorId" class="btn btn-warning">Cập nhật</a>
@@ -149,6 +174,23 @@
         }
     </tbody>
 </table>
+<!-- Nút phân trang -->
+<div class="pagination">
+    @if (ViewBag.CurrentPage > 1)
+    {
+        <a href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1, pageSize = ViewBag.PageSize })">&laquo;</a>
+    }
+
+    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+    {
+        <a href="@Url.Action("Index", new { page = i, pageSize = ViewBag.PageSize })" class="@(i == ViewBag.CurrentPage ? "active" : "")">@i</a>
+    }
+
+    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+    {
+        <a href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1, pageSize = ViewBag.PageSize })">&raquo;</a>
+    }
+</div>
 <script>
     var deleteButtons = document.querySelectorAll('.delete-button');
     deleteButtons.forEach(function (button) {

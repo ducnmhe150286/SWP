@@ -7,14 +7,22 @@ namespace SWP.Controllers
 {
     public class ColorController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, int pageSize = 5)
         {
             using (var context = new SWPContext())
             {
-                var colorList = context.Colors.ToList();
+                var totalColors = context.Colors.Count();
 
-                ViewBag.Color = colorList;
-                ViewData["Colors"] = colorList;
+                var colorList = context.Colors
+                    .OrderBy(c => c.ColorId)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                var totalPages = (int)Math.Ceiling((double)totalColors / pageSize);
+
+                ViewBag.CurrentPage = page;
+                ViewBag.TotalPages = totalPages;
 
                 return View(colorList);
             }

@@ -11,14 +11,22 @@ namespace SWP.Controllers
     public class CategoryController : Controller
     {
 
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, int pageSize = 5)
         {
             using (var context = new SWPContext())
             {
-                var categoryList = context.Categories.ToList();
+                var totalCategories = context.Categories.Count();
 
-                ViewBag.Category = categoryList;
-                ViewData["Categories"] = categoryList;
+                var categoryList = context.Categories
+                    .OrderBy(c => c.CategoryId)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                var totalPages = (int)Math.Ceiling((double)totalCategories / pageSize);
+
+                ViewBag.CurrentPage = page;
+                ViewBag.TotalPages = totalPages;
 
                 return View(categoryList);
             }
