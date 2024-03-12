@@ -67,9 +67,46 @@
         td a:hover {
             background-color: #45a049;
         }
+    /* Style cho dropdown */
+    /* Thêm khoảng cách bên dưới thanh tìm kiếm */
+    .form-control {
+        margin-bottom: 10px; /* Điều chỉnh giá trị theo ý của bạn */
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    /* Style cho label */
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
 </style>
 
 <h2 class="product-category-heading">DANH SÁCH ĐƠN HÀNG</h2>
+
+<div class="form-group">
+    <label for="searchStatus">Tìm kiếm theo trạng thái:</label>
+    <select class="form-control" id="searchStatus">
+        <!-- Option ẩn ban đầu -->
+        <option value="" disabled selected style="display: none;">Chọn trạng thái tìm kiếm</option>
+        <!-- Các options cho trạng thái -->
+        <option value="0">Chờ xác nhận</option>
+        <option value="1">Xác nhận đơn hàng</option>
+        <option value="2">Đang vận chuyển</option>
+        <option value="3">Giao hàng thành công</option>
+        <option value="4">Giao hàng không thành công</option>
+    </select>
+</div>
+
 <table>
     <thead>
         <tr>
@@ -92,28 +129,128 @@
                 <td>@order.PhoneNumber</td>
                 <td>@order.ShipAddress</td>
                 <td>@(order.OrderDate.HasValue ? order.OrderDate.Value.ToString("yyyy-MM-dd") : "N/A")</td>
-                <td>
+                <td id="statusCell_@order.OrderId">
                     @if (order.Status == 0)
                     {
                         <p>Chờ xác nhận</p>
                     }
-                    else
+                    else if (order.Status == 1)
                     {
-                        <p>Không Hoạt Động</p>
+                        <p>Xác nhận đơn hàng</p>
+                    }
+                    else if (order.Status == 2)
+                    {
+                        <p>Đang vận chuyển</p>
+                    }
+                    else if (order.Status == 3)
+                    {
+                        <p>Giao hàng thành công</p>
+                    }
+                    else if (order.Status == 4)
+                    {
+                        <p>Giao hàng không thành công</p>
                     }
                 </td>
 
-
-
                 <td>
                     <a href="@Url.Action("ViewDetail", "Order", new { id = order.OrderId })">Xem chi tiết</a>
-                    <a href="@Url.Action("Edit", "Order", new { id = order.OrderId })">Cập nhật</a>
+                    <button type="button" class="btn btn-primary" onclick="openModal('@order.OrderId')">Cập nhật</button>
+                    <div class="modal fade" id="updateModal_@order.OrderId" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="updateModalLabel">Cập nhật Trạng Thái Đơn Hàng</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="statusSelect_@order.OrderId">Chọn trạng thái:</label>
+                                        <select class="form-control" id="statusSelect_@order.OrderId">
+                                            <option value="0">Chờ xác nhận</option>
+                                            <option value="1">Xác nhận đơn hàng</option>
+                                            <option value="2">Đang vận chuyển</option>
+                                            <option value="3">Giao hàng thành công</option>
+                                            <option value="4">Giao hàng không thành công</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                    <button type="button" class="btn btn-primary" onclick="saveStatus('@order.OrderId')">Lưu</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </td>
             </tr>
         }
 
     </tbody>
 </table>
+
+<script>
+    function openModal(orderId) {
+        var status = $('#statusCell_' + orderId).text().trim();
+        if (status === "Giao hàng thành công") {
+            alert("Đơn hàng đã giao thành công. Không thể cập nhật trạng thái nữa.");
+        } else {
+            $('#updateModal_' + orderId).modal('show');
+        }
+    }
+
+    function closeModal(orderId) {
+        $('#updateModal_' + orderId).modal('hide');
+    }
+
+    function saveStatus(orderId) {
+        var selectedStatus = $('#statusSelect_' + orderId).val();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("UpdateStatus", "Order")",
+            data: { orderId: orderId, status: selectedStatus },
+            success: function (response) {
+                if (response.success) {
+                    var statusCell = $('#statusCell_' + orderId);
+                    switch (selectedStatus) {
+                        case "0":
+                            statusCell.html("<p>Chờ xác nhận</p>");
+                            break;
+                        case "1":
+                            statusCell.html("<p>Xác nhận đơn hàng</p>");
+                            break;
+                        case "2":
+                            statusCell.html("<p>Đang vận chuyển</p>");
+                            break;
+                        case "3":
+                            statusCell.html("<p>Giao hàng thành công</p>");
+                            break;
+                        case "4":
+                            statusCell.html("<p>Giao hàng không thành công</p>");
+                            break;
+                        default:
+                            break;
+                    }
+                    $('#updateModal_' + orderId).modal('hide');
+                } else {
+                    console.error("Có lỗi xảy ra khi lưu trạng thái");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $('#searchStatus').change(function () {
+            var searchStatus = $(this).val();
+            window.location.href = "@Url.Action("Index", "Order")?searchStatus=" + searchStatus;
+        });
+    });
+</script>
+
 <style>
     .pagination {
         display: inline-block;
