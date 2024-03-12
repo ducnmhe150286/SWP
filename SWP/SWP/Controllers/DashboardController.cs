@@ -12,7 +12,7 @@ namespace SWP.Controllers
 		{
 			using (var context = new SWPContext())
 			{
-				int pageSize = 5;
+				int pageSize = 6;
 
 				decimal totalRevenue = context.Orders
 					.Where(o => o.Status == 3)
