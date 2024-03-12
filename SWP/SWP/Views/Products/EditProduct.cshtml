@@ -33,7 +33,8 @@
                             <div class="col-6">
                                 <div class="mb-3">
                                     <label asp-for="Price" class="form-label">Giá<span class="required-star">*</span></label>
-                                <input asp-for="Price" class="form-control" type="text" value="@string.Format("{0:N0}", ViewBag.Product.Price)" required />
+                                    <input name="Price" class="form-control" type="text" value="@string.Format("{0:N2}", ViewBag.Product.Price)" pattern="[0-9]+(,[0-9]{1,2})?" title="Nhập số thập phân tối đa 2 chữ số sau dấu , có dạng như 10,55" oninput="this.value = this.value.replace(/[^\d,]/g, '')" required />
+
                                     <span asp-validation-for="Price" class="text-danger"></span>
                                 </div>
                             </div>
@@ -67,7 +68,7 @@
                                     <label asp-for="Status" class="form-label">Trạng thái</label>
                                     <select asp-for="Status" class="form-control">
                                         <option value="1" selected="@(ViewBag.Product.Status == 1)">Hoạt động</option>
-                                        <option value="0" selected="@(ViewBag.Product.Status == 0)">Ngừng hoạt động</option>
+                                        <option value="0" selected="@(ViewBag.Product.Status == 0)">Ngừng kinh doanh</option>
                                     </select>
                                     <span asp-validation-for="Status" class="text-danger"></span>
                                 </div>

@@ -45,11 +45,22 @@ namespace SWP.Controllers
                     .ThenInclude(pd => pd.Color)
                     .Include(p => p.ProductDetails)
                     .ThenInclude(pd => pd.Size)
-                    .Where(p =>
-                        (!statusFilter.HasValue || p.ProductDetails.Any(pd => pd.Status == statusFilter)) &&
-                        (!categoryFilter.HasValue || p.CategoryId == categoryFilter) &&
-                        (!brandFilter.HasValue || p.BrandId == brandFilter)
-                    );
+                .Where(p =>
+    (!statusFilter.HasValue ||
+        ((statusFilter != 2 && p.Status == statusFilter) ||
+           (statusFilter == 4 && (p.ProductDetails == null || !p.ProductDetails.Any())) ||
+            (statusFilter == 2 && p.ProductDetails != null && p.ProductDetails.Any() && p.ProductDetails.All(pd => pd.Quantity == 0))
+        )
+    ) &&
+    (!categoryFilter.HasValue || p.CategoryId == categoryFilter) &&
+    (!brandFilter.HasValue || p.BrandId == brandFilter)
+);
+
+
+
+
+
+
 
                 if (!string.IsNullOrEmpty(searchString))
                 {
@@ -179,7 +190,7 @@ namespace SWP.Controllers
 
 
         [HttpPost]
-        public IActionResult NewProduct(Product newProduct,int? ColorId,int? SizeId ,string Feature, string Attributes, List<IFormFile> imageFiles)
+        public IActionResult NewProduct(Product newProduct,int? ColorId,int? SizeId ,string Feature, string Attributes, List<IFormFile> imageFiles,string Price)
         {
             try
             {
@@ -199,7 +210,7 @@ namespace SWP.Controllers
                     }
                     newProduct.ProductName = string.IsNullOrWhiteSpace(newProduct.ProductName) ? null : newProduct.ProductName;
                     newProduct.Description = string.IsNullOrWhiteSpace(newProduct.Description) ? null : newProduct.Description;
-                    newProduct.Price = newProduct.Price.HasValue ? newProduct.Price : null;
+                    newProduct.Price = decimal.Parse(Price);
                     //newProduct.Quantity = newProduct.Quantity.HasValue ? newProduct.Quantity : null;
                     //newProduct.IsSale = newProduct.IsSale.HasValue ? newProduct.IsSale : false;
                     newProduct.Status = newProduct.Status.HasValue ? newProduct.Status : null;
@@ -308,7 +319,7 @@ namespace SWP.Controllers
 
 
         [HttpPost]
-        public IActionResult UpdateProduct(Product updatedProduct, int? ColorId, int? SizeId, string Feature, string Attributes, List<IFormFile> imageFiles)
+        public IActionResult UpdateProduct(Product updatedProduct, int? ColorId, int? SizeId, string Feature, string Attributes, List<IFormFile> imageFiles,string Price)
         {
             try
             {
@@ -333,7 +344,7 @@ namespace SWP.Controllers
                     {
                         existingProduct.ProductName = updatedProduct.ProductName;
                         existingProduct.Description = updatedProduct.Description;
-                        existingProduct.Price = updatedProduct.Price;
+                        existingProduct.Price = decimal.Parse(Price);
                         existingProduct.IsSale = updatedProduct.IsSale;
                         existingProduct.Status = updatedProduct.Status;
                         existingProduct.BrandId = updatedProduct.BrandId;
@@ -507,7 +518,7 @@ namespace SWP.Controllers
 
             return RedirectToAction("Products");
         }
-        public IActionResult UpdateStatusProduct(int id)
+        public IActionResult UpdateStatusProduct(int id, string searchString, int? statusFilter, int? categoryFilter, int? brandFilter, int page = 1)
         {
             using (var context = new SWPContext())
             {
@@ -529,7 +540,15 @@ namespace SWP.Controllers
                 }
             }
 
-            return RedirectToAction("Products");
+            // Kèm theo các tham số tìm kiếm và phân trang khi chuyển hướng
+            return RedirectToAction("Products", new
+            {
+                searchString = searchString,
+                statusFilter = statusFilter,
+                categoryFilter = categoryFilter,
+                brandFilter = brandFilter,
+                page = page
+            });
         }
 
 
