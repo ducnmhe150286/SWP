@@ -1,0 +1,39 @@
+﻿
+
+<h2>Feedback List</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Stt</th>
+            <th>Người dùng</th>
+            <th>Tên sản phẩm</th>
+            <th>Xếp hạng</th>
+            <th>Bình luận</th>
+            <th>Ngày tạo</th>
+            <th>Xem chi tiết</th>
+        </tr>
+    </thead>
+     @if (ViewBag.DisplayModels != null)
+        {
+    <tbody>
+       
+            @{
+                int startIndex = (int)ViewData["startIndex"];
+            }
+            @foreach (var feedback in ViewBag.DisplayModels)
+            {
+                <tr>
+                    <td>@startIndex</td>
+                    <td>@feedback.Email</td>
+                    <td>@feedback.ProductName</td>
+                    <td>@feedback.Rating</td>
+                    <td>@feedback.Comment</td>
+                    <td>@feedback.CreatedDate.ToShortDateString()</td>
+                </tr>
+            }
+
+        
+    </tbody>
+        }
+</table>

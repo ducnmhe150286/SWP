@@ -92,7 +92,7 @@
             padding: 8px 30px;
             margin: 30px 0;
             /*  border-radius: 30px;
-                */ transition: background 0.5s;
+                        */ transition: background 0.5s;
         }
 
         .btn1-buy-now {
@@ -102,7 +102,7 @@
             padding: 8px 30px;
             margin: 30px 0;
             /*  border-radius: 30px;
-                */ transition: background 0.5s;
+                        */ transition: background 0.5s;
         }
 
             .btn1-buy-now:hover {
@@ -695,7 +695,50 @@
             padding-left: 920px;
         }
 
-        }</style>
+        }
+
+        .blog-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 20px;
+            gap: 20px; /* This adds space between the columns */
+        }
+
+        .blog-entry {
+            border: 1px solid #ddd;
+            flex-basis: calc(50% - 20px); /* Adjusts the width accounting for the gap */
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .blog-entry-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .blog-entry-content {
+            padding: 15px;
+        }
+
+        .blog-title {
+            margin: 0;
+            color: #333;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .blog-description {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .blog-date {
+            color: #999;
+            font-size: 14px;
+        }
+
+    </style>
 </head>
 @{
     string user = HttpContextAccessor.HttpContext.Session.GetString("USER_EMAIL") ?? "";
@@ -750,26 +793,21 @@
             @foreach (Blog item in ViewBag.Blog)
             {
                 <!-- Blog entry -->
-                <div class="custom-col-6">
-                    <!-- Each blog entry takes half of the row -->
-                    <div class="card mb-3" style="max-width: 540px;">
-                        <div class="row g-0">
-                            <div class="card-img-col">
-                                <img src="/Images/@item.Image" class="img-fluid rounded-start" style="width: 100%; height: 100%; object-fit: cover;">
-                            </div>
-
-                            <div class="card-content-col">
-                                <div class="card-body">
-                                    <h5 class="card-title blog-title" data-blog-id="@item.BlogId">@item.Title</h5>
-                                    <p class="card-text">@item.ShortDescription</p>
-                                    <p class="card-text"><small class="text-muted">@item.CreateDate.Value.ToString("yyyy/MM/dd")</small></p>
-                                    <!-- You can uncomment the following code if you want to show a preview of the description -->
-                                    @* <p class="card-text">@Html.Raw(HttpUtility.HtmlDecode(item.Description.Length < 100 ? item.Description : item.Description.Substring(0, 100)))</p> *@
-                                </div>
-                            </div>
-                        </div>
+                <div class="blog-entry">
+                    <div class="blog-entry-image">
+                        <!-- Image taking full width of the card -->
+                        <img src="/Images/@item.Image" class="img-fluid" alt="Image of @item.Title">
+                    </div>
+                    <div class="blog-entry-content">
+                        <!-- Title with clickable behavior -->
+                        <h3 class="blog-title" data-blog-id="@item.BlogId">@item.Title</h3>
+                        <!-- Short description -->
+                        <p class="blog-description">@item.ShortDescription</p>
+                        <!-- Posted date -->
+                        <p class="blog-date">@item.CreateDate.Value.ToString("dd/MM/yyyy")</p>
                     </div>
                 </div>
+
                 <!-- END Blog entry -->
             }
 
