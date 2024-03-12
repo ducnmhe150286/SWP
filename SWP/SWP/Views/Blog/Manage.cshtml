@@ -5,136 +5,151 @@
 *@
 @{
 }
+<style>
+    .center-text {
+        text-align: center;
+    }
+
+    .table-hover-pointer tbody tr:hover {
+        cursor: pointer;
+    }
+
+    .btn-space {
+        margin-right: 5px; /* Điều chỉnh giá trị margin tùy ý */
+    }
+</style>
 <script src="https://cdn.ckeditor.com/ckeditor5/30.0.0/classic/ckeditor.js"></script>
 <section class="">
     <div class="container">
         <div class="row justify-content-center">
-        <!-- sidebar -->
-        <div class="col-lg-3">
-            <!-- Collapsible wrapper -->
+            <!-- sidebar -->
+            <div class="col-lg-3">
+                <!-- Collapsible wrapper -->
 
-        </div>
-        <!-- sidebar -->
-        <!-- content -->
-        <div class="col-lg-10">
-            <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
-                <div class="ms-auto">
-                    <div class="btn-group shadow-0 border">
-                        <a asp-controller="Blog" asp-action="Create" class="btn btn-primary shadow-0 me-1">Tạo Blog mới</a>
-                    </div>
-                </div>
-            </header>
-
-            <!-- Search form -->
-            <form method="post" asp-controller="Blog" asp-action="Manage" class="mb-4">
-                <div class="input-group">
-                    <form class="form-inline">
-                        <label class="form-check-inline">Trạng thái</label>
-                        <div class="form-group mr-3">
-                            <select id="status" name="status" class="form-select">
-                                <option value="">Tất cả</option>
-                                <option value="1" selected="@(ViewBag.Status == 1)">Công khai</option>
-                                <option value="0" selected="@(ViewBag.Status == 0)">Riêng tư</option>
-                            </select>
-                        </div>
-                        <div class="form-group flex-grow-1">
-                            <input type="text" name="search" class="form-control" placeholder="tìm kiếm " value="@ViewBag.strSearch">
-                        </div>
-                        <button type="submit" class="btn btn-primary ml-2">Tìm kiếm</button>
-                    </form>
-                </div>
-            </form>
-
-            <div class="row">
-
-
-                @if (Model != null)
-                {
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Stt</th>
-                                <th>Tiêu đề</th>
-                                <th>Ngày tạo</th>
-                                <th>Trạng thái</th>
-                                <th>Tác vụ</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            @{
-                                int startIndex = (int)ViewData["startIndex"];
-                            }
-
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-
-                                    <td>@startIndex</td>
-                                    <td>@item.Title</td>
-                                    <td>@item.CreateDate</td>
-                                    @if (item.Status == 1)
-                                    {
-                                        <td>Công khai</td>
-                                    }
-                                    @if (item.Status != 1)
-                                    {
-                                        <td> Riêng tư </td>
-                                    }
-                                    <td>
-                                        <a asp-controller="Blog" asp-action="Edit" asp-route-blogId="@item.BlogId" class="btn btn-primary shadow-0 me-1">Chỉnh sửa</a>
-                                    
-                                        <a asp-controller="Blog" asp-action="Delete" asp-route-blogId="@item.BlogId" class="btn btn-danger shadow-0 me-1" onclick="return confirmDelete()">Xóa</a>
-                                    </td>
-                                </tr>
-                                startIndex++;
-                            }
-                        </tbody>
-                    </table>
-                }
-
-
-                <hr />
-
-                <!-- Pagination -->
-                <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
-                    <ul class="pagination">
-                        @if (ViewBag.currentPage != 0)
-                        {
-                            <li class="page-item">
-                                <a class="page-link" asp-controller="Blog" asp-action="Manage" asp-route-currentPage="@(ViewBag.currentPage - 1)" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                        }
-                        @for (int i = 1; i <= ViewBag.NumberOfPages; i++)
-                        {
-                            <li class="page-item "><a class="page-link" asp-controller="Blog" asp-action="Manage" asp-route-currentPage="@i">@i</a></li>
-                        }
-                        @if (ViewBag.currentPage < ViewBag.NumberOfPages)
-                        {
-                            <li class="page-item">
-                                <a class="page-link" asp-controller="Blog" asp-action="Manage" asp-route-currentPage="@(ViewBag.currentPage + 1)" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        }
-                    </ul>
-                </nav>
-                <!-- Pagination -->
             </div>
-        </div>
-        <script>
-            function confirmDelete() {
-                if (confirm("Are you sure you want to delete this Blog?")) {
-                    // Thực hiện hành động xóa ở đây
-                    return true;
-                } else {
-                    return false;
+            <!-- sidebar -->
+            <!-- content -->
+            <div class="col-lg-10">
+                <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
+                    <div class="ms-auto">
+                        <div class="btn-group shadow-0 border">
+                            <a asp-controller="Blog" asp-action="Create" class="btn btn-primary shadow-0 me-1">Tạo Blog mới</a>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Search form -->
+                <form method="post" asp-controller="Blog" asp-action="Manage" class="mb-4">
+                    <div class="input-group">
+                        <form class="form-inline">
+                            <label class="form-check-inline">Trạng thái</label>
+                            <div class="form-group mr-3">
+                                <select id="status" name="status" class="form-select">
+                                    <option value="">Tất cả</option>
+                                    <option value="1" selected="@(ViewBag.Status == 1)">Công khai</option>
+                                    <option value="0" selected="@(ViewBag.Status == 0)">Riêng tư</option>
+                                </select>
+                            </div>
+                            <div class="form-group flex-grow-1">
+                                <input type="text" name="search" class="form-control" placeholder="tìm kiếm " value="@ViewBag.strSearch">
+                            </div>
+                            <button type="submit" class="btn btn-primary ml-2">Tìm kiếm</button>
+                        </form>
+                    </div>
+                </form>
+
+                <div class="row">
+
+
+                    @if (Model != null)
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Stt</th>
+                                        <th>Tiêu đề</th>
+                                        <th>Ngày tạo</th>
+                                        <th>Trạng thái</th>
+                                        <th>Tác vụ</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody >
+                                    @{
+                                        int startIndex = (int)ViewData["startIndex"];
+                                    }
+
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+
+                                            <td>@startIndex</td>
+                                            <td>@item.Title</td>
+                                            <td>@item.CreateDate</td>
+                                            @if (item.Status == 1)
+                                            {
+                                                <td>Công khai</td>
+                                            }
+                                            @if (item.Status != 1)
+                                            {
+                                                <td> Riêng tư </td>
+                                            }
+                                            <td>
+                                                <a asp-controller="Blog" asp-action="Edit" asp-route-blogId="@item.BlogId" class="btn btn-primary shadow-0 me-1">Chỉnh sửa</a>
+
+                                                <a asp-controller="Blog" asp-action="Delete" asp-route-blogId="@item.BlogId" class="btn btn-danger shadow-0 me-1" onclick="return confirmDelete()">Xóa</a>
+                                            </td>
+                                        </tr>
+                                        startIndex++;
+                                    }
+                                </tbody>
+
+                            </table>
+                        </div>
+                    }
+
+
+
+                    <!-- Pagination -->
+                    <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
+                        <ul class="pagination">
+                            @if (ViewBag.currentPage != 0)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-controller="Blog" asp-action="Manage" asp-route-currentPage="@(ViewBag.currentPage - 1)" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            }
+                            @for (int i = 1; i <= ViewBag.NumberOfPages; i++)
+                            {
+                                <li class="page-item "><a class="page-link" asp-controller="Blog" asp-action="Manage" asp-route-currentPage="@i">@i</a></li>
+                            }
+                            @if (ViewBag.currentPage < ViewBag.NumberOfPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-controller="Blog" asp-action="Manage" asp-route-currentPage="@(ViewBag.currentPage + 1)" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                    <!-- Pagination -->
+                </div>
+            </div>
+            <script>
+                function confirmDelete() {
+                    if (confirm("Are you sure you want to delete this Blog?")) {
+                        // Thực hiện hành động xóa ở đây
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
-            }
-        </script>
-    </div>
+            </script>
+        </div>
     </div>
 
 </section>

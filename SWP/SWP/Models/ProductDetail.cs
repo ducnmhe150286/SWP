@@ -8,6 +8,8 @@ namespace SWP.Models
         public ProductDetail()
         {
             CartItems = new HashSet<CartItem>();
+            FeedBacks = new HashSet<FeedBack>();
+            Orderdetails = new HashSet<Orderdetail>();
         }
 
         public int DetailId { get; set; }
@@ -24,5 +26,7 @@ namespace SWP.Models
         public virtual Product? Product { get; set; }
         public virtual Size? Size { get; set; }
         public virtual ICollection<CartItem> CartItems { get; set; }
+        public virtual ICollection<FeedBack> FeedBacks { get; set; }
+        public virtual ICollection<Orderdetail> Orderdetails { get; set; }
     }
 }
