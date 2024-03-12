@@ -5,7 +5,12 @@
 @{
 }
 @using SWP.Models;
-
+@if (ViewBag.SuccessMessage != null)
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.SuccessMessage
+    </div>
+}
 <form enctype="multipart/form-data" asp-action="Details">
     <section style="background-color: #eee;">
         <div class="container py-5">

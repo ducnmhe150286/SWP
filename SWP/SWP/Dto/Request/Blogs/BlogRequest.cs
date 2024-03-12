@@ -20,7 +20,7 @@ namespace SWP.Dto.Request.Blogs
     {
 
         public int BlogId { get; set; }
-
+        public int? UserId { get; set; }
         [Required(ErrorMessage = "Tiêu đề không được để trống.")]
         public string Title { get; set; }
 
@@ -29,6 +29,7 @@ namespace SWP.Dto.Request.Blogs
 
         [Required(ErrorMessage = "Mô tả không được để trống.")]
         public string Description { get; set; }
+        [Required(ErrorMessage = "Tóm tắt không được để trống.")]
         public string? ShortDescription { get; set; }
         public DateTime? CreateDate { get; set; }
         public int? Status { get; set; }

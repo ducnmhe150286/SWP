@@ -18,147 +18,163 @@
         margin-right: 5px; /* Điều chỉnh giá trị margin tùy ý */
     }
 </style>
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+}
 <body>
     <div class="container">
         <div class="row justify-content-center">
-        <!-- sidebar -->
-        <div class="col-lg-3">
-            <!-- Collapsible wrapper -->
+            <!-- sidebar -->
+            <div class="col-lg-3">
+                <!-- Collapsible wrapper -->
 
-        </div>
-        <!-- sidebar -->
-        <!-- content -->
-        <div class="col-lg-10">
-            <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
-                <div class="ms-auto">
-                    <div class="btn-group shadow-0 border">
-                        <a asp-controller="Users" asp-action="Add" class="btn btn-primary shadow-0 me-1">Tạo người dùng mới</a>
-                    </div>
-                </div>
-            </header>
-
-            <!-- Search form -->
-            <form method="post" asp-controller="Users" asp-action="Index" class="mb-4">
-                <div class="input-group">
-                    <form class="form-inline">
-                        <label class="form-check-inline">Trạng thái</label>
-                        <div class="form-group mr-2">
-                            <select id="status" name="status" class="form-select">
-                                <option value="" >Tất cả</option>
-                                <option value="1" selected="@(ViewBag.Status == 1)">Hoạt động</option>
-                                <option value="0" selected="@(ViewBag.Status == 0)">Không hoạt động</option>
-                            </select>
-                        </div>
-                        <div class="form-group flex-grow-1">
-                            <input type="text" name="search" class="form-control" placeholder="tìm kiếm " value="@ViewBag.strSearch">
-                        </div>
-                        <button type="submit" class="btn btn-primary ml-2">Tìm kiếm</button>
-                    </form>
-                </div>
-            </form>
-            
-            <div class="row">
-                
-                
-                @if (Model != null)
-                {
-                        <table class="table table-bordered table-hover table-responsive w-100 table-hover-pointer">
-                        <thead>
-                            <tr>
-                                <th>Stt</th>
-                                <th>Ảnh đại diện</th>
-                                <th>Họ</th>
-                                <th>Tên</th>
-                                <th>Sđt</th>
-                                <th>Email</th>
-                                <th>Ngày tạo</th>
-                                <th>Trạng thái</th>
-                                @*<th>Tác vụ</th>*@
-                            </tr>
-                        </thead>
-                       
-                            <tbody class="text-center">
-                            @{
-                                int startIndex = (int)ViewData["startIndex"];
-                               
-                            }
-                            
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    
-                                    <td>@startIndex</td>
-                                    <td><img src="/uploads/@item.Image" style="width: 150px" class="card-img-top" /></td>
-                                    <td><a asp-controller="Users" asp-action="Details" asp-route-userId="@item.UserId">@item.FirstName</a></td>
-                                    <td><a asp-controller="Users" asp-action="Details" asp-route-userId="@item.UserId">@item.LastName</a></td>
-                                    <td>@item.PhoneNumber</td>
-                                    <td>@item.Email</td>
-                                    <td>@item.CreatedDate</td>
-                                    @if(item.Status == 1)
-                                    {
-                                        <td>Hoạt động</td>
-                                    }
-                                    @if(item.Status != 1)
-                                    {
-                                        <td> Không hoạt động</td>
-                                    }
-                                    @* <td>
-                                        <a asp-controller="Users" asp-action="Edit" asp-route-userId="@item.UserId" class="btn btn-primary shadow-0 me-1">Edit</a>
-                                    </td>*@
-                                    @*<td>
-                                        <a asp-controller="Users" asp-action="Delete" asp-route-userId="@item.UserId" class="btn btn-danger shadow-0 me-1" onclick="return confirmDelete()">Delete</a>
-                                    </td>*@
-                                </tr>
-                                startIndex++;
-                            }
-                        </tbody>
-                    </table>
-                }
-
-
-                
-
-                <!-- Pagination -->
-                <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
-                    <ul class="pagination">
-                        @if (ViewBag.currentPage != 0)
-                        {
-                            <li class="page-item">
-                                <a class="page-link" asp-controller="Users" asp-action="Index" asp-route-currentPage="@(ViewBag.currentPage - 1)" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                        }
-                        @for (int i = 1; i <= ViewBag.NumberOfPages; i++)
-                        {
-                            <li class="page-item "><a class="page-link" asp-controller="Users" asp-action="Index" asp-route-currentPage="@i">@i</a></li>
-
-                        }
-                        @if (ViewBag.currentPage < ViewBag.NumberOfPages )
-                        {
-                            <li class="page-item">
-                                <a class="page-link" asp-controller="Users" asp-action="Index" asp-route-currentPage="@(ViewBag.currentPage + 1)" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        }
-
-                    </ul>
-                </nav>
-                <!-- Pagination -->
             </div>
+            <!-- sidebar -->
+            <!-- content -->
+            <div class="col-lg-10">
+                <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
+                    <div class="ms-auto">
+                        <div class="btn-group shadow-0 border">
+                            <a asp-controller="Users" asp-action="Add" class="btn btn-primary shadow-0 me-1">Tạo người dùng mới</a>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Search form -->
+                <form method="post" asp-controller="Users" asp-action="Index" class="mb-4">
+                    <div class="input-group">
+                        <form class="form-inline">
+                            <label class="form-check-inline">Trạng thái</label>
+                            <div class="form-group mr-2">
+                                <select id="status" name="status" class="form-select">
+                                    <option value="">Tất cả</option>
+                                    <option value="1" selected="@(ViewBag.Status == 1)">Hoạt động</option>
+                                    <option value="0" selected="@(ViewBag.Status == 0)">Không hoạt động</option>
+                                </select>
+                            </div>
+                            <div class="form-group flex-grow-1">
+                                <input type="text" name="search" class="form-control" placeholder="tìm kiếm " value="@ViewBag.strSearch">
+                            </div>
+                            <button type="submit" class="btn btn-primary ml-2">Tìm kiếm</button>
+                        </form>
+                    </div>
+                </form>
+
+                <div class="row">
+
+
+                    @if (Model != null)
+                    {
+                        <table class="table table-bordered table-hover table-responsive w-100 table-hover-pointer">
+                            <thead>
+                                <tr>
+                                    <th>Stt</th>
+                                    <th>Ảnh đại diện</th>
+                                    <th>Họ</th>
+                                    <th>Tên</th>
+                                    <th>Sđt</th>
+                                    <th>Email</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Vai trò</th>
+                                    <th>Trạng thái</th>
+
+                                    @*<th>Tác vụ</th>*@
+                                </tr>
+                            </thead>
+
+                            <tbody class="text-center">
+                                @{
+                                    int startIndex = (int)ViewData["startIndex"];
+
+                                }
+
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+
+                                        <td>@startIndex</td>
+                                        <td><img src="/uploads/@item.Image" style="width: 150px" class="card-img-top" /></td>
+                                        <td><a asp-controller="Users" asp-action="Details" asp-route-userId="@item.UserId">@item.FirstName</a></td>
+                                        <td><a asp-controller="Users" asp-action="Details" asp-route-userId="@item.UserId">@item.LastName</a></td>
+                                        <td>@item.PhoneNumber</td>
+                                        <td>@item.Email</td>
+                                        <td>@item.CreatedDate</td>
+                                        @if (item.RoleId == 1)
+                                        {
+                                            <td>Quản lý</td>
+                                        }
+                                        @if (item.RoleId == 2)
+                                        {
+                                            <td>Khách hàng</td>
+                                        }
+                                        @if (item.Status == 1)
+                                        {
+                                            <td>Hoạt động</td>
+                                        }
+                                        @if (item.Status != 1)
+                                        {
+                                            <td> Không hoạt động</td>
+                                        }
+                                        @* <td>
+                                <a asp-controller="Users" asp-action="Edit" asp-route-userId="@item.UserId" class="btn btn-primary shadow-0 me-1">Edit</a>
+                                </td>*@
+                                        @*<td>
+                                <a asp-controller="Users" asp-action="Delete" asp-route-userId="@item.UserId" class="btn btn-danger shadow-0 me-1" onclick="return confirmDelete()">Delete</a>
+                                </td>*@
+                                    </tr>
+                                    startIndex++;
+                                }
+                            </tbody>
+                        </table>
+                    }
+
+
+
+
+                    <!-- Pagination -->
+                    <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
+                        <ul class="pagination">
+                            @if (ViewBag.currentPage != 0)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-controller="Users" asp-action="Index" asp-route-currentPage="@(ViewBag.currentPage - 1)" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            }
+                            @for (int i = 1; i <= ViewBag.NumberOfPages; i++)
+                            {
+                                <li class="page-item "><a class="page-link" asp-controller="Users" asp-action="Index" asp-route-currentPage="@i">@i</a></li>
+
+                            }
+                            @if (ViewBag.currentPage < ViewBag.NumberOfPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-controller="Users" asp-action="Index" asp-route-currentPage="@(ViewBag.currentPage + 1)" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            }
+
+                        </ul>
+                    </nav>
+                    <!-- Pagination -->
+                </div>
+            </div>
+
+            <script>
+                function confirmDelete() {
+                    if (confirm("Are you sure you want to delete this user?")) {
+                        // Thực hiện hành động xóa ở đây
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            </script>
         </div>
-        
-       <script>
-  function confirmDelete() {
-    if (confirm("Are you sure you want to delete this user?")) {
-      // Thực hiện hành động xóa ở đây
-      return true;
-    } else {
-      return false;
-    }
-  }
-</script>
-    </div>
     </div>
 </body>

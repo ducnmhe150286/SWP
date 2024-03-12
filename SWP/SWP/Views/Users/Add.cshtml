@@ -7,7 +7,13 @@
 
 <h1>Tạo người dùng mới</h1>
 
-<hr />
+
+@if (ViewBag.SuccessMessage != null)
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.SuccessMessage
+    </div>
+}
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Add">
@@ -22,7 +28,7 @@
                         <option value="@item.RoleId">@item.RoleName</option>
                     }*@
                     <option value="1">Quản lí </option>
-                    <option value="2">Khách hàng</option>
+                   
                 </select>
             </div>
             <div class="form-group">
@@ -41,6 +47,11 @@
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
 
             <div class="form-group">
                 <label  class="control-label">Số điện thoại</label>
@@ -58,8 +69,7 @@
 
                 <select class="form-control form-control-lg" asp-for="Status">
                     <option value="1">Hoạt động</option>
-                    <option value="2">Không hoạt động</option>
-
+                  
                 </select>
             </div>
 

@@ -144,7 +144,7 @@ namespace SWP.Controllers
         // POST: Blog/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(List<IFormFile> files, [Bind("Title,ShortDescription,Description,Status,Image")] Blog blog)
+        public async Task<IActionResult> Create(List<IFormFile> files, [Bind("Title,ShortDescription,Description,Status,Image")] CreateBlogRequest blog)
         {
             if (ModelState.IsValid)
             {
@@ -222,7 +222,7 @@ namespace SWP.Controllers
         // POST: Blog/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(List<IFormFile> files, int? blogId, [Bind("BlogId,Title,ShortDescription,Description,Status,Image")] BlogRequest blog)
+        public async Task<IActionResult> Edit(List<IFormFile> files, int? blogId, [Bind("BlogId,Title,ShortDescription,Description,Status,Image")] CreateBlogRequest blog)
         {
             if (blog == null || blogId == null)
             {
