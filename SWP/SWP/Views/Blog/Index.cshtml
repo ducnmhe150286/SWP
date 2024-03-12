@@ -1,26 +1,77 @@
 ﻿@using SWP.Models
 @using System.Web
 @model IEnumerable<SWP.Models.Blog>
+<style>
+  /* Styles that apply to all sizes */
+.blog-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 20px;
+    gap: 20px; /* This adds space between the columns */
+}
+
+.blog-entry {
+    border: 1px solid #ddd;
+    flex-basis: calc(50% - 20px); /* Adjusts the width accounting for the gap */
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.blog-entry-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.blog-entry-content {
+    padding: 15px;
+}
+
+.blog-title {
+    margin: 0;
+    color: #333;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.blog-description {
+    color: #666;
+    font-size: 16px;
+}
+
+.blog-date {
+    color: #999;
+    font-size: 14px;
+}
+
+/* Media query for smaller screens */
+
+
+</style>
+
 @if (Model != null)
 {
     <div class="container">
-        <div class="row justify-content-center">
+
+        <div class="blog-container">
             @foreach (var item in Model)
             {
-               
                 <!-- Blog entry -->
-                <div class="col-md-6 mb-4">
-                    <div class="card">
-                        <img src="/Images/@item.Image"  class="card-img-top" style="width:50%">
-                        <div class="card-body">
-                             <h3 class="card-title blog-title" data-blog-id="@item.BlogId">@item.Title</h3>
-                            <p class="card-text">@item.ShortDescription </p>
-                            <p>Post on date: <span class="w3-opacity">@item.CreateDate.Value.ToString("yyyy/MM/dd")</span></p>
-                            <!-- You can uncomment the following code if you want to show a preview of the description -->
-                            @* <p class="card-text">@Html.Raw(HttpUtility.HtmlDecode(item.Description.Length < 100 ? item.Description : item.Description.Substring(0, 100)))</p> *@
+                <div class="blog-entry">
+                    <div class="blog-entry-image">
+                        <!-- Image taking full width of the card -->
+                        <img src="/Images/@item.Image" class="img-fluid" alt="Image of @item.Title">
+                    </div>
+                    <div class="blog-entry-content">
+                            <!-- Title with clickable behavior -->
+                        <h3 class="blog-title" data-blog-id="@item.BlogId">@item.Title</h3>
+                            <!-- Short description -->
+                        <p class="blog-description">@item.ShortDescription</p>
+                            <!-- Posted date -->
+                            <p class="blog-date">@item.CreateDate.Value.ToString("dd/MM/yyyy")</p>
                         </div>
                     </div>
-                </div>
+                
                 <!-- END Blog entry -->
             }
         </div>

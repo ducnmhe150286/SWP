@@ -15,6 +15,7 @@ namespace SWP.Models
         public string? UpdateBy { get; set; }
         public DateTime? CreatedDate { get; set; }
 
+        public virtual ProductDetail Detail { get; set; } = null!;
         public virtual Order Order { get; set; } = null!;
     }
 }

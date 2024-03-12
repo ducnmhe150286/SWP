@@ -8,6 +8,7 @@ namespace SWP.Models
         public Category()
         {
             Products = new HashSet<Product>();
+            Sizes = new HashSet<Size>();
         }
 
         public int CategoryId { get; set; }
@@ -18,5 +19,6 @@ namespace SWP.Models
         public DateTime? CreatedDate { get; set; }
 
         public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<Size> Sizes { get; set; }
     }
 }
