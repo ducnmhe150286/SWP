@@ -31,8 +31,11 @@ namespace SWP.Controllers
 
             using (var context = new SWPContext())
             {
-                var blog = context.Blogs.Where(b =>b.Status == 1).ToList();
-                var brands = context.Brands.Where(b => b.Status == 1).ToList();
+				var blog = context.Blogs
+								  .Where(b => b.Status == 1)
+								  .OrderByDescending(b => b.CreateDate)
+								  .ToList();
+				var brands = context.Brands.Where(b => b.Status == 1).ToList();
                 var categories = context.Categories.Where(c => c.Status == 1).ToList();
 
                 var query = context.Products
@@ -165,7 +168,7 @@ namespace SWP.Controllers
         }
         public ActionResult ListBlog(int? categoryFilter, int? brandFilter, string searchString, int productPage = 1, int blogPage = 1)
         {
-            int blogPageSize = 4; // Set the page size for the blog
+            int blogPageSize = 6; // Set the page size for the blog
 
             using (var context = new SWPContext())
             {

@@ -132,7 +132,14 @@ namespace SWP.Models
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
+                entity.Property(e => e.Image).IsUnicode(false);
+
                 entity.Property(e => e.UpdatedBy).HasMaxLength(255);
+
+                entity.HasOne(d => d.Detail)
+                    .WithMany(p => p.FeedBacks)
+                    .HasForeignKey(d => d.DetailId)
+                    .HasConstraintName("FK_FeedBack_ProductDetail");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.FeedBacks)
@@ -153,6 +160,11 @@ namespace SWP.Models
                 entity.Property(e => e.ShipAddress).HasMaxLength(20);
 
                 entity.Property(e => e.ShipDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Orders)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_Order_User");
             });
 
             modelBuilder.Entity<Orderdetail>(entity =>
@@ -168,6 +180,12 @@ namespace SWP.Models
                 entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.UpdateBy).HasMaxLength(255);
+
+                entity.HasOne(d => d.Detail)
+                    .WithMany(p => p.Orderdetails)
+                    .HasForeignKey(d => d.DetailId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Orderdetails_ProductDetail");
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.Orderdetails)
@@ -274,6 +292,11 @@ namespace SWP.Models
                 entity.Property(e => e.SizeName).HasMaxLength(255);
 
                 entity.Property(e => e.UpdateBy).HasMaxLength(255);
+
+                entity.HasOne(d => d.Category)
+                    .WithMany(p => p.Sizes)
+                    .HasForeignKey(d => d.CategoryId)
+                    .HasConstraintName("FK_Size_Category");
             });
 
             modelBuilder.Entity<User>(entity =>

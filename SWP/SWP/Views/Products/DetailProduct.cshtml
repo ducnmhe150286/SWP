@@ -11,40 +11,40 @@
                         <div class="row">
                             @if (ViewBag.AllProductDetails == null || ViewBag.AllProductDetails.Count == 0)
                             {
-                               @* <div class="row default-detail-row">
-                                    <div class="col-4">
-                                        <div class="mb-3">
-                                            <label asp-for="ColorId" class="form-label">Màu sắc<span class="required-star">*</span></label>
-                                            <select asp-for="ColorId" class="form-control"    name="ColorId" required>
-                                                @foreach (var color in ViewBag.Colors)
-                                                {
-                                                    <option value="@color.ColorId">@color.ColorName</option>
-                                                }
-                                            </select>
-                                            <span asp-validation-for="ColorId" class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="mb-3">
-                                            <label asp-for="SizeId" class="form-label">Kích thước<span class="required-star">*</span></label>
-                                            <select asp-for="SizeId" class="form-control multiselect"  name="SizeId" required>
-                                                @foreach (var size in ViewBag.Sizes)
-                                                {
-                                                    <option value="@size.SizeId">@size.SizeName</option>
-                                                }
-                                            </select>
-                                            <span asp-validation-for="SizeId" class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-3">
-                                        <div class="mb-3">
-                                            <label asp-for="Quantity" class="form-label">Số lượng<span class="required-star">*</span></label>
-                                          <input name="Quanties" class="form-control" type="number" min="0" required oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')" pattern="\d+" title="Số lượng phải là số nguyên không âm" />
-                                            <span asp-validation-for="Quantity" class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                    
-                                </div>*@
+                                @* <div class="row default-detail-row">
+                            <div class="col-4">
+                            <div class="mb-3">
+                            <label asp-for="ColorId" class="form-label">Màu sắc<span class="required-star">*</span></label>
+                            <select asp-for="ColorId" class="form-control"    name="ColorId" required>
+                            @foreach (var color in ViewBag.Colors)
+                            {
+                            <option value="@color.ColorId">@color.ColorName</option>
+                            }
+                            </select>
+                            <span asp-validation-for="ColorId" class="text-danger"></span>
+                            </div>
+                            </div>
+                            <div class="col-4">
+                            <div class="mb-3">
+                            <label asp-for="SizeId" class="form-label">Kích thước<span class="required-star">*</span></label>
+                            <select asp-for="SizeId" class="form-control multiselect"  name="SizeId" required>
+                            @foreach (var size in ViewBag.Sizes)
+                            {
+                            <option value="@size.SizeId">@size.SizeName</option>
+                            }
+                            </select>
+                            <span asp-validation-for="SizeId" class="text-danger"></span>
+                            </div>
+                            </div>
+                            <div class="col-3">
+                            <div class="mb-3">
+                            <label asp-for="Quantity" class="form-label">Số lượng<span class="required-star">*</span></label>
+                            <input name="Quanties" class="form-control" type="number" min="0" required oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')" pattern="\d+" title="Số lượng phải là số nguyên không âm" />
+                            <span asp-validation-for="Quantity" class="text-danger"></span>
+                            </div>
+                            </div>
+
+                            </div>*@
                                 <h5 class="text-center" style="color:red">Không có dữ liệu</h5>
                             }
                             @foreach (var productDetail in ViewBag.AllProductDetails)
@@ -90,15 +90,15 @@
                         <div class="row">
                             <div class="col-6">
                                 @*<div class="mb-3">
-                                    <label asp-for="Quantity" class="form-label">Số lượng<span class="required-star">*</span></label>
-                                    <input asp-for="Quantity" class="form-control" type="number" min="0" value="@Model?.Quantity" required />
-                                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                                <label asp-for="Quantity" class="form-label">Số lượng<span class="required-star">*</span></label>
+                                <input asp-for="Quantity" class="form-control" type="number" min="0" value="@Model?.Quantity" required />
+                                <span asp-validation-for="Quantity" class="text-danger"></span>
                                 </div>*@
                             </div>
                         </div>
                         <hr />
                         <h4>Nhập sản phẩm mới</h4>
-                       
+
                         <div class="row default-detail-row">
                         <div class="col-4">
                         <div class="mb-3">
@@ -127,8 +127,8 @@
                         <div class="col-3">
                         <div class="mb-3">
                         <label asp-for="Quantity" class="form-label">Số lượng<span class="required-star">*</span></label>
-                        <input name="Quanties" class="form-control" type="number" min="0" required oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')" pattern="\d+" title="Số lượng phải là số nguyên không âm" />
-                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                                    <input name="Quanties" class="form-control" type="number" min="1" required oninput="this.value = this.value.replace(/^0+(?!$)/, '')" pattern="\d+" title="Số lượng phải là số nguyên không âm" />
+                                    <span asp-validation-for="Quantity" class="text-danger"></span>
                         </div>
                         </div>
 
@@ -137,28 +137,28 @@
                             <button type="button" class="btn btn-primary" onclick="addDetailRow()" title="Thêm ô nhập sản phẩm mới">Thêm trường nhập</button>
                         </div>
 
-                       @* <div class="row">
-                            <div class="col-6">
-                                <div class="mb-3">
-                                    <label asp-for="Feature" class="form-label">Mô tả tính năng</label>
-                                    <textarea asp-for="Feature" class="form-control">@Model?.Feature</textarea>
-                                    <span asp-validation-for="Feature" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="mb-3">
-                                    <label asp-for="Attributes" class="form-label">Mô tả đặc điểm</label>
-                                    <textarea asp-for="Attributes" class="form-control">@Model?.Attributes</textarea>
-                                    <span asp-validation-for="Attributes" class="text-danger"></span>
-                                </div>
-                            </div>
+                        @* <div class="row">
+                        <div class="col-6">
+                        <div class="mb-3">
+                        <label asp-for="Feature" class="form-label">Mô tả tính năng</label>
+                        <textarea asp-for="Feature" class="form-control">@Model?.Feature</textarea>
+                        <span asp-validation-for="Feature" class="text-danger"></span>
+                        </div>
+                        </div>
+                        <div class="col-6">
+                        <div class="mb-3">
+                        <label asp-for="Attributes" class="form-label">Mô tả đặc điểm</label>
+                        <textarea asp-for="Attributes" class="form-control">@Model?.Attributes</textarea>
+                        <span asp-validation-for="Attributes" class="text-danger"></span>
+                        </div>
+                        </div>
                         </div>*@
-                      
+
                     </div>
-                      
+
                 </div>
                 <div class="mb-3 me-3 mt-3">
-                  
+
                     <input asp-for="ProductId" value="@ViewBag.Product.ProductId" type="hidden" class="form-control" />
 
                     <div class="mb-2 text-end">
@@ -168,9 +168,9 @@
             </div>
         </div>
     </div>
-      
+
 </form>
- 
+
 
 @section Scripts {
     <script>
@@ -178,53 +178,53 @@
             var index = $('.detail-row').length; // Get the index for the new row
 
             var newRow = `<div class="detail-row">
-                            <div class="row">
-                                <div class="col-4">
-                                    <div class="mb-3">
-                                        <label asp-for="ColorId" class="form-label">Màu sắc<span class="required-star">*</span></label>
-                                                        <select asp-for="ColorId" class="form-control"   name="ColorId" required>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="mb-3">
+                                                <label asp-for="ColorId" class="form-label">Màu sắc<span class="required-star">*</span></label>
+                                                                <select asp-for="ColorId" class="form-control"   name="ColorId" required>
         @foreach (var color in ViewBag.Colors)
         {
-                                                    <option value="@color.ColorId">@color.ColorName</option>
+                                                                <option value="@color.ColorId">@color.ColorName</option>
         }
-                                        </select>
-                                        <span asp-validation-for="ColorIds" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="mb-3">
-                                        <label asp-for="SizeId" class="form-label">Kích thước<span class="required-star">*</span></label>
-                                                                <select asp-for="SizeId" class="form-control multiselect"  name="SizeId" required>
+                                                </select>
+                                                <span asp-validation-for="ColorIds" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="mb-3">
+                                                <label asp-for="SizeId" class="form-label">Kích thước<span class="required-star">*</span></label>
+                                                                        <select asp-for="SizeId" class="form-control multiselect"  name="SizeId" required>
         @foreach (var size in ViewBag.Sizes)
         {
-                                                    <option value="@size.SizeId">@size.SizeName</option>
+                                                                <option value="@size.SizeId">@size.SizeName</option>
         }
-                                        </select>
-                                        <span asp-validation-for="SizeIds" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <div class="mb-3">
-                                        <label asp-for="Quantity" class="form-label">Số lượng<span class="required-star">*</span></label>
-                                                        <input name="Quanties" class="form-control" type="number" oninput="validateInput(this)" title="Vui lòng chỉ nhập số nguyên không có dấu phẩy hoặc dấu chấm" required />
+                                                </select>
+                                                <span asp-validation-for="SizeIds" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="mb-3">
+                                                <label asp-for="Quantity" class="form-label">Số lượng<span class="required-star">*</span></label>
+                                                                <input name="Quanties" class="form-control" type="number" oninput="validateInput(this)" title="Vui lòng chỉ nhập số nguyên không có dấu phẩy hoặc dấu chấm" required />
 
-                                                <span asp-validation-for="Quantity" class="text-danger"></span>
+                                                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-1 text-center mt-4">
+                                            <button type="button" class="btn btn-danger" onclick="removeDetailRow(this)">Xóa bỏ</button>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-1 text-center mt-4">
-                                    <button type="button" class="btn btn-danger" onclick="removeDetailRow(this)">Xóa bỏ</button>
-                                </div>
-                            </div>
-                        </div>`;
+                                </div>`;
 
             // If no data is available, display a default row
-             if ($('.detail-row').length === 0) {
-        // Insert the new row before the button
-        $(newRow).insertBefore('.mb-3.text-end');
-    } else {
-        // Insert the new row before the button
-        $(newRow).insertBefore('.mb-3.text-end');
-    }
+            if ($('.detail-row').length === 0) {
+                // Insert the new row before the button
+                $(newRow).insertBefore('.mb-3.text-end');
+            } else {
+                // Insert the new row before the button
+                $(newRow).insertBefore('.mb-3.text-end');
+            }
         }
 
         // ... (rest of the code remains unchanged)

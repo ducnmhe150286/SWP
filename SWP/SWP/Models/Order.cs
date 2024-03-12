@@ -20,6 +20,7 @@ namespace SWP.Models
         public byte? Status { get; set; }
         public byte? PaymentMethod { get; set; }
 
+        public virtual User? User { get; set; }
         public virtual ICollection<Orderdetail> Orderdetails { get; set; }
     }
 }

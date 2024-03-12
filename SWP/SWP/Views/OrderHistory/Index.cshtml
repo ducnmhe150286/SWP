@@ -1,0 +1,234 @@
+﻿@model Orderdetail
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel='stylesheet' href='https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css'>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css'>
+@{
+    var listItem = ViewData["listItem"] as List<Order>;
+    decimal sum = 0;
+    var listDetail = ViewData["listDetail"] as List<Orderdetail>;
+}
+<style>
+    .wrapper {
+        margin-top: 5vh;
+    }
+
+    .dataTables_filter {
+        float: right;
+    }
+
+    .table-hover > tbody > tr:hover {
+        background-color: #ccffff;
+    }
+
+    thead {
+        background: #ddd;
+    }
+
+    .table td:nth-child(2) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .highlight {
+        background: #ffff99;
+    }
+
+    .back-to-shop {
+        margin-top: 4.5rem;
+    }
+
+    input {
+        border: 1px solid rgba(0, 0, 0, 0.137);
+        padding: 1vh;
+        margin-bottom: 4vh;
+        outline: none;
+        width: 100%;
+        background-color: rgb(247, 247, 247);
+    }
+</style>
+
+<div>
+    <div class="back-to-shop"><a asp-controller="Home" asp-action="Index">&leftarrow;</a><span class="text-muted">Trở về trang chủ</span></div>
+    <table id="example" class="table table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>Mã đơn hàng</th>
+                <th>Địa chỉ</th>
+                <th>Sđt</th>
+                <th>Ngày đặt hàng</th>
+                <th>Ngày nhận</th>
+                <th>Trạng thái</th>
+                <th>Chị tiết</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Your table data goes here -->
+            @foreach (var item in listItem)
+            {
+                <tr>
+                    <td>@item.OrderId</td>
+                    <td>@item.ShipAddress</td>
+                    <td>@item.PhoneNumber</td>
+                    <td>@item.OrderDate</td>
+                    <td>@item.ShipDate</td>
+                    @if (@item.Status == 5)
+                    {
+                        <td>Đã nhận hàng</td>
+                    } else if(item.Status == 6)
+                    {
+                        <td>Đã hủy đơn</td>
+                    }
+                    <td>
+                        <button type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2" data-bs-toggle="model" data-bs-target="#exampleModal" onclick="showOrderDetails('@item.OrderId')"><i class="fa fa-edit"></i> </button>
+                    </td>
+
+                </tr>
+            }
+
+
+        </tbody>
+        @*<tfoot>
+        <tr>
+        <th>Mã đơn hàng</th>
+        <th>Địa chỉ</th>
+        <th>Sđt</th>
+        <th>Ngày đặt hàng</th>
+        <th>Thanh toán</th>
+        <th>Ngày nhận</th>
+        <th>Chị tiết</th>
+        </tr>
+        </tfoot>*@
+    </table>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Chi tiết đơn hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="orderDetailsContainer">
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src='https://code.jquery.com/jquery-3.7.0.js'></script>
+<!-- DataTables scripts -->
+<script src='https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js'></script>
+<script src='https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js'></script>
+<script src='https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js'></script>
+
+<script>
+    function showOrderDetails(orderId) {
+        $.ajax({
+            type: 'GET',
+            url: '/OrderHistory/GetOrderDetail',
+            data: { orderId: orderId },
+            success: function (data) {
+                debugger;
+                console.log(orderId);
+                var orderDetailsHtml = '<p>Thông tin chi tiết đơn hàng: ' + orderId + '</p>';
+
+                if (data.length > 0) {
+                    orderDetailsHtml += '
+                        < table class="table no-wrap user-table mb-0" >
+                            ' +
+                    '
+                        <thead>
+                    ' +
+                    '
+                        <tr>
+                    ' +
+                    '
+                        < th scope = "col" class="border-0 text-uppercase font-medium pl-4" > Ảnh < /th>' +
+                    '
+                        < th scope = "col" class="border-0 text-uppercase font-medium" > Tên sản phẩm < /th>' +
+                    '
+                        < th scope = "col" class="border-0 text-uppercase font-medium" > Kích thước < /th>' +
+                    '
+                        < th scope = "col" class="border-0 text-uppercase font-medium" > Màu sắc < /th>' +
+                    '
+                        < th scope = "col" class="border-0 text-uppercase font-medium" > Số lượng < /th>' +
+                    '
+                        < th scope = "col" class="border-0 text-uppercase font-medium" > Giá tiền < /th>' +
+                    '
+                        < /tr>' +
+                    '
+                        < /thead>' +
+                    '
+                        <tbody>
+                    ';
+
+                    // Loop through the data and append rows to the table
+                    data.forEach(function (item) {
+                        orderDetailsHtml += '
+                            <tr>
+                        ' +
+                        '
+                            < td class="pl-4" > <img src="' + item.Orderdetails.Detail.Product.ProdProductImages[0].Path + '" alt = "product-image" class="rounded-circle" width = "50" > </td>' +
+                        '
+                            < td > ' + item.Orderdetails.Detail.Product.ProductName + ' < /td>' +
+                        '
+                            < td > ' + item.Orderdetails.Detail.Size.SizeName + ' < /td>' +
+                        '
+                            < td > ' + item.Orderdetails.Detail.Color.ColorName + ' < /td>' +
+                        '
+                            < td > ' + item.Quantity + ' < /td>' +
+                        '
+                            < td > ' + item.Orderdetails.Detail.Product.Price + ' < /td>' +
+                        '
+                            < /tr>';
+                    });
+
+                    orderDetailsHtml += '
+                        < /tbody>
+                        < /table>';
+                } else {
+                    orderDetailsHtml += '<p>Không có đơn hàng nào.</p>';
+                }
+
+                document.getElementById('orderDetailsContainer').innerHTML = orderDetailsHtml;
+
+                $('#exampleModal').modal('show');
+            },
+            error: function (error) {
+                alert('Lỗi khi lấy thông tin đơn hàng:', error);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $('#example').DataTable({
+            // Disable sorting on the last column
+            "columnDefs": [
+                { "orderable": false, "targets": 5 }
+            ],
+            language: {
+                // Customize pagination prev and next buttons: use arrows instead of words
+                'paginate': {
+                    'previous': '<span class="fa fa-chevron-left"></span>',
+                    'next': '<span class="fa fa-chevron-right"></span>'
+                },
+                // Customize the number of elements to be displayed
+                "lengthMenu": 'Display <select class="form-control input-sm">' +
+                    '<option value="10">10</option>' +
+                    '<option value="20">20</option>' +
+                    '<option value="30">30</option>' +
+                    '<option value="40">40</option>' +
+                    '<option value="50">50</option>' +
+                    '<option value="-1">All</option>' +
+                    '</select> results'
+            }
+        });
+    });
+     
+</script>
+
