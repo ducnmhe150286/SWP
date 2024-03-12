@@ -1,4 +1,5 @@
-﻿using SWP.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using SWP.Models;
 
 namespace SWP.Dao
 {
@@ -20,6 +21,28 @@ namespace SWP.Dao
                 }
                 
                 return null;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+        }
+        public List<Orderdetail> getOrderDetailByOrderId(int orderId)
+        {
+            try
+            {
+                var data = _context.Orderdetails
+                    .Include(x => x.Order)
+                    .Include(x => x.Detail)
+                        .ThenInclude(x=>x.Product)
+                        .ThenInclude(x=>x.ProductImages)
+                    .Where(x=> x.OrderId== orderId).ToList();
+                if(data == null)
+                {
+                    return null;
+                }
+                return data;
             }
             catch (Exception)
             {
