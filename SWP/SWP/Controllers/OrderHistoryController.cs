@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWP.Dao;
+using SWP.Models;
 
 namespace SWP.Controllers
 {
@@ -23,7 +24,21 @@ namespace SWP.Controllers
                 ViewData["listItem"] = getOrder;
                 return View();
             }
-                return RedirectToAction("Index","Auth");
+            return RedirectToAction("Index", "Auth");
+        }
+
+        public List<Orderdetail> GetOrderDetail(int orderId)
+        {
+            var customer = HttpContext.Session.GetString("USER_EMAIL");
+
+            var cusId = userDao.GetUserByEmail(customer);
+            if (cusId is not null && cusId.RoleId == 2)
+            {
+                var orderDetail = historyDao.getOrderDetailByOrderId(orderId);
+                
+                return orderDetail;
+            }
+            return null;
         }
     }
 }
