@@ -106,14 +106,14 @@
     function showUserDetails(userId) {
         
         var userDetailsHtml = '<p>Thông tin chi tiết của người dùng có ID ' + userId + '</p>';
-        debugger;
+        
         console.log(userId);
         $.ajax({
             type: 'GET',
-            url: '/ManageUsers/GetUserDetails', 
+            url: '/ManageUsers/GetUserDetails',
             data: { userId: userId },
             success: function (data) {
-                
+                debugger;
                 console.log(data);
                 var userDetailsHtml = `
                         <p><strong>Email:</strong> ${data.email}</p>

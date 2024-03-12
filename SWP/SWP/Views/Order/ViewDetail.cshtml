@@ -146,9 +146,21 @@
                 {
                     <p>Chờ xác nhận</p>
                 }
-                else
+                else if (Model.Status == 1)
                 {
-                    <p>Không Hoạt Động</p>
+                    <p>Xác nhận đơn hàng</p>
+                }
+                else if (Model.Status == 2)
+                {
+                    <p>Đang vận chuyển</p>
+                }
+                else if (Model.Status == 3)
+                {
+                    <p>Giao hàng thành công</p>
+                }
+                else if (Model.Status == 4)
+                {
+                    <p>Giao hàng không thành công</p>
                 }
             </td>
         </tr>
@@ -188,3 +200,4 @@
         }
     </tbody>
 </table>
+<a href="@Url.Action("BackToIndex", "Order")" class="btn btn-primary">Quay lại</a>
