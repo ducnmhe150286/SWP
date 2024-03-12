@@ -41,10 +41,10 @@
                                 <div class="mb-3">
                                     <label asp-for="Status" class="form-label">Trạng thái</label>
                                     <select asp-for="Status" class="form-control">
-                                        <option value="1" selected>Hoạt động</option>
+                                        <option value="1" >Hoạt động</option>
                                         @*                                        <option value="2">Hết hàng</option>
                                         *@
-                                        <option value="0">Ngừng hoạt động</option>
+                                        <option value="0" selected>Chưa kinh doanh</option>
                                     </select>
                                     <span asp-validation-for="Status" class="text-danger"></span>
                                 </div>
@@ -52,7 +52,7 @@
                             <div class="col-6">
                                 <div class="mb-3">
                                     <label asp-for="Price" class="form-label">Giá <span class="required-star">*</span></label>
-                                    <input asp-for="Price" class="form-control" type="number" min="0" required step="0.01" />
+                                    <input name="Price" id="priceInput" class="form-control" type="text" pattern="[0-9]+(,[0-9]{1,2})?" title="Nhập số thập phân tối đa 2 chữ số sau dấu , có dạng như 10,55" oninput="this.value = this.value.replace(/[^\d,]/g, '')" required />
                                     <span asp-validation-for="Price" class="text-danger"></span>
                                 </div>
                             </div>
@@ -159,14 +159,14 @@
 </form>
 <script>
     function validateFileType(input) {
-        const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
+        const validImageTypes = ["image/jpeg", "image/png"];
         const files = input.files;
 
         for (let i = 0; i < files.length; i++) {
             const fileType = files[i].type;
 
             if (!validImageTypes.includes(fileType)) {
-                alert("Chỉ chấp nhận file hình ảnh (JPEG, PNG, GIF).");
+                alert("Chỉ chấp nhận file hình ảnh (JPEG, PNG).");
                 input.value = ""; 
                 return;
             }
