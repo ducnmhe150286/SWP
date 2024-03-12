@@ -1,0 +1,120 @@
+﻿@model Order
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel='stylesheet' href='https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css'>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css'>
+
+@{
+    var listItem = ViewData["listItem"] as List<Order>;
+    decimal sum = 0;
+
+}
+<style>
+    .wrapper {
+        margin-top: 5vh;
+    }
+
+    .dataTables_filter {
+        float: right;
+    }
+
+    .table-hover > tbody > tr:hover {
+        background-color: #ccffff;
+    }
+
+    thead {
+        background: #ddd;
+    }
+
+    .table td:nth-child(2) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .highlight {
+        background: #ffff99;
+    }
+</style>
+
+<div>
+    <table id="example" class="table table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>Mã đơn hàng</th>
+                <th>Địa chỉ</th>
+                <th>Sđt</th>
+                <th>Ngày đặt hàng</th>
+                <th>Ngày nhận</th>
+                <th>Trạng thái</th>
+                <th>Chị tiết</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Your table data goes here -->
+            @foreach (var item in listItem)
+            {
+                <tr>
+                    <td>@item.OrderId</td>
+                    <td>@item.ShipAddress</td>
+                    <td>@item.PhoneNumber</td>
+                    <td>@item.OrderDate</td>
+                    <td>@item.ShipDate</td>
+                    @if (@item.Status == 5)
+                    {
+                        <td>Đã nhận hàng</td>
+                    } else if(item.Status == 6)
+                    {
+                        <td>Đã hủy đơn</td>
+                    }
+
+
+                </tr>
+            }
+
+
+        </tbody>
+        @*<tfoot>
+        <tr>
+        <th>Mã đơn hàng</th>
+        <th>Địa chỉ</th>
+        <th>Sđt</th>
+        <th>Ngày đặt hàng</th>
+        <th>Thanh toán</th>
+        <th>Ngày nhận</th>
+        <th>Chị tiết</th>
+        </tr>
+        </tfoot>*@
+    </table>
+</div>
+
+<script src='https://code.jquery.com/jquery-3.7.0.js'></script>
+<!-- DataTables scripts -->
+<script src='https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js'></script>
+<script src='https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js'></script>
+<script src='https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js'></script>
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            // Disable sorting on the last column
+            "columnDefs": [
+                { "orderable": false, "targets": 5 }
+            ],
+            language: {
+                // Customize pagination prev and next buttons: use arrows instead of words
+                'paginate': {
+                    'previous': '<span class="fa fa-chevron-left"></span>',
+                    'next': '<span class="fa fa-chevron-right"></span>'
+                },
+                // Customize the number of elements to be displayed
+                "lengthMenu": 'Display <select class="form-control input-sm">' +
+                    '<option value="10">10</option>' +
+                    '<option value="20">20</option>' +
+                    '<option value="30">30</option>' +
+                    '<option value="40">40</option>' +
+                    '<option value="50">50</option>' +
+                    '<option value="-1">All</option>' +
+                    '</select> results'
+            }
+        })
+    });
+</script>
