@@ -32,9 +32,23 @@
     .highlight {
         background: #ffff99;
     }
+
+    .back-to-shop {
+        margin-top: 4.5rem;
+    }
+
+    input {
+        border: 1px solid rgba(0, 0, 0, 0.137);
+        padding: 1vh;
+        margin-bottom: 4vh;
+        outline: none;
+        width: 100%;
+        background-color: rgb(247, 247, 247);
+    }
 </style>
 
 <div>
+    <div class="back-to-shop"><a asp-controller="Home" asp-action="Index">&leftarrow;</a><span class="text-muted">Trở về trang chủ</span></div>
     <table id="example" class="table table-striped" style="width:100%">
         <thead>
             <tr>
