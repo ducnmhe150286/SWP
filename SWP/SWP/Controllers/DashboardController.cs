@@ -19,7 +19,7 @@ namespace SWP.Controllers
 					.SelectMany(o => o.Orderdetails)
 					.Sum(od => (od.Quantity ?? 0) * (od.Price ?? 0));
 
-				int newOrdersCount = context.Orders.Count(o => o.Status == 1);
+				int newOrdersCount = context.Orders.Count(o => o.Status == 0);
 				int totalUsersCount = context.Users.Count(u => u.RoleId != 1);
 
 				var topSellingProducts = context.Orders
