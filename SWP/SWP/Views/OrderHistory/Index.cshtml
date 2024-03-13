@@ -137,71 +137,7 @@
                 console.log(orderId);
                 var orderDetailsHtml = '<p>Thông tin chi tiết đơn hàng: ' + orderId + '</p>';
 
-                if (data.length > 0) {
-                    orderDetailsHtml += '
-                        < table class="table no-wrap user-table mb-0" >
-                            ' +
-                    '
-                        <thead>
-                    ' +
-                    '
-                        <tr>
-                    ' +
-                    '
-                        < th scope = "col" class="border-0 text-uppercase font-medium pl-4" > Ảnh < /th>' +
-                    '
-                        < th scope = "col" class="border-0 text-uppercase font-medium" > Tên sản phẩm < /th>' +
-                    '
-                        < th scope = "col" class="border-0 text-uppercase font-medium" > Kích thước < /th>' +
-                    '
-                        < th scope = "col" class="border-0 text-uppercase font-medium" > Màu sắc < /th>' +
-                    '
-                        < th scope = "col" class="border-0 text-uppercase font-medium" > Số lượng < /th>' +
-                    '
-                        < th scope = "col" class="border-0 text-uppercase font-medium" > Giá tiền < /th>' +
-                    '
-                        < /tr>' +
-                    '
-                        < /thead>' +
-                    '
-                        <tbody>
-                    ';
-
-                    // Loop through the data and append rows to the table
-                    data.forEach(function (item) {
-                        orderDetailsHtml += '
-                            <tr>
-                        ' +
-                        '
-                            < td class="pl-4" > <img src="' + item.Orderdetails.Detail.Product.ProdProductImages[0].Path + '" alt = "product-image" class="rounded-circle" width = "50" > </td>' +
-                        '
-                            < td > ' + item.Orderdetails.Detail.Product.ProductName + ' < /td>' +
-                        '
-                            < td > ' + item.Orderdetails.Detail.Size.SizeName + ' < /td>' +
-                        '
-                            < td > ' + item.Orderdetails.Detail.Color.ColorName + ' < /td>' +
-                        '
-                            < td > ' + item.Quantity + ' < /td>' +
-                        '
-                            < td > ' + item.Orderdetails.Detail.Product.Price + ' < /td>' +
-                        '
-                            < /tr>';
-                    });
-
-                    orderDetailsHtml += '
-                        < /tbody>
-                        < /table>';
-                } else {
-                    orderDetailsHtml += '<p>Không có đơn hàng nào.</p>';
-                }
-
-                document.getElementById('orderDetailsContainer').innerHTML = orderDetailsHtml;
-
-                $('#exampleModal').modal('show');
-            },
-            error: function (error) {
-                alert('Lỗi khi lấy thông tin đơn hàng:', error);
-            }
+                
         });
     }
 
