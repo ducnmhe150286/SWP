@@ -33,7 +33,7 @@
                             <div class="col-6">
                                 <div class="mb-3">
                                     <label asp-for="Price" class="form-label">Giá<span class="required-star">*</span></label>
-                                    <input name="Price" class="form-control" type="text" value="@string.Format("{0:N2}", ViewBag.Product.Price)" pattern="[0-9]+(,[0-9]{1,2})?" title="Nhập số thập phân tối đa 2 chữ số sau dấu , có dạng như 10,55" oninput="this.value = this.value.replace(/[^\d,]/g, '')" required />
+                                    <input name="Price" class="form-control" type="text" value="@ViewBag.Product.Price" pattern="[0-9]+(,[0-9]{1,2})?" title="Nhập số thập phân tối đa 2 chữ số sau dấu , có dạng như 10,55" oninput="this.value = this.value.replace(/[^\d,]/g, '')" required />
 
                                     <span asp-validation-for="Price" class="text-danger"></span>
                                 </div>

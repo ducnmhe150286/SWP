@@ -54,7 +54,7 @@ namespace SWP.Controllers
                 HttpContext.Session.SetInt32("USER_ID", user.UserId);
                 if (role == 1)
                 {
-					return Redirect("/Users");
+					return Redirect("/Dashboard");
 				}
                 return Redirect("/Home");
 
