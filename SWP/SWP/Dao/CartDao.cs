@@ -57,6 +57,7 @@ namespace SWP.Dao
                     .Include(x=>x.Detail)
                         .ThenInclude(x=>x.Product)
                         .ThenInclude(x=>x.Category)
+                    .Where(x=>x.CustomerId == customerId)
                     .ToList();
                 if(data == null)
                 {

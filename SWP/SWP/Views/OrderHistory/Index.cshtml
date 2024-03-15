@@ -49,7 +49,7 @@
 
 <div>
     <div class="back-to-shop"><a asp-controller="Home" asp-action="Index">&leftarrow;</a><span class="text-muted">Trở về trang chủ</span></div>
-    <table id="example" class="table table-striped" style="width:100%">
+    <table id="example" class="table" cellspacing="0" width="100%">
         <thead>
             <tr>
                 <th>Mã đơn hàng</th>
@@ -57,12 +57,10 @@
                 <th>Sđt</th>
                 <th>Ngày đặt hàng</th>
                 <th>Ngày nhận</th>
-                <th>Trạng thái</th>
                 <th>Chị tiết</th>
             </tr>
         </thead>
         <tbody>
-            <!-- Your table data goes here -->
             @foreach (var item in listItem)
             {
                 <tr>
@@ -74,7 +72,8 @@
                     @if (@item.Status == 5)
                     {
                         <td>Đã nhận hàng</td>
-                    } else if(item.Status == 6)
+                    }
+                    else if (item.Status == 6)
                     {
                         <td>Đã hủy đơn</td>
                     }
@@ -102,7 +101,7 @@
 </div>
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Chi tiết đơn hàng</h5>
@@ -110,7 +109,6 @@
             </div>
             <div class="modal-body">
                 <div id="orderDetailsContainer">
-                    
                 </div>
             </div>
             <div class="modal-footer">
@@ -120,11 +118,7 @@
     </div>
 </div>
 
-<script src='https://code.jquery.com/jquery-3.7.0.js'></script>
-<!-- DataTables scripts -->
-<script src='https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js'></script>
-<script src='https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js'></script>
-<script src='https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js'></script>
+
 
 <script>
     function showOrderDetails(orderId) {
@@ -133,38 +127,73 @@
             url: '/OrderHistory/GetOrderDetail',
             data: { orderId: orderId },
             success: function (data) {
-                debugger;
-                console.log(orderId);
-                var orderDetailsHtml = '<p>Thông tin chi tiết đơn hàng: ' + orderId + '</p>';
 
-                
+                var orderDetailsHtml = '<p>Thông tin chi tiết đơn hàng: ' + orderId + '</p>';
+                var totalPrice = 0;
+
+                if (data.length > 0) {
+                    orderDetailsHtml += '<table class="table no-wrap user-table mb-0">' +
+                        '<thead>' +
+                        '<tr>' +
+                        '<th scope="col" class="border-0 text-uppercase font-medium pl-4">Ảnh</th>' +
+                        '<th scope="col" class="border-0 text-uppercase font-medium">Tên sản phẩm</th>' +
+                        '<th scope="col" class="border-0 text-uppercase font-medium">Kích thước</th>' +
+                        '<th scope="col" class="border-0 text-uppercase font-medium">Màu sắc</th>' +
+                        '<th scope="col" class="border-0 text-uppercase font-medium">Số lượng</th>' +
+                        '<th scope="col" class="border-0 text-uppercase font-medium">Giá tiền</th>' +
+                        '</tr>' +
+                        '</thead>' +
+                        '<tbody>';
+
+                    // Loop through the data and append rows to the table
+                    data.forEach(function (item) {
+                        orderDetailsHtml += '<tr>' +
+                            '<td class="pl-4"><img src="/Images/' + item.detail.product.productImages[0].path + '" alt="product-image" class="rounded-circle" width="50"></td>' +
+                            '<td>' + item.detail.product.productName + '</td>' +
+                            '<td>' + item.detail.size.sizeName + '</td>' +
+                            '<td>' + item.detail.color.colorName + '</td>' +
+                            '<td>' + item.quantity + '</td>' +
+                            '<td>' + parseFloat(item.detail.product.price).toLocaleString('vi-VN', { style: 'currency', currency: 'vnd' }) + '</td>' +
+                            '</tr>';
+
+
+                        totalPrice += parseFloat(item.detail.product.price) * item.quantity;
+                    });
+
+                    orderDetailsHtml += '<tr>' +
+                        '<td colspan="5"></td>' +
+                        '<td class="text-right font-medium">Tổng tiền: ' + totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'vnd' }) + '</td>'
+                        ;
+
+                    orderDetailsHtml += '</tbody></table>';
+                } else {
+                    orderDetailsHtml += '<p>Không có đơn hàng nào.</p>';
+                }
+
+                document.getElementById('orderDetailsContainer').innerHTML = orderDetailsHtml;
+                $('#exampleModal').modal('show');
+            },
+            error: function (error) {
+                alert('Lỗi khi lấy thông tin đơn hàng:', error);
+            }
+
         });
     }
 
     $(document).ready(function () {
-        $('#example').DataTable({
-            // Disable sorting on the last column
-            "columnDefs": [
-                { "orderable": false, "targets": 5 }
-            ],
-            language: {
-                // Customize pagination prev and next buttons: use arrows instead of words
-                'paginate': {
-                    'previous': '<span class="fa fa-chevron-left"></span>',
-                    'next': '<span class="fa fa-chevron-right"></span>'
-                },
-                // Customize the number of elements to be displayed
-                "lengthMenu": 'Display <select class="form-control input-sm">' +
-                    '<option value="10">10</option>' +
-                    '<option value="20">20</option>' +
-                    '<option value="30">30</option>' +
-                    '<option value="40">40</option>' +
-                    '<option value="50">50</option>' +
-                    '<option value="-1">All</option>' +
-                    '</select> results'
+        $('#example').dataTable({
+
+            columnDefs: [{
+                orderable: false,
+                className: 'select-checkbox select-checkbox-all',
+                targets: 0
+            }],
+            select: {
+                style: 'multi',
+                selector: 'td:first-child'
             }
         });
     });
-     
+
 </script>
 
