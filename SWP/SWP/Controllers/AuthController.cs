@@ -21,7 +21,7 @@ namespace SWP.Controllers
             string successMessage = TempData["SuccessMessage"] as string;
             if (successMessage != null && successMessage != "")
             {
-                TempData["MESS_NOTE_SUCCESS"]= successMessage;
+                TempData["MESS_NOTE_SUCCESS1"]= successMessage;
             }
             return View();
         }

@@ -14,12 +14,20 @@ namespace SWP.Controllers
 			{
 				int pageSize = 6;
 
-				decimal totalRevenue = context.Orders
-					.Where(o => o.Status == 3)
-					.SelectMany(o => o.Orderdetails)
-					.Sum(od => (od.Quantity ?? 0) * (od.Price ?? 0));
+                // Lấy ngày đầu tiên của tháng hiện tại
+                DateTime firstDayOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                // Lấy ngày cuối cùng của tháng hiện tại
+                DateTime lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
 
-				int newOrdersCount = context.Orders.Count(o => o.Status == 0);
+                decimal totalRevenue = context.Orders
+                                    .Where(o => o.Status == 3 &&
+                                                o.OrderDate >= firstDayOfMonth &&
+                                                o.OrderDate <= lastDayOfMonth)
+                                    .SelectMany(o => o.Orderdetails)
+                                    .Sum(od => (od.Quantity ?? 0) * (od.Price ?? 0));
+
+
+                int newOrdersCount = context.Orders.Count(o => o.Status == 0);
 				int totalUsersCount = context.Users.Count(u => u.RoleId != 1);
 
 				var topSellingProducts = context.Orders

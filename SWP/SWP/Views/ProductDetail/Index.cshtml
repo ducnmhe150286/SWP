@@ -7,6 +7,13 @@
     .checked {
         color: orange;
     }
+
+    .error-message {
+        color: #dc3545; /* Màu đỏ */
+        font-size: 0.875rem; /* Kích thước chữ nhỏ */
+        display: none; /* Mặc định ẩn thông báo lỗi */
+        margin-top: 0.25rem; /* Khoảng cách giữa input và thông báo lỗi */
+    }
 </style>
 <section class="py-5">
     <div class="container">
@@ -86,6 +93,7 @@
                             <!-- col.// -->
                             <div class="col-md-4 col-6 mb-3">
                                 <label class="mb-2 d-block">Số lượng</label>
+                                
                                 <div class="input-group mb-3" style="width: 170px;">
                                     <button class="btn btn-outline-secondary button-minus" type="button" id="decrementBtn" data-mdb-ripple-color="dark" data-field="quantity">
                                         <i class="fa fa-minus"></i>
@@ -95,7 +103,16 @@
                                         <i class="fa fa-plus"></i>
                                     </button>
                                 </div>
+                                <small class="text-danger error-message" style="display: none;">Số lượng không thể lớn hơn 10.</small>
                             </div>
+                            
+                        </div>
+
+                        <div id="error-message-wrapper">
+                            @{
+                                var message = ViewData["error_quantity"];
+                            }
+                            <p style="color:red">@message</p>
                         </div>
                         <button class="btn btn-primary shadow-0" type="submit"> <i class="me-1 fa fa-shopping-basket"></i> Thêm vào giỏ hàng </button>
                     </form>
@@ -232,6 +249,53 @@
 
 
         });
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var errorMessage = document.querySelector('.error-message');
+            var quantityInput = document.querySelector('.quantity-field');
+            var incrementBtn = document.getElementById('incrementBtn');
+
+            function validateQuantity() {
+                var quantity = parseInt(quantityInput.value);
+                if (quantity > 10) {
+                    errorMessage.style.display = 'block';
+                    setTimeout(function () {
+                        errorMessage.style.display = 'none';
+                    }, 3000); // ẩn thông báo sau 3 giây
+                    quantityInput.value = 10; // Đặt giá trị về 10 nếu nhập quá 10
+                } else {
+                    errorMessage.style.display = 'none';
+                }
+            }
+
+            quantityInput.addEventListener('input', validateQuantity); // Xử lý khi nhập số lượng bằng tay
+
+            incrementBtn.addEventListener('click', function () {
+                var quantity = parseInt(quantityInput.value);
+                if (quantity >=10) { // Kiểm tra nếu giá trị >= 10
+                    errorMessage.style.display = 'block';
+                    setTimeout(function () {
+                        errorMessage.style.display = 'none';
+                    }, 3000); // ẩn thông báo sau 3 giây
+                    quantityInput.value = 10; // Đặt giá trị về 10
+                } else {
+                    errorMessage.style.display = 'none';; 
+                }
+            });
+        });
+
+
+        // Lấy thẻ bao bọc của thông báo
+        var errorMessageWrapper = document.getElementById('error-message-wrapper');
+
+        // Kiểm tra xem có thông báo hiển thị không
+        if (errorMessageWrapper) {
+            // Ẩn thông báo sau 3 giây
+            setTimeout(function () {
+                errorMessageWrapper.style.display = 'none';
+            }, 3000);
+        }
 
 
     </script>

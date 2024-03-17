@@ -17,6 +17,7 @@ namespace SWP.Dao
             try
             {
                 var detail = _context.ProductDetails.FirstOrDefault(x => x.ProductId == productId && x.SizeId == size && x.ColorId == color);
+                
                 var cart = _context.CartItems.Where(x=>x.DetailId == detail.DetailId && x.CustomerId == customerId).FirstOrDefault();
                 if(cart == null)
                 {
@@ -42,6 +43,27 @@ namespace SWP.Dao
             }
         }
 
+        public int? CheckQuantity(int productId, int quantity, int size, int color)
+        {
+            try
+            {
+                var detail = _context.ProductDetails.FirstOrDefault(x => x.ProductId == productId && x.SizeId == size && x.ColorId == color);
+
+                if(detail.Quantity < quantity)
+                {
+                    var check_quantity = detail.Quantity;
+                    return check_quantity;
+                }
+                
+                return 0;
+            }
+            catch (Exception)
+            {
+
+                return 0;
+            }
+        }
+
         public List<CartItem> GetAddItem(int customerId)
         {
             try
@@ -57,6 +79,7 @@ namespace SWP.Dao
                     .Include(x=>x.Detail)
                         .ThenInclude(x=>x.Product)
                         .ThenInclude(x=>x.Category)
+                    .Where(x=>x.CustomerId == customerId)
                     .ToList();
                 if(data == null)
                 {
