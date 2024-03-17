@@ -126,11 +126,11 @@
                         <img src="img/people.png">
                     </a>
                     <div class="dropdown-content">
-                        <a href="#" class="profile">
+                        <a asp-controller="ProfileUsers" asp-action="Index" class="profile">
                             <i class='bx bxs-user-circle'></i>
                             <span class="text">Tài khoản</span>
                         </a>
-                        <a href="#" class="logout">
+                        <a asp-controller="Auth" asp-action="Logout" class="logout">
                             <i class='bx bxs-log-out-circle'></i>
                             <span class="text">Đăng xuất</span>
                         </a>
