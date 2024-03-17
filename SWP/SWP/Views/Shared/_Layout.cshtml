@@ -12,8 +12,9 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
 
-    <link rel="stylesheet" href="~/SWP.styles.css" asp-append-version="true" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -21,7 +22,15 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
  
-    
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+	
+</style>
+
 
 
     
@@ -31,67 +40,14 @@
         string user = HttpContextAccessor.HttpContext.Session.GetString("USER_EMAIL") ?? "";
         string userName = HttpContextAccessor.HttpContext.Session.GetString("USER_NAME") ?? "";
         int role = HttpContextAccessor.HttpContext.Session.GetInt32("USER_ROLE") ?? 0;
-
+        string url = "";
     }
-@*    <div class="header">
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ </a>
-                        </li>
-                      
-                        @if (role == 1)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Danh mục</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Brand" asp-action="Index">Thương hiệu</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Quản lý Người dùng</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Products">Quản lý Sản phẩm</a>
-                            </li>
-                            <li class="nav-item">
 
-                                <a class="nav-link text-dark"  asp-area="" asp-controller="Blog" asp-action="Manage">Quản lí Blog</a>
 
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Blog" asp-action="Manage">Quản lý Blog</a>
-
-                            </li>
-
-                        }
-                    </ul>
-                    <div class="navbar-nav ml-auto pr-100">
-                        @if (role != 0)
-                        {
-                            <p>Xin chào ,<a asp-controller="ProfileUsers" asp-action="Index">@userName</a>  - </p>
-                            <a asp-controller="Auth" asp-action="Logout">Đăng xuất</a>
-                        }
-                        else
-                        {
-                            <a href="/auth">Đăng nhập</a>
-                        }
-
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </div>
-*@
-    <div class="custom-header">
+@*    <div class="custom-header">
         <div class="custom-navbar">
             <div class="custom-logo">
-                <!-- Uncomment the line below if you want to include a logo -->
-                <!-- <a href="index.html"><img src="https://i.ibb.co/kDVwgwp/logo.png" alt="RedStore" width="125px" /></a> -->
+              
             </div>
             <div class="custom-nav">
                 <ul id="MenuItems">
@@ -127,7 +83,6 @@
                         <li><a href="@Url.Action("ListProduct", "Home")" class="custom-navbar-link">Sản phẩm</a></li>
                         <li><a href="@Url.Action("ListBlog", "Home")" class="custom-navbar-link">Blog</a></li>
                     }
-                    <!-- Add more menu items as needed -->
                 </ul>
             </div>
 
@@ -138,7 +93,6 @@
             else
             {
                 <a asp-controller="Cart" asp-action="GetCartItem" class="custom-navbar-link"><img src="https://i.ibb.co/PNjjx3y/cart.png" alt="" width="30px" height="30px" /></a>
-                @*<img src="https://i.ibb.co/6XbqwjD/menu.png" alt="" class="menu-icon" onclick="menutoggle()" />*@
             }
 
             <div class="custom-navbar-nav ml-auto pr-100" style="margin-left: 10px">
@@ -153,84 +107,159 @@
                 }
             </div>
         </div>
-    </div>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    </div>*@
 
-    @*<footer class="border-top footer text-muted">
-    <div class="container">
-    &copy; 2024 - SWP - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </div>
-    </footer>*@
+    <section id="sidebar">
+        <a href="/dashboard" class="brand">
+            <i class='bx bxs-dashboard'></i>
+            <span class="text">Boxing Shop</span>
+        </a>
+        </a>
+        <ul class="side-menu top">
+            
+            <li >
+                <a href="/dashboard">
+                    <i class='bx bxs-cog'></i>
+                    <span class="text">Tổng quan</span>
+                </a>
+            </li>
+             <li>
+                <a asp-controller="Blog" asp-action="Manage">
+                    <i class='bx bxs-book-open'></i>
+                    <span class="text">Blog</span>
+                </a>
+            </li>
+             <li>
+                <a asp-controller="Users" asp-action="Index">
+                    <i class='bx bxs-group'></i>
+                    <span class="text">Tài khoản</span>
+                </a>
+            </li>
+            <li>
+                <a asp-controller="Feedback" asp-action="Index">
+                    <i class='bx bxs-message-rounded'></i> <!-- Thay đổi class để chọn icon phù hợp -->
+                    <span class="text">Phản hồi</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="/products/list">
+                    <i class='bx bxs-package'></i>
+                    <span class="text">Sản phẩm</span>
+                </a>
+                <ul>
+                    <!-- Thêm thẻ ul để tạo danh sách con -->
+                    <li>
+                        <a  asp-controller="Category" asp-action="Index">
+                            <i class='bx bxs-store'></i>
+                            <span class="text">Danh mục</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Color" asp-action="Index">
+                            <i class='bx bxs-palette'></i>
+                            <span class="text">Màu sắc</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Size" asp-action="Index">
+                            <i class='bx bxs-ruler'></i>
+                            <span class="text">Kích thước</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Brand" asp-action="Index">
+					<i class='bx bxs-shopping-bag-alt' ></i>
+                            <span class="text">Thương hiệu</span>
+                        </a>
+
+                    </li>
+                </ul>
+            </li>
+          
+
+        </ul>
+       @* <ul class="side-menu">
+            <li>
+                <a href="#">
+                    <i class='bx bxs-cog'></i>
+                    <span class="text">Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="logout">
+                    <i class='bx bxs-log-out-circle'></i>
+                    <span class="text">Logout</span>
+                </a>
+            </li>
+        </ul>*@
+    </section>
+   
+    <section id="content">
+        <nav>
+            <i class='bx bx-menu'></i>
+
+            <div class="dropdown">
+                <a href="#" class="profile">
+                    <img src="img/people.png">
+                </a>
+                <div class="dropdown-content">
+                    <a href="#" class="profile">
+                        <i class='bx bxs-user-circle'></i>
+                        <span class="text">Tài khoản</span>
+                    </a>
+                    <a href="#" class="logout">
+                        <i class='bx bxs-log-out-circle'></i>
+                        <span class="text">Đăng xuất</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+
+                    @RenderBody()
+    </section>
+    
+
+   @* <div class="container">
+       
+        <main role="main" class="pb-3">*@
+
+        @*</main>
+    </div>*@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/toastr.js/toastr.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        $(document).ready(function () {
+            // Xác định URL hiện tại và chuyển đổi sang chữ thường
+            var currentUrl = window.location.href.toLowerCase();
+
+            // Lưu địa chỉ URL vào biến url và chuyển đổi sang chữ thường
+            var url = currentUrl.toLowerCase();
+            console.log("url", url)
+            // Lặp qua các phần tử menu và thêm lớp active vào thẻ li nếu URL bắt đầu bằng đường dẫn tương ứng
+            $(".side-menu li").each(function () {
+                var menuItemUrl = $(this).find("a").attr("href").toLowerCase();
+                console.log("menuItemUrl", menuItemUrl)
+                console.log("url.includes(menuItemUrl)", url.includes(menuItemUrl))
+                if (url.includes(menuItemUrl)) {
+                    $(this).addClass("active");
+                }
+            });
+        });
+    </script>
+
+
+
+
+
 </body>
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
 
-    .custom-header {
-        background: radial-gradient(#fff, #ffd6d6);
-        margin-bottom:20px;
-    }
-
-    body {
-        font-family: "Poppins", sans-serif;
-    }
-
-    .custom-navbar {
-        display: flex;
-        align-items: center;
-        padding: 20px;
-    }
-
-    .custom-nav {
-        flex: 1;
-        text-align: center;
-    }
-
-    .custom-nav ul {
-        display: inline-block;
-        list-style-type: none;
-    }
-
-    .custom-nav ul li {
-        display: inline-block;
-        margin-right: 20px;
-    }
-
-    .custom-navbar-link {
-        text-decoration: none !important;
-        color: #555 !important;
-    }
-
-    .custom-paragraph {
-        color: #555;
-    }
-
-    .current-page {
-        border-bottom: 2px solid orange;
-    }
-
-    /* CSS for dropdown */
-    .custom-navbar-nav .custom-dropdown:hover .custom-dropdown-menu,
-    .custom-navbar-nav .custom-dropdown.show .custom-dropdown-menu {
-        display: block;
-    }
-</style>
 
 </html>

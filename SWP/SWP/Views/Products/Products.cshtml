@@ -5,6 +5,7 @@
     <!-- Thêm link Bootstrap 5 -->
   @*  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.19.0/font/bootstrap-icons.css" rel="stylesheet">*@
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
 
     <style>
         .center-text {
@@ -20,8 +21,9 @@
         }
     </style>
 </head>
-<body>
-
+<body >
+        <!-- Nội dung của div -->
+    <main>
     <div class="row">
         <div class="col-8">
             <h3>Sản Phẩm Trong Hệ Thống</h3>
@@ -327,7 +329,6 @@
         function saveChanges() {
             // Xử lý lưu thay đổi tại đây
             // Sử dụng giá trị currentProductId
-
             // Lấy giá trị của các trường search, filter, và phân trang
             var searchString = document.getElementById('searchString').value;
             var statusFilter = document.getElementById('statusFilter').value;
@@ -349,5 +350,8 @@
     </script>
 
 @*    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-*@</body>
+
+*@
+    </main>
+</body>
 </html>
