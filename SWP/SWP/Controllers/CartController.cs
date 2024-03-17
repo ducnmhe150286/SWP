@@ -20,10 +20,19 @@ namespace SWP.Controllers
             var cusId = userDao.GetUserByEmail(customer);
             if (cusId is not null && cusId.RoleId == 2)
             {
-                var cartItem = cartDao.addToCart(productId, quantity, size, color, cusId.UserId);
-                var listItem = cartDao.GetAddItem(cusId.UserId);
-                ViewData["listItem"] = listItem;
-                return View();
+                var check = cartDao.CheckQuantity(productId, quantity, size, color);
+                if(check == 0)
+                {
+                    var cartItem = cartDao.addToCart(productId, quantity, size, color, cusId.UserId);
+
+                    var listItem = cartDao.GetAddItem(cusId.UserId);
+                    ViewData["listItem"] = listItem;
+                    return View();
+                }
+                TempData["productId"] = productId;
+                TempData["error_quantity"] = $"Số lượng sản phẩm còn: {check} không đủ để mua! Vui lòng chọn sản phẩm khác";
+                return RedirectToAction("Index", "ProductDetail");
+                
             }
             return RedirectToAction("Index", "Auth");
         }
