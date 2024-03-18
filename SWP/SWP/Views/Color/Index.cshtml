@@ -4,6 +4,7 @@
 @{
 }
 @model List<Color>
+<main>
 <h2 class="product-category-heading">QUẢN LÝ MÀU SẮC</h2>
 <div>
     <div class="custom-container">
@@ -191,6 +192,7 @@
         <a href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1, pageSize = ViewBag.PageSize })">&raquo;</a>
     }
 </div>
+</main>
 <script>
     var deleteButtons = document.querySelectorAll('.delete-button');
     deleteButtons.forEach(function (button) {
