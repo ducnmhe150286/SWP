@@ -2,11 +2,16 @@
 using Microsoft.EntityFrameworkCore;
 using SWP.Models;
 using SWP.Dao;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+
 
 namespace SWP.Controllers
 {
     public class OrderController : Controller
     {
+        
         public IActionResult Index(int? searchStatus, int page = 1, int pageSize = 5)
         {
             using (var context = new SWPContext())
@@ -98,6 +103,7 @@ namespace SWP.Controllers
             // Điều hướng người dùng về trang Index
             return RedirectToAction("Index"); // Thay "Home" bằng tên controller chứa action Index nếu cần
         }
+        
         [HttpPost]
         public ActionResult UpdateStatus(int orderId, int status)
         {
@@ -115,6 +121,35 @@ namespace SWP.Controllers
                     context.SaveChanges();
                 }
                 return Json(new { success = true });
+            }
+        }
+
+
+        
+        public IActionResult CustomerView()
+        {
+            // Lấy userId từ session
+            var userId = HttpContext.Session.GetInt32("USER_ID");
+
+            // Kiểm tra userId có null không
+            if (userId == null)
+            {
+                // Nếu userId null, chuyển hướng đến trang đăng nhập
+                return RedirectToAction("Login", "Account");
+            }
+
+            using (var context = new SWPContext())
+            {
+                // Lấy danh sách đơn hàng của khách hàng có UserId là userId
+                var orders = context.Orders.Where(o => o.UserId == userId).ToList();
+
+                // Lấy danh sách sản phẩm từ mỗi đơn hàng
+                foreach (var order in orders)
+                {
+                    order.Orderdetails = context.Orderdetails.Where(od => od.OrderId == order.OrderId).ToList();
+                }
+
+                return View(orders);
             }
         }
     }
