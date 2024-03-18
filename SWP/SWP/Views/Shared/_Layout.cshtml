@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 
 <html lang="en">
-   
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,19 +21,18 @@
     <script src="https://cdn.ckeditor.com/ckeditor5/30.0.0/classic/ckeditor.js"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
- 
+
     <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-	
-</style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    </style>
 
 
 
-    
+
 </head>
 <body>
     @{
@@ -44,7 +43,7 @@
     }
 
 
-    
+
     @if (role == 1)
     {
         <section id="sidebar">
@@ -136,88 +135,169 @@
                         </a>
                     </div>
                 </div>
-            </nav>
+
+            
+             </nav>
             @RenderBody()
         </section>
+    
+
+@*
+            <div class="custom-header">
+                <div class="custom-navbar">
+                    <div class="custom-logo">
+                        <!-- Uncomment the line below if you want to include a logo -->
+                        <!-- <a href="index.html"><img src="https://i.ibb.co/kDVwgwp/logo.png" alt="RedStore" width="125px" /></a> -->
+                    </div>
+                    <div class="custom-nav">
+                        <ul id="MenuItems">
+                        @if (role == 1)
+                        {
+                                <li>
+                                    <a asp-area="" asp-controller="Category" asp-action="Index" class="custom-navbar-link">Danh mục</a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Brand" asp-action="Index" class="custom-navbar-link">Thương hiệu</a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Users" asp-action="Index" class="custom-navbar-link">Quản lý Người dùng</a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Products" asp-action="Products" class="custom-navbar-link">Quản lý Sản phẩm</a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Blog" asp-action="Manage" class="custom-navbar-link">Quản lý Blog</a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Feedback" asp-action="Index" class="custom-navbar-link">Quản lý Feedback</a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Order" asp-action="Index" class="custom-navbar-link">Quản lý Order</a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Size" asp-action="Index" class="custom-navbar-link">Quản lý Size</a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Color" asp-action="Index" class="custom-navbar-link">Quản lý Color</a>
+                                </li>
+                        }
+                        else
+                        {
+                                <li><a href="@Url.Action("Index", "Home")" class="custom-navbar-link">Trang chủ</a></li>
+                                <li><a href="@Url.Action("ListProduct", "Home")" class="custom-navbar-link">Sản phẩm</a></li>
+                                <li><a href="@Url.Action("ListBlog", "Home")" class="custom-navbar-link">Blog</a></li>
+                        }
+                            <!-- Add more menu items as needed -->
+                        </ul>
+                    </div>
+
+                @if (role == 1)
+                {
+
+                }
+                else
+                {
+                        <a asp-controller="Cart" asp-action="GetCartItem" class="custom-navbar-link"><img src="https://i.ibb.co/PNjjx3y/cart.png" alt="" width="30px" height="30px" /></a>
+                    @*<img src="https://i.ibb.co/6XbqwjD/menu.png" alt="" class="menu-icon" onclick="menutoggle()" />*@
+                }
+
+                    <div class="custom-navbar-nav ml-auto pr-100" style="margin-left: 10px">
+                    @if (role != 0)
+                    {
+                            <a asp-controller="ProfileUsers" asp-action="Index" class="custom-navbar-link">@userName</a>
+                            <a asp-controller="Auth" asp-action="Logout" class="custom-navbar-link">Đăng xuất</a>
+                    }
+                    else
+                    {
+                            <a href="/auth" class="custom-navbar-link">Đăng nhập</a>
+                    }
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <main role="main" class="pb-3">
+                @RenderBody()
+            </div>
+
+
     }
     else
     {
-     <div class="custom-header">
-         <div class="custom-navbar">
-        <div class="custom-logo">
+            <div class="custom-header">
+                <div class="custom-navbar">
+                    <div class="custom-logo">
+                    </div>
+                    <div class="custom-nav">
+                        <ul id="MenuItems">
 
-        </div>
-        <div class="custom-nav">
-        <ul id="MenuItems">
-       
-        <li><a href="@Url.Action("Index", "Home")" class="custom-navbar-link">Trang chủ</a></li>
-        <li><a href="@Url.Action("ListProduct", "Home")" class="custom-navbar-link">Sản phẩm</a></li>
-        <li><a href="@Url.Action("ListBlog", "Home")" class="custom-navbar-link">Blog</a></li>
-        
-        </ul>
-        </div>
+                            <li><a href="@Url.Action("Index", "Home")" class="custom-navbar-link">Trang chủ</a></li>
+                            <li><a href="@Url.Action("ListProduct", "Home")" class="custom-navbar-link">Sản phẩm</a></li>
+                            <li><a href="@Url.Action("ListBlog", "Home")" class="custom-navbar-link">Blog</a></li>
 
-        @if (role == 1)
-        {
+                        </ul>
+                    </div>
 
-        }
-        else
-        {
-        <a asp-controller="Cart" asp-action="GetCartItem" class="custom-navbar-link"><img src="https://i.ibb.co/PNjjx3y/cart.png" alt="" width="30px" height="30px" /></a>
-        }
+                @if (role == 1)
+                {
 
-        <div class="custom-navbar-nav ml-auto pr-100" style="margin-left: 10px">
-        @if (role != 0)
-        {
-        <a asp-controller="ProfileUsers" asp-action="Index" class="custom-navbar-link">@userName</a>
-        <a asp-controller="Auth" asp-action="Logout" class="custom-navbar-link">Đăng xuất</a>
-        }
-        else
-        {
-        <a href="/auth" class="custom-navbar-link">Đăng nhập</a>
-        }
-        </div>
-        </div>
+                }
+                else
+                {
+                        <a asp-controller="Cart" asp-action="GetCartItem" class="custom-navbar-link"><img src="https://i.ibb.co/PNjjx3y/cart.png" alt="" width="30px" height="30px" /></a>
+                }
 
-    </div>
-     <div class="container">
+                    <div class="custom-navbar-nav ml-auto pr-100" style="margin-left: 10px">
+                    @if (role != 0)
+                    {
+                            <a asp-controller="ProfileUsers" asp-action="Index" class="custom-navbar-link">@userName</a>
+                            <a asp-controller="Auth" asp-action="Logout" class="custom-navbar-link">Đăng xuất</a>
+                    }
+                    else
+                    {
+                            <a href="/auth" class="custom-navbar-link">Đăng nhập</a>
+                    }
+                    </div>
+                </div>
 
-    <main role="main" class="pb-3">
+            </div>
+            <div class="container">
+
+                <main role="main" class="pb-3">
                 @RenderBody()
 
-        </main>
-    </div>
+                </main>
+            </div>
     }
 
 
-  
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/toastr.js/toastr.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/toastr.js/toastr.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
-    <script>
-        $(document).ready(function () {
-            // Xác định URL hiện tại và chuyển đổi sang chữ thường
-            var currentUrl = window.location.href.toLowerCase();
+        <script>
+            $(document).ready(function () {
+                // Xác định URL hiện tại và chuyển đổi sang chữ thường
+                var currentUrl = window.location.href.toLowerCase();
 
-            // Lưu địa chỉ URL vào biến url và chuyển đổi sang chữ thường
-            var url = currentUrl.toLowerCase();
-            console.log("url", url)
-            // Lặp qua các phần tử menu và thêm lớp active vào thẻ li nếu URL bắt đầu bằng đường dẫn tương ứng
-            $(".side-menu li").each(function () {
-                var menuItemUrl = $(this).find("a").attr("href").toLowerCase();
-                console.log("menuItemUrl", menuItemUrl)
-                console.log("url.includes(menuItemUrl)", url.includes(menuItemUrl))
-                if (url.includes(menuItemUrl)) {
-                    $(this).addClass("active");
-                }
+                // Lưu địa chỉ URL vào biến url và chuyển đổi sang chữ thường
+                var url = currentUrl.toLowerCase();
+                console.log("url", url)
+                // Lặp qua các phần tử menu và thêm lớp active vào thẻ li nếu URL bắt đầu bằng đường dẫn tương ứng
+                $(".side-menu li").each(function () {
+                    var menuItemUrl = $(this).find("a").attr("href").toLowerCase();
+                    console.log("menuItemUrl", menuItemUrl)
+                    console.log("url.includes(menuItemUrl)", url.includes(menuItemUrl))
+                    if (url.includes(menuItemUrl)) {
+                        $(this).addClass("active");
+                    }
+                });
             });
-        });
-    </script>
+        </script>
 
 
 

@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SWP.Dao;
 using SWP.Dto;
+using SWP.Dto.Request.Blogs;
 using SWP.Models;
 using System.Reflection.Metadata;
 
@@ -9,11 +12,13 @@ namespace SWP.Controllers
     public class FeedbackController : Controller
     {
         SWPContext context;
+        public UsersDao usersDao;
         private readonly IWebHostEnvironment _environment;
-        public FeedbackController( IWebHostEnvironment environment)
+        public FeedbackController( IWebHostEnvironment environment, UsersDao usersDao)
         {
             context = new SWPContext();
             _environment = environment;
+            this.usersDao = usersDao;
         }
         public async Task<List<FeedBack>> GetFeedBack()
         {
@@ -36,10 +41,7 @@ namespace SWP.Controllers
 
         public IActionResult Index(int currentPage)
         {
-            var feedbacks = context.FeedBacks
-                    .Include(f => f.User)
-                    .Include(f => f.Detail)
-                    .ThenInclude(d => d.Product).ToList();
+            var feedbacks = context.FeedBacks.Include(f => f.User).Include(d => d.Product).ToList();
             if (feedbacks != null)
             {
                 int startIndex = 6 * currentPage + 1;
@@ -48,57 +50,73 @@ namespace SWP.Controllers
                 ViewData["currentPage"] = currentPage;
                 ViewData["startIndex"] = startIndex;
                 return View(feedbacks);
+               // ViewBag.Feedbacks = feedbacks;
+                
             }
-            var displayModels = feedbacks.Select(feedback => new FeedbackViewModel
-            {
-                FeedBackId = feedback.FeedBackId,
-                Email = feedback.User?.Email,
-                ProductName = feedback.Detail?.Product?.ProductName,
-                Rating = feedback.Rating,
-                Comment = feedback.Comment,
-                CreatedDate = feedback.CreatedDate ?? DateTime.MinValue
-            }).ToList();
-            ViewBag.DisplayModels = displayModels;
-            
             return View();
         }
-       /* public async Task<IActionResult> Create(int productId)
+       /* public ActionResult CustomerComment(int productId, LoginModel loginModel)
         {
-            // Kiểm tra đăng nhập
-            if (User.Identity.IsAuthenticated)
-            {
-                // Lấy thông tin người dùng hiện tại (giả sử là email)
-                var userEmail = User.Identity.Name;
-                // Kiểm tra người dùng đã mua sản phẩm chưa
-                var userHasPurchased = context.Orders.Any(o => o.ProductId == productId && o.UserEmail == userEmail);
-                if (userHasPurchased)
-                {
-                    // Nếu đã mua, hiển thị form đánh giá hoặc tiếp tục logic
-                    return View();
-                }
-                else
-                {
-                    // Nếu chưa mua, thông báo hoặc chuyển hướng
-                    ViewBag.Error = "Bạn cần mua sản phẩm này trước khi đánh giá.";
-                    return View("Error"); // Giả sử có View Error
-                }
-            }
-            else
-            {
-                // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
-                return RedirectToAction("Login", "Account");
-            }
+            var user = usersDao.login(loginModel);
+            var data = new FeedbackDao().ListFeedbackViewModel(productId);
+            HttpContext.Session.SetInt32("USER_ID", user.UserId);
         }*/
-
-        public IActionResult Update()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(int productId, string reviewContent, int rating)
         {
+            try
+            {
+                string email = HttpContext.Session.GetString("USER_EMAIL");
+                if(email == null)
+                {
+                    return RedirectToAction("Index", "Auth");
+                }
+                User user = context.Users.SingleOrDefault(n => n.Email == email);
+                var data = new FeedbackDao().ListFeedbackViewModel(productId);
+                var newFeedback = new FeedBack
+                {
+                    Rating = rating,
+                    Comment = reviewContent,
+                    ProductId = productId, // Liên kết với sản phẩm
+                    UserId = user.UserId, // Liên kết với người dùng
+                    CreatedDate = DateTime.Now
+                };
+                // Thêm đối tượng phản hồi mới vào cơ sở dữ liệu và lưu thay đổi
+                context.FeedBacks.Add(newFeedback);
+                await context.SaveChangesAsync();
 
-            return View();
+                // Điều hướng người dùng đến trang chi tiết sản phẩm sau khi thêm phản hồi thành công
+                return RedirectToAction("Index", "ProductDetail", new { productId = productId });
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Index", "ProductDetail", new { productId = productId });
+            }
+           
         }
-        public IActionResult Delete()
+      
+
+        public ActionResult Delete(int feedbackID)
         {
-
-            return View();
+            FeedBack feedBack = context.FeedBacks.SingleOrDefault(n => n.FeedBackId == feedbackID);
+            context.Remove(feedBack);
+            context.SaveChanges();
+            return RedirectToAction("Index", "ProductDetail", new { productId = feedBack.ProductId });
         }
+
+        public ActionResult Edit(int id, string reviewContent, int rating)
+        {
+            FeedBack feedBack = context.FeedBacks.SingleOrDefault(n => n.FeedBackId == id);
+            feedBack.Comment = reviewContent;
+            feedBack.Rating = rating;
+            context.SaveChanges();
+            return RedirectToAction("Index", "ProductDetail", new { productId = feedBack.ProductId });
+        }
+
+
+
+
+        
     }
 }

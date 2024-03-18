@@ -39,6 +39,13 @@ namespace SWP.Controllers
             }
             else
             {
+                if (user.Status != 1)
+                {
+                    // Nếu status không phải là 1, tức là không có quyền truy cập, 
+                    // bạn có thể hiển thị thông báo hoặc thực hiện hành động phù hợp khác ở đây.
+                    ViewData["error"] = "Tài khoản của bạn đã dừng hoạt động!";
+                    return View();
+                }
                 int role = (int)user.RoleId;
                 HttpContext.Session.SetString("USER_EMAIL", user.Email);
                 //HttpContext.Session.SetString("USER_EMAIL", );

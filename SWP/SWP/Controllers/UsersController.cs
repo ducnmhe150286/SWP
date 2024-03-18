@@ -13,6 +13,7 @@ using SWP.Models;
 using System.Collections.Generic;
 using SWP.Dao;
 using Microsoft.Extensions.Hosting;
+using System.Diagnostics;
 
 namespace SWP.Controllers
 {
@@ -46,6 +47,10 @@ namespace SWP.Controllers
         }
         public async Task<IActionResult> Index(int currentPage)
         {
+            if (TempData["ErrorMessage"] != null)
+            {
+                ViewBag.ErrorMessage = TempData["ErrorMessage"];
+            }
             var users = GetUsers().Result.ToList();
             if (users != null)
             {
@@ -68,6 +73,10 @@ namespace SWP.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(int currentPage, string search, int? status)
         {
+            if (TempData["ErrorMessage"] != null)
+            {
+                ViewBag.ErrorMessage = TempData["ErrorMessage"];
+            }
             var users = GetUsers().Result.ToList();
             if (users != null)
             {
@@ -104,6 +113,7 @@ namespace SWP.Controllers
 
         public async Task<IActionResult> Details(int userId)
         {
+            
             var users = UsersDao.GetUserById(userId);
             var roles = RoleDao.GetAllRoles();
 
@@ -119,46 +129,40 @@ namespace SWP.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Details(int userId, [Bind("UserId,Status")] UserRequest request)
         {
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"];
+            }
             var users = UsersDao.GetUserById(userId);
             var roles = RoleDao.GetAllRoles();
 
+            
             // Lấy roleName tương ứng với user
             string roleName = roles.FirstOrDefault(r => r.RoleId == users.RoleId)?.RoleName;
             users.UserId = userId;
             users.Status = request.Status;
+            // Kiểm tra xem người dùng hiện tại có phải là admin hay không
+            bool isAdmin = roleName.ToLower() == "admin";
 
-
+            // Nếu không phải admin và đang cố gắng cập nhật trạng thái, từ chối
+            if (!isAdmin && request.Status == users.Status)
+            {
+                // Redirect hoặc thông báo lỗi tùy thuộc vào logic của bạn
+                TempData["ErrorMessage"] = "Không thể cập nhật trạng thái khách hàng";
+                return RedirectToAction("Index"); // Hoặc trả về một ActionResult khác
+            }
+            TempData["SuccessMessage"] = "cập nhật thành công";
             UsersDao.UpdateUser(users);
             ViewBag.RoleName = roleName;
             return View(users);
+
+            
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int userId, [Bind("UserId,Status")] UserRequest request)
-
-        {
-            var users = UsersDao.GetUserById(userId);
-
-            if (users != null)
-            {
-
-                users.UserId = userId;
-                users.Status = request.Status;
-
-
-                UsersDao.UpdateUser(users);
-            }
-            var roles = RoleDao.GetAllRoles();
-
-            // Lấy roleName tương ứng với user
-            string roleName = roles.FirstOrDefault(r => r.RoleId == users.RoleId)?.RoleName;
-
-            ViewBag.RoleName = roleName;
-            return View(users);
-        }
+        
 
         public IActionResult Add(int userId)
         {
+           
             // Trả về view để hiển thị form thêm mới
             // Nếu bạn muốn truyền dữ liệu khác vào view, bạn có thể thực hiện ở đây
             ViewBag.Role = RoleDao.GetAllRoles();
@@ -169,8 +173,12 @@ namespace SWP.Controllers
         // POST: Users/Add
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Add([Bind("Email,RoleId,FirstName,LastName,PhoneNumber,Status")] CreateUserRequest request)
+        public IActionResult Add([Bind("Email,RoleId,FirstName,LastName,Password,PhoneNumber,Status")] CreateUserRequest request)
         {
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"];
+            }
             if (ModelState.IsValid)
             {
                 try
@@ -184,10 +192,11 @@ namespace SWP.Controllers
                         LastName = request.LastName,
                         PhoneNumber = request.PhoneNumber,
                         Status = request.Status,
+                        Password= request.Password,
                         CreatedDate = DateTime.Now,
 
                     };
-
+                    TempData["SuccessMessage"] = "Tạo mới thành công";
                     // Thêm user vào cơ sở dữ liệu
                     UsersDao.SaveUser(user);
 

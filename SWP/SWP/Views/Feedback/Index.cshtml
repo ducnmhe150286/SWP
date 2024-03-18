@@ -1,6 +1,6 @@
-﻿
+﻿@model IEnumerable<SWP.Models.FeedBack>
 
-<h2>Feedback List</h2>
+<h2>Danh sách đánh giá</h2>
 
 <table class="table">
     <thead>
@@ -8,32 +8,60 @@
             <th>Stt</th>
             <th>Người dùng</th>
             <th>Tên sản phẩm</th>
-            <th>Xếp hạng</th>
+            <th>
+                
+                <select id="ratingFilter">
+                    <option value="">Xếp hạng</option>
+                    <option value="1">1 Sao</option>
+                    <option value="2">2 Sao</option>
+                    <option value="3">3 Sao</option>
+                    <option value="4">4 Sao</option>
+                    <option value="5">5 Sao</option>
+                </select>
+            </th>
             <th>Bình luận</th>
             <th>Ngày tạo</th>
-            <th>Xem chi tiết</th>
+            
         </tr>
     </thead>
-     @if (ViewBag.DisplayModels != null)
-        {
-    <tbody>
-       
-            @{
-                int startIndex = (int)ViewData["startIndex"];
-            }
-            @foreach (var feedback in ViewBag.DisplayModels)
-            {
-                <tr>
-                    <td>@startIndex</td>
-                    <td>@feedback.Email</td>
-                    <td>@feedback.ProductName</td>
-                    <td>@feedback.Rating</td>
-                    <td>@feedback.Comment</td>
-                    <td>@feedback.CreatedDate.ToShortDateString()</td>
-                </tr>
-            }
 
-        
-    </tbody>
+    <tbody>
+
+        @{
+            int startIndex = (int)ViewData["startIndex"];
         }
+        @foreach (var feedback in Model)
+        {
+            <tr>
+                <td>@startIndex</td>
+                <td>@feedback.User.FirstName @feedback.User.LastName</td>
+                <td>@feedback.Product.ProductName</td>
+                <td>@feedback.Rating Sao</td>
+                <td>@feedback.Comment</td>
+                <td>@feedback.CreatedDate.Value.ToString("dd/mm/yyyy")</td>
+                
+            </tr>
+        }
+
+
+    </tbody>
+
 </table>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#ratingFilter').change(function () {
+            var selectedRating = $(this).val();
+            if (selectedRating == '') {
+                $('tbody tr').show();
+            } else {
+                $('tbody tr').hide();
+                $('tbody tr td:nth-child(4)').filter(function () {
+                    return parseInt($(this).text()) === parseInt(selectedRating);
+                }).parent('tr').show();
+            }
+        });
+    });
+</script>
+
+
