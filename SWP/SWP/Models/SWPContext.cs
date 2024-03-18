@@ -136,10 +136,10 @@ namespace SWP.Models
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(255);
 
-                entity.HasOne(d => d.Detail)
+                entity.HasOne(d => d.Product)
                     .WithMany(p => p.FeedBacks)
-                    .HasForeignKey(d => d.DetailId)
-                    .HasConstraintName("FK_FeedBack_ProductDetail");
+                    .HasForeignKey(d => d.ProductId)
+                    .HasConstraintName("FK_FeedBack_Products");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.FeedBacks)
@@ -269,6 +269,8 @@ namespace SWP.Models
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.ToTable("Role");
+
+                entity.Property(e => e.RoleId).ValueGeneratedNever();
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(255);
 

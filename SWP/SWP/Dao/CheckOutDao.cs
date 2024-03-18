@@ -58,10 +58,13 @@ namespace SWP.Dao
                 order.CustomerName= customerName;
                 order.PhoneNumber= phoneNumber;
                 order.UserId = cusId;
+
                 order.OrderDate = DateTime.Now;
                 order.PaymentMethod = payment_method;
                 order.Status = 0;
                 order.ShipAddress = address;
+
+
 
                 _context.Orders.Add(order);
                 _context.SaveChanges();
@@ -83,6 +86,7 @@ namespace SWP.Dao
                             orrderdetail.Quantity = cartitem.Quantity;
                             orrderdetail.CreatedDate = DateTime.Now;
                             orrderdetail.Price = cartitem.Detail.Product.Price;
+
                             _context.Orderdetails.Add(orrderdetail);
                          //   _context.SaveChanges();
                             var cartorderdetail = _context.CartItems.FirstOrDefault(s => s.DetailId == item);

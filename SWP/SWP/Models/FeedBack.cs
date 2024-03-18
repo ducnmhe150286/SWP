@@ -7,7 +7,7 @@ namespace SWP.Models
     {
         public int FeedBackId { get; set; }
         public int? UserId { get; set; }
-        public int? DetailId { get; set; }
+        public int? ProductId { get; set; }
         public string? Image { get; set; }
         public int? Rating { get; set; }
         public string? Comment { get; set; }
@@ -16,7 +16,7 @@ namespace SWP.Models
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
 
-        public virtual ProductDetail? Detail { get; set; }
+        public virtual Product? Product { get; set; }
         public virtual User? User { get; set; }
     }
 }

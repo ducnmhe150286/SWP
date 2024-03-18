@@ -1,6 +1,8 @@
 ﻿@model Product
+@using SWP.Dto;
 @{
     var listPro = ViewData["listPro"] as List<Product>;
+    var listFeedback = ViewBag.ListFeedback as List<FeedbackViewModel>;
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
@@ -93,7 +95,7 @@
                             <!-- col.// -->
                             <div class="col-md-4 col-6 mb-3">
                                 <label class="mb-2 d-block">Số lượng</label>
-                                
+
                                 <div class="input-group mb-3" style="width: 170px;">
                                     <button class="btn btn-outline-secondary button-minus" type="button" id="decrementBtn" data-mdb-ripple-color="dark" data-field="quantity">
                                         <i class="fa fa-minus"></i>
@@ -105,7 +107,7 @@
                                 </div>
                                 <small class="text-danger error-message" style="display: none;">Số lượng không thể lớn hơn 10.</small>
                             </div>
-                            
+
                         </div>
 
                         <div id="error-message-wrapper">
@@ -143,31 +145,121 @@
                     </div>
                     <!-- Pills content -->
                 </div>
-                <div class="mt-4">
-                    <h2>Đánh giá sản phẩm</h2>
-                    <div>
-                        <!-- Review Form -->
-                        <form asp-controller="Feedback" asp-action="Create" method="post" class="mt-3">
-
-                            <div class="form-group">
-                                <label for="reviewContent">Nội dung đánh giá</label>
-                                <textarea class="form-control" id="reviewContent" name="reviewContent" rows="3" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="reviewRating">Đánh giá sao</label>
-                                <div class="rating">
-                                    <span class="fa fa-star checked " ></span>
-                                    <span class="fa fa-star checked" ></span>
-                                    <span class="fa fa-star checked" ></span>
-                                    <span class="fa fa-star"></span>
-                                    <span class="fa fa-star" ></span>
+                @if (ViewBag.check)
+                {
+                    <div class="mt-4">
+                        <h2>Đánh giá sản phẩm</h2>
+                        <div>
+                            <!-- Review Form -->
+                            <form asp-controller="Feedback" asp-action="Create" method="post" class="mt-3">
+                                <input type="hidden" name="rating" id="rating" />
+                                <input type="hidden" name="productID" value="@Model.ProductId" />
+                                <div class="form-group">
+                                    <label for="reviewContent">Nội dung đánh giá</label>
+                                    <textarea class="form-control" id="reviewContent" name="reviewContent" rows="3" required></textarea>
                                 </div>
-                            </div>
+                                <div class="form-group">
+                                    <label for="reviewRating">Đánh giá sao</label>
+                                    <div class="rating">
+                                        <span class="fa fa-star haha" data-index="1"></span>
+                                        <span class="fa fa-star haha" data-index="2"></span>
+                                        <span class="fa fa-star haha" data-index="3"></span>
+                                        <span class="fa fa-star haha" data-index="4"></span>
+                                        <span class="fa fa-star haha" data-index="5"></span>
+                                    </div>
+                                </div>
 
-                            <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
-                        </form>
-                        <!-- End Review Form -->
+                                <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+                            </form>
+                            <!-- End Review Form -->
+                        </div>
+                        <!-- Review Section -->
                     </div>
+                }
+                else
+                {
+                    <div class="mt-4">
+                        <h2>Đánh giá sản phẩm</h2>
+
+                        <!-- Review Section -->
+                    </div>
+                }
+                <div class="mt-4">
+                    <h3>Tất cả đánh giá</h3>
+                    @if (ViewBag.listFeedback != null)
+                    {
+                        <div>
+                            <!-- Review Form -->
+                            @foreach (var item in ViewBag.listFeedback)
+                            {
+                                <div>
+                                    <div class="col-lg-8 mb-4">
+                                        <div class="border rounded-2 px-3 py-2 bg-white">
+                                            <div class="tab-content" id="ex1-content">
+                                                <div class="tab-pane fade show active" id="ex1-pills-1" role="tabpanel" aria-labelledby="ex1-tab-1">
+                                                    <p> @item.User.FirstName @item.User.LastName</p>
+                                                    <p> @item.CreatedDate.ToString()</p>
+
+                                                    <div>
+                                                        @for (int i = 1; i <= 5; i++)
+                                                        {
+                                                            if (i <= item.Rating)
+                                                            {
+                                                                <span class="fa fa-star checked" data-index="@i"></span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="fa fa-star" data-index="@i"></span>
+                                                            }
+                                                        }
+                                                    </div>
+                                                    <p>Nội dung : @item.Comment</p>
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+
+                                    @if (ViewBag.isUser)
+                                    {
+                                        <a asp-action="Delete" asp-controller="Feedback" asp-route-feedbackID="@item.FeedBackId">Xóa</a>
+                                        <a asp-action="Edit" asp-controller="Feedback" asp-route-feedbackID="@item.FeedBackId">Sửa</a>
+
+                                        <form asp-controller="Feedback" asp-action="Edit" method="post" class="mt-3">
+
+                                            <input type="hidden" name="rating" id="editRating" />
+                                            <input type="hidden" name="id" value="@item.FeedBackId" />
+                                            <div class="form-group">
+                                                <label for="reviewContent">Nội dung đánh giá</label>
+                                                <textarea class="form-control" id="reviewContent" name="reviewContent" rows="3" required></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="reviewRating">Đánh giá sao</label>
+                                                <div class="rating">
+                                                    <span class="fa fa-star hihi" data-index="1"></span>
+                                                    <span class="fa fa-star hihi" data-index="2"></span>
+                                                    <span class="fa fa-star hihi" data-index="3"></span>
+                                                    <span class="fa fa-star hihi" data-index="4"></span>
+                                                    <span class="fa fa-star hihi" data-index="5"></span>
+                                                </div>
+                                            </div>
+
+                                            <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+                                        </form>
+                                    }
+
+                                </div>
+                            }
+                            <!-- End Review Form -->
+                        </div>
+                    }
+                    else
+                    {
+                        <h4>Hiện tại chưa có đánh giá nào về sản phẩm này.</h4>
+                    }
+
                     <!-- Review Section -->
                 </div>
             </div>
@@ -273,14 +365,14 @@
 
             incrementBtn.addEventListener('click', function () {
                 var quantity = parseInt(quantityInput.value);
-                if (quantity >=10) { // Kiểm tra nếu giá trị >= 10
+                if (quantity >= 10) { // Kiểm tra nếu giá trị >= 10
                     errorMessage.style.display = 'block';
                     setTimeout(function () {
                         errorMessage.style.display = 'none';
                     }, 3000); // ẩn thông báo sau 3 giây
                     quantityInput.value = 10; // Đặt giá trị về 10
                 } else {
-                    errorMessage.style.display = 'none';; 
+                    errorMessage.style.display = 'none';;
                 }
             });
         });
@@ -296,7 +388,52 @@
                 errorMessageWrapper.style.display = 'none';
             }, 3000);
         }
+        $(document).ready(function () {
+            $(".haha").hover(function () {
+                var index = $(this).data("index");
+                $(this).parent().children(".fa-star").removeClass("checked");
+                for (var i = 1; i <= index; i++) {
+                    $(this).parent().children('[data-index="' + i + '"]').addClass("checked");
+                }
+            });
 
+            $(".star-rating").mouseleave(function () {
+                var rating = $(this).data("rating");
+                $(this).children(".fa-star").removeClass("checked");
+                for (var i = 1; i <= rating; i++) {
+                    $(this).children('[data-index="' + i + '"]').addClass("checked");
+                }
+            });
+
+            $(".haha").click(function () {
+                var index = $(this).data("index");
+                $(".haha").data("rating", index);
+                $('#rating').val(index);
+                // Lưu giá trị đánh giá vào cơ sở dữ liệu hoặc gửi tới Controller bằng AJAX
+            });
+            $(".hihi").hover(function () {
+                var index = $(this).data("index");
+                $(this).parent().children(".fa-star").removeClass("checked");
+                for (var i = 1; i <= index; i++) {
+                    $(this).parent().children('[data-index="' + i + '"]').addClass("checked");
+                }
+            });
+
+            $(".star-rating").mouseleave(function () {
+                var rating = $(this).data("rating");
+                $(this).children(".fa-star").removeClass("checked");
+                for (var i = 1; i <= rating; i++) {
+                    $(this).children('[data-index="' + i + '"]').addClass("checked");
+                }
+            });
+
+            $(".hihi").click(function () {
+                var index = $(this).data("index");
+                $(".hihi").data("rating", index);
+                $('#rating').val(index);
+                // Lưu giá trị đánh giá vào cơ sở dữ liệu hoặc gửi tới Controller bằng AJAX
+            });
+        });
 
     </script>
 }
