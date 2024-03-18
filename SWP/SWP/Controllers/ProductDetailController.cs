@@ -34,13 +34,17 @@ namespace SWP.Controllers
             ViewData["listPro"] = listProSimilar;
             ViewBag.check = check;
             ViewBag.listFeedback = feedBacks;
-            if(feedBacks != null)
+            if (feedBacks != null && feedBacks.Count > 0)
             {
                 ViewBag.isUser = email == feedBacks[0].User.Email;
             }
-           
-            
-           
+            else
+            {
+                ViewBag.isUser = false; // Hoặc bất kỳ giá trị mặc định nào phù hợp
+            }
+
+
+
             return View(pro);
         }
         
