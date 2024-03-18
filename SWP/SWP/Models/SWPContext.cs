@@ -157,8 +157,6 @@ namespace SWP.Models
 
                 entity.Property(e => e.PhoneNumber).HasMaxLength(20);
 
-                entity.Property(e => e.ShipAddress).HasMaxLength(20);
-
                 entity.Property(e => e.ShipDate).HasColumnType("datetime");
 
                 entity.HasOne(d => d.User)
@@ -269,8 +267,6 @@ namespace SWP.Models
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.ToTable("Role");
-
-                entity.Property(e => e.RoleId).ValueGeneratedNever();
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(255);
 
