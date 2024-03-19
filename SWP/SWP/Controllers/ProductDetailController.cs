@@ -27,19 +27,22 @@ namespace SWP.Controllers
             string email = HttpContext.Session.GetString("USER_EMAIL");
             var pro = proDetail.getProductById(productId);
             var listProSimilar = proDetail.getProductByCategory(pro);
-            bool check = email != null && context.Orderdetails.Where(n => n.Detail.ProductId == productId && n.Order.User.Email == email).Count() >= 1;
+            bool check = email != null && context.Orderdetails.Where(n => n.Detail.ProductId == productId && n.Order.User.Email == email).Count() > 0 
+                && context.FeedBacks.Where(n => n.Product.ProductId == productId && n.User.Email == email).Count() == 0;
             ViewData["listPro"] = listProSimilar;
             ViewData["error_quantity"] = TempData["error_quantity"];
             List<FeedBack> feedBacks = context.FeedBacks.Include(n => n.User).Where(n => n.Product.ProductId == productId).ToList();
             ViewData["listPro"] = listProSimilar;
             ViewBag.check = check;
             ViewBag.listFeedback = feedBacks;
+            if(feedBacks != null && feedBacks.Count() != 0)
             if (feedBacks != null && feedBacks.Count > 0)
             {
                 ViewBag.isUser = email == feedBacks[0].User.Email;
             }
             else
             {
+                ViewBag.isUser = false;
                 ViewBag.isUser = false; // Hoặc bất kỳ giá trị mặc định nào phù hợp
             }
 
