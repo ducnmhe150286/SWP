@@ -3,30 +3,122 @@
 *@
 @{
 }
-@model List<Order>
+@using SWP.Dao
+@model List<OrderProductDetailViewModel>
 
-<h2>DANH SÁCH CÁC ĐƠN HÀNG ĐÃ MUA</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer View</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
 
-@if (Model != null && Model.Count > 0)
-{
-    foreach (var order in Model)
-    {
-        <div>
-            <h3>Order ID: @order.OrderId</h3>
-            <p>Order Date: @order.OrderDate</p>
-            <!-- Hiển thị thông tin khác về đơn hàng -->
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px 0;
+        }
 
-            <h4>Products:</h4>
-            <ul>
-                @foreach (var orderDetail in order.Orderdetails)
-                {
-                    <li> @orderDetail.Price</li>
-                }
-            </ul>
-        </div>
-    }
-}
-else
-{
-    <p>Không có đơn hàng nào được tìm thấy.</p>
-}
+        h2 {
+            color: #333;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+            .table th, .table td {
+                padding: 8px;
+                border-bottom: 1px solid #ddd;
+                text-align: left;
+            }
+
+            .table th {
+                background-color: #f2f2f2;
+            }
+
+            .table td img {
+                display: block;
+                margin: auto;
+                max-width: 100px;
+                max-height: 100px;
+            }
+
+        .back-btn {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+            .back-btn:hover {
+                background-color: #45a049;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Danh sách sản phẩm đã đặt hàng</h2>
+
+        @if (Model.Count > 0)
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Ảnh sản phẩm</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
+                        <th>Màu sắc</th>
+                        <th>Kích thước</th>
+                        <th>Tổng tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var productDetail in Model)
+                    {
+                        <tr>
+                            <td>
+                                @foreach (var image in productDetail.ProductImages)
+                                {
+                                    <a href="@Url.Action("ProductDetail", "Order", new { orderId = productDetail.OrderId })">
+                                        <img src="~/Images/@image" alt="Product Image" width="100" height="100" />
+                                    </a>
+                                }
+                            </td>
+                            <td>@productDetail.ProductName</td>
+                            <td>@productDetail.Price</td>
+                            <td>@productDetail.Quantity</td>
+                            <td>@productDetail.ColorName</td>
+                            <td>@productDetail.SizeName</td>
+                            <td>@(productDetail.Price * productDetail.Quantity)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>Khách hàng chưa đặt hàng sản phẩm nào.</p>
+        }
+
+        <a href="javascript:history.go(-1)" class="back-btn">Quay lại</a>
+    </div>
+
+</body>
+</html>

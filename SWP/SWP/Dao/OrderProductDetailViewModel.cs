@@ -8,5 +8,6 @@
         public string ColorName { get; set; }
         public string SizeName { get; set; }
         public List<string> ProductImages { get; set; }
+        public int OrderId { get; set; } // Thêm thuộc tính orderId
     }
 }

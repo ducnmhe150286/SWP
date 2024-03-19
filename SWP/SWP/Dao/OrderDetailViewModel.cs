@@ -13,6 +13,7 @@ namespace SWP.Dao
         public byte? Status { get; set; }
         public decimal TotalAmount { get; set; }
         public List<OrderProductDetailViewModel> OrderProductDetails { get; set; }
+        public string? CancelReason { get; set; }
 
     }
 }

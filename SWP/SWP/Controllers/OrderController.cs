@@ -5,6 +5,7 @@ using SWP.Dao;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.CodeAnalysis;
 
 
 namespace SWP.Controllers
@@ -82,6 +83,7 @@ namespace SWP.Controllers
                     PhoneNumber = orderInfo.PhoneNumber,
                     Status = orderInfo.Status,
                     TotalAmount = totalAmount,
+                    CancelReason = orderInfo.CancelReason,
                     OrderProductDetails = orderDetails.Select(od => new OrderProductDetailViewModel
                     {
                         ProductName = productDetails.FirstOrDefault(pd => pd.DetailId == od.DetailId)?.Product?.ProductName,
@@ -143,13 +145,99 @@ namespace SWP.Controllers
                 // Lấy danh sách đơn hàng của khách hàng có UserId là userId
                 var orders = context.Orders.Where(o => o.UserId == userId).ToList();
 
-                // Lấy danh sách sản phẩm từ mỗi đơn hàng
+                // Danh sách sản phẩm đã đặt hàng của khách hàng
+                var orderProductDetails = new List<OrderProductDetailViewModel>();
+
                 foreach (var order in orders)
                 {
-                    order.Orderdetails = context.Orderdetails.Where(od => od.OrderId == order.OrderId).ToList();
+                    // Lấy chi tiết đơn hàng cho mỗi đơn hàng
+                    var orderDetails = context.Orderdetails.Where(od => od.OrderId == order.OrderId).ToList();
+
+                    // Lấy thông tin chi tiết về từng sản phẩm đã đặt hàng
+                    foreach (var orderDetail in orderDetails)
+                    {
+                        var productDetail = context.ProductDetails
+                            .Include(pd => pd.Product)
+                                .ThenInclude(p => p.ProductImages)
+                            .Include(pd => pd.Color)
+                            .Include(pd => pd.Size)
+                            .FirstOrDefault(pd => pd.DetailId == orderDetail.DetailId);
+
+                        if (productDetail != null)
+                        {
+                            orderProductDetails.Add(new OrderProductDetailViewModel
+                            {
+                                ProductName = productDetail.Product.ProductName,
+                                Price = orderDetail.Price ?? 0,
+                                Quantity = orderDetail.Quantity ?? 0,
+                                ColorName = productDetail.Color?.ColorName,
+                                SizeName = productDetail.Size?.SizeName,
+                                ProductImages = productDetail.Product.ProductImages.Select(pi => pi.Path).ToList(),
+                                OrderId = order.OrderId // Gán orderId vào OrderProductDetailViewModel
+                            }) ;
+                        }
+                    }
                 }
 
-                return View(orders);
+                return View(orderProductDetails);
+            }
+        }
+        public IActionResult ProductDetail(int orderId)
+        {
+            using (var context = new SWPContext())
+            {
+                // Kiểm tra orderId có hợp lệ hay không
+                if (orderId <= 0)
+                {
+                    // Nếu không hợp lệ, chuyển hướng đến trang thông báo lỗi
+                    return View("OrderNotFound");
+                }
+
+                // Lấy thông tin đơn hàng chứa sản phẩm đang được chọn
+                var order = context.Orders.FirstOrDefault(o => o.OrderId == orderId);
+
+                if (order == null)
+                {
+                    // Nếu không tìm thấy đơn hàng, chuyển hướng đến trang thông báo lỗi
+                    return View("OrderNotFound");
+                }
+
+                var orderDetailViewModel = new OrderDetailViewModel
+                {
+                    OrderId = order.OrderId,
+                    // Kiểm tra xem Status có null không
+                    Status = order.Status.HasValue ? order.Status.Value : default(byte)
+                };
+
+                return View("OrderStatus", orderDetailViewModel);
+            }
+        }
+        [HttpPost]
+        public IActionResult CancelOrder(int orderId, string cancelReason)
+        {
+            using (var context = new SWPContext())
+            {
+                var order = context.Orders.FirstOrDefault(o => o.OrderId == orderId);
+
+                if (order == null)
+                {
+                    return NotFound(); // Trả về mã lỗi nếu không tìm thấy đơn hàng
+                }
+
+                if (order.Status != 0 && order.Status != 1)
+                {
+                    return BadRequest("Không thể hủy đơn hàng với trạng thái hiện tại."); // Trả về mã lỗi nếu không thể hủy đơn hàng với trạng thái hiện tại
+                }
+
+                order.Status = 5; // Cập nhật trạng thái đơn hàng thành "Đã hủy"
+                order.CancelReason = cancelReason; // Lưu lý do hủy vào trường CancelReason
+
+                context.SaveChanges(); // Lưu thay đổi vào database
+
+                // Thêm thông báo trạng thái thành công vào TempData để hiển thị trong view
+                TempData["CancelSuccess"] = true;
+
+                return Ok(); // Trả về mã thành công
             }
         }
     }
