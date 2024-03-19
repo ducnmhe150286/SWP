@@ -104,6 +104,7 @@
         <option value="2">Đang vận chuyển</option>
         <option value="3">Giao hàng thành công</option>
         <option value="4">Giao hàng không thành công</option>
+            <option value="5">Dã hủy</option>
     </select>
 </div>
 
@@ -150,6 +151,10 @@
                     {
                         <p>Giao hàng không thành công</p>
                     }
+                        else if (order.Status == 5)
+                        {
+                            <p>Dã hủy</p>
+                        }
                 </td>
 
                 <td>
