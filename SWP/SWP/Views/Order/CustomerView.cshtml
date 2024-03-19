@@ -1,0 +1,32 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model List<Order>
+
+<h2>DANH SÁCH CÁC ĐƠN HÀNG ĐÃ MUA</h2>
+
+@if (Model != null && Model.Count > 0)
+{
+    foreach (var order in Model)
+    {
+        <div>
+            <h3>Order ID: @order.OrderId</h3>
+            <p>Order Date: @order.OrderDate</p>
+            <!-- Hiển thị thông tin khác về đơn hàng -->
+
+            <h4>Products:</h4>
+            <ul>
+                @foreach (var orderDetail in order.Orderdetails)
+                {
+                    <li> @orderDetail.Price</li>
+                }
+            </ul>
+        </div>
+    }
+}
+else
+{
+    <p>Không có đơn hàng nào được tìm thấy.</p>
+}
