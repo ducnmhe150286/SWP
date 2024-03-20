@@ -28,7 +28,7 @@ namespace SWP.Controllers
             var pro = proDetail.getProductById(productId);
             var listProSimilar = proDetail.getProductByCategory(pro);
             bool check = email != null && context.Orderdetails.Where(n => n.Detail.ProductId == productId && n.Order.User.Email == email).Count() > 0 
-                && context.FeedBacks.Where(n => n.Product.ProductId == productId && n.User.Email == email).Count() == 0;
+                && context.FeedBacks.Where(n => n.Product.ProductId == productId && n.User.Email == email).Count() == 0 ;
             ViewData["listPro"] = listProSimilar;
             ViewData["error_quantity"] = TempData["error_quantity"];
             List<FeedBack> feedBacks = context.FeedBacks.Include(n => n.User).Where(n => n.Product.ProductId == productId).ToList();
