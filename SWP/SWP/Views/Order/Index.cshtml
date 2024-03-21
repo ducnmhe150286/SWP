@@ -195,66 +195,79 @@
     </tbody>
 </table>
 
-<script>
-    function openModal(orderId) {
-        var status = $('#statusCell_' + orderId).text().trim();
-        if (status === "Giao hàng thành công") {
-            alert("Đơn hàng đã giao thành công. Không thể cập nhật trạng thái nữa.");
-        } else {
-            $('#updateModal_' + orderId).modal('show');
-        }
-    }
-
-    function closeModal(orderId) {
-        $('#updateModal_' + orderId).modal('hide');
-    }
-
-    function saveStatus(orderId) {
-        var selectedStatus = $('#statusSelect_' + orderId).val();
-        $.ajax({
-            type: "POST",
-            url: "@Url.Action("UpdateStatus", "Order")",
-            data: { orderId: orderId, status: selectedStatus },
-            success: function (response) {
-                if (response.success) {
-                    var statusCell = $('#statusCell_' + orderId);
-                    switch (selectedStatus) {
-                        case "0":
-                            statusCell.html("<p>Chờ xác nhận</p>");
-                            break;
-                        case "1":
-                            statusCell.html("<p>Xác nhận đơn hàng</p>");
-                            break;
-                        case "2":
-                            statusCell.html("<p>Đang vận chuyển</p>");
-                            break;
-                        case "3":
-                            statusCell.html("<p>Giao hàng thành công</p>");
-                            break;
-                        case "4":
-                            statusCell.html("<p>Giao hàng không thành công</p>");
-                            break;
-                        default:
-                            break;
-                    }
-                    $('#updateModal_' + orderId).modal('hide');
+    <script>
+        function openModal(orderId) {
+            var status = $('#statusCell_' + orderId).text().trim();
+            if (status === "Giao hàng thành công") {
+                alert("Đơn hàng đã giao thành công. Không thể cập nhật trạng thái nữa.");
+            } else {
+                // Hiển thị dropdown list phù hợp với trạng thái hiện tại của đơn hàng
+                if (status === "Đang vận chuyển") {
+                    $('#deliveryStatusSelect_' + orderId).show();
                 } else {
-                    console.error("Có lỗi xảy ra khi lưu trạng thái");
+                    $('#deliveryStatusSelect_' + orderId).hide();
                 }
-            },
-            error: function (xhr, status, error) {
-                console.error(xhr.responseText);
+                $('#updateModal_' + orderId).modal('show');
             }
-        });
-    }
+        }
 
-    $(document).ready(function () {
-        $('#searchStatus').change(function () {
-            var searchStatus = $(this).val();
-            window.location.href = "@Url.Action("Index", "Order")?searchStatus=" + searchStatus;
+        function closeModal(orderId) {
+            $('#updateModal_' + orderId).modal('hide');
+        }
+
+        function saveStatus(orderId) {
+            var selectedStatus = $('#statusSelect_' + orderId).val();
+            var selectedDeliveryStatus = $('#deliveryStatusSelect_' + orderId).val();
+
+            // Kiểm tra nếu đã chọn giao hàng thành công hoặc không thành công
+            if (selectedDeliveryStatus) {
+                selectedStatus = selectedDeliveryStatus;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("UpdateStatus", "Order")",
+                data: { orderId: orderId, status: selectedStatus },
+                success: function (response) {
+                    if (response.success) {
+                        var statusCell = $('#statusCell_' + orderId);
+                        switch (selectedStatus) {
+                            case "0":
+                                statusCell.html("<p>Chờ xác nhận</p>");
+                                break;
+                            case "1":
+                                statusCell.html("<p>Xác nhận đơn hàng</p>");
+                                break;
+                            case "2":
+                                statusCell.html("<p>Đang vận chuyển</p>");
+                                break;
+                            case "3":
+                                statusCell.html("<p>Giao hàng thành công</p>");
+                                break;
+                            case "4":
+                                statusCell.html("<p>Giao hàng không thành công</p>");
+                                break;
+                            default:
+                                break;
+                        }
+                        $('#updateModal_' + orderId).modal('hide');
+                    } else {
+                        console.error("Có lỗi xảy ra khi lưu trạng thái: " + response.errorMessage);
+                        alert(response.errorMessage); // Hiển thị thông báo lỗi trên màn hình
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+        $(document).ready(function () {
+            $('#searchStatus').change(function () {
+                var searchStatus = $(this).val();
+                window.location.href = "@Url.Action("Index", "Order")?searchStatus=" + searchStatus;
+            });
         });
-    });
-</script>
+    </script>
 
 <style>
     .pagination {
