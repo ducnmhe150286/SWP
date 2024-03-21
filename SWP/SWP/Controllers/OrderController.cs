@@ -105,29 +105,58 @@ namespace SWP.Controllers
             // Điều hướng người dùng về trang Index
             return RedirectToAction("Index"); // Thay "Home" bằng tên controller chứa action Index nếu cần
         }
-        
+
         [HttpPost]
         public ActionResult UpdateStatus(int orderId, int status)
         {
             using (var context = new SWPContext())
             {
-                // Lấy order từ cơ sở dữ liệu
                 var order = context.Orders.Find(orderId);
                 if (order != null)
                 {
-                    // Chuyển đổi kiểu dữ liệu 'int' sang 'byte?'
                     byte? byteStatus = (byte?)status;
-                    // Cập nhật trạng thái
-                    order.Status = byteStatus;
-                    // Lưu thay đổi vào cơ sở dữ liệu
-                    context.SaveChanges();
+                    if (IsValidTransition(order.Status, byteStatus))
+                    {
+                        order.Status = byteStatus;
+                        context.SaveChanges();
+                        return Json(new { success = true });
+                    }
+                    else
+                    {
+                        // Trả về một thông báo lỗi nếu không thể chuyển từ trạng thái hiện tại sang trạng thái mới
+                        return Json(new { success = false, errorMessage = "Không thể cập nhật trạng thái đến trạng thái này." });
+                    }
                 }
-                return Json(new { success = true });
+                return Json(new { success = false, errorMessage = "Không tìm thấy đơn hàng." });
+            }
+        }
+
+        private bool IsValidTransition(byte? currentStatus, byte? newStatus)
+        {
+            if (currentStatus == null) // Trường hợp đặc biệt: trạng thái hiện tại là null
+            {
+                return newStatus == 0; // Chỉ cho phép bắt đầu từ trạng thái "Chờ xác nhận"
+            }
+
+            // Các quy tắc chuyển trạng thái ở đây
+            switch (currentStatus)
+            {
+                case 0: // Trạng thái hiện tại là "Chờ xác nhận"
+                    return newStatus == 1; // Chỉ cho phép chuyển sang trạng thái "Xác nhận đơn hàng"
+                case 1: // Trạng thái hiện tại là "Xác nhận đơn hàng"
+                    return newStatus == 2; // Chỉ cho phép chuyển sang trạng thái "Đang vận chuyển"
+                case 2: // Trạng thái hiện tại là "Đang vận chuyển"
+                    return newStatus == 3 || newStatus == 4; // Chỉ cho phép chuyển sang trạng thái "Giao hàng thành công" hoặc "Giao hàng không thành công"
+                case 3: // Trạng thái hiện tại là "Giao hàng thành công"
+                case 4: // Trạng thái hiện tại là "Giao hàng không thành công"
+                    return false; // Không cho phép chuyển sang trạng thái mới từ đây
+                default:
+                    return false; // Trạng thái không hợp lệ
             }
         }
 
 
-        
+
         public IActionResult CustomerView()
         {
             // Lấy userId từ session

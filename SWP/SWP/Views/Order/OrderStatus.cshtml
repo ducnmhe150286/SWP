@@ -10,70 +10,133 @@
 <head>
     <title>TRẠNG THÁI ĐƠN HÀNG HIỆN TẠI</title>
     <style>
-        /* CSS styles can be added here or in a separate CSS file */
         body {
             font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
         }
 
-        .order-detail {
+        .container {
+            max-width: 800px;
             margin: 20px auto;
             padding: 20px;
-            width: 80%;
             border: 1px solid #ccc;
             border-radius: 5px;
-            background-color: #f9f9f9;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         h2 {
             color: #333;
+            margin-top: 0;
+        }
+
+        .status-highlight {
+            color: #28eb45;
+            font-weight: bold;
         }
 
         .order-info {
-            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
         }
 
-            .order-info label {
-                font-weight: bold;
+        .status-span {
+            margin: 0 10px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+
+            .status-span:hover {
+                background-color: #e0e0e0;
             }
+
+            .status-span.active {
+                background-color: #28eb45;
+                color: #fff;
+            }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+            .btn.cancel {
+                background-color: #dc3545;
+                color: #fff;
+            }
+
+                .btn.cancel:hover {
+                    background-color: #c82333;
+                }
+
+            .btn.back {
+                background-color: #007bff;
+                color: #fff;
+                margin-left: 10px;
+            }
+
+                .btn.back:hover {
+                    background-color: #0056b3;
+                }
+
+        #cancelSuccessMessage {
+            margin-top: 10px;
+            display: none;
+            color: green;
+        }
+
+        .alert-success {
+            color: green;
+            margin-top: 10px;
+            display: none;
+        }
+
     </style>
 </head>
 <body>
-    <div class="order-detail">
-        <h2>Order Detail</h2>
+    <div class="container">
+        <h2>Trạng thái đơn hàng của bạn</h2>
+
         <div class="order-info">
-            @if (Model.Status == 0)
-            {
-                <p>Chờ xác nhận</p>
-            }
-            else if (Model.Status == 1)
-            {
-                <p>Xác nhận đơn hàng</p>
-            }
-            else if (Model.Status == 2)
-            {
-                <p>Đang vận chuyển</p>
-            }
-            else if (Model.Status == 3)
-            {
-                <p>Giao hàng thành công</p>
-            }
-            else if (Model.Status == 4)
-            {
-                <p>Giao hàng không thành công</p>
-            }
-            else if (Model.Status == 5)
-            {
-                <p>Đã hủy</p>
-            }
+            <span class="status-span @if(Model.Status == 0) {
+            <text>active</text>
+ }">Chờ xác nhận</span>
+            <span class="status-span @if(Model.Status == 1) {
+            <text>active</text>
+ }">Xác nhận đơn hàng</span>
+            <span class="status-span @if(Model.Status == 2) {
+            <text>active</text>
+ }">Đang vận chuyển</span>
+            <span class="status-span @if(Model.Status == 3) {
+            <text>active</text>
+ }">Giao hàng thành công</span>
+            <span class="status-span @if(Model.Status == 4) {
+            <text>active</text>
+ }">Giao hàng không thành công</span>
+            <span class="status-span @if(Model.Status == 5) {
+            <text>active</text>
+ }">Đã hủy</span>
         </div>
+
         <!-- Thêm nút hủy đơn hàng -->
-        <button id="cancelOrderBtn" style="padding: 10px 20px; background-color: #dc3545; color: #fff; border: none; border-radius: 5px; cursor: pointer;" onclick="cancelOrder(@Model.OrderId, @Model.Status)">Hủy đơn hàng</button>
-        <button onclick="window.history.back()" style="margin-left: 10px; padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Back</button>
+        <button class="btn cancel" onclick="cancelOrder(@Model.OrderId, @Model.Status)">Hủy đơn hàng</button>
+        <button class="btn back" onclick="window.history.back()">Back</button>
 
         <!-- Thêm phần hiển thị thông báo -->
-        <div id="cancelSuccessMessage" style="margin-top: 10px; display: none;">
-            <p style="color: green;">Đã hủy đơn hàng thành công!</p>
-        </div>
+        <div id="cancelSuccessMessage">Đã hủy đơn hàng thành công!</div>
+        @if (TempData["CancelSuccess"] != null)
+        {
+            <div class="alert alert-success" role="alert">Đã hủy đơn hàng thành công!</div>
+        }
     </div>
 
     <!-- Modal -->
@@ -139,12 +202,12 @@
                     console.error(xhr.responseText);
                 }
             });
+
+            // Tắt thông báo sau 5 giây
+            setTimeout(function () {
+                $('#cancelSuccessMessage').fadeOut('slow');
+            }, 5000);
         }
     </script>
-    @if (TempData["CancelSuccess"] != null)
-    {
-        <div class="alert alert-success" role="alert">
-            Đã hủy đơn hàng thành công!
-        </div>
-    }
 </body>
+</html>

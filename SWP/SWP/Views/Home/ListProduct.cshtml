@@ -723,6 +723,17 @@
                         *@
                     </ul>
                 </nav>
+                @{
+                    var userEmail = HttpContextAccessor.HttpContext.Session.GetString("USER_EMAIL");
+                    var userRole = HttpContextAccessor.HttpContext.Session.GetInt32("USER_ROLE") ?? 0;
+                }
+
+                @if (!string.IsNullOrEmpty(userEmail) && userRole == 2)
+                {
+                    <a asp-action="CustomerView" asp-controller="Order">
+                        <img src="https://i.ibb.co/q7hdLFp/orders-icon.png" alt="" width="30px" height="30px" />
+                    </a>
+                }
                 <a asp-controller="Cart" asp-action="GetCartItem"><img src="https://i.ibb.co/PNjjx3y/cart.png" alt="" width="30px" height="30px" /></a>
                 <img src="https://i.ibb.co/6XbqwjD/menu.png" alt="" class="menu-icon" onclick="menutoggle()" />
                 <div class="navbar-nav ml-auto pr-100" style="margin-left:10px">
