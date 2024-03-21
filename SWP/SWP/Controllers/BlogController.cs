@@ -48,12 +48,12 @@ namespace SWP.Controllers
             }
         }
 
-        public  async Task<IActionResult> Index(int currentPage, int userId)
+        public async Task<IActionResult> Index(int currentPage, int userId)
         {
             var blog = context.Blogs.ToList();
             string userEmail = HttpContext.Session.GetString("USER_EMAIL") ?? "";
             var user = context.Users.Where(x => x.Email.Equals(userEmail)).FirstOrDefault();
-            if ( user!= null )
+            if (user != null)
             {
 
                 int startIndex = 6 * currentPage + 1;
@@ -64,14 +64,14 @@ namespace SWP.Controllers
                 // Filter out users with Id equal to 1
                 // users = users.Where(x => x.RoleId != 1).Skip(6 * currentPage).Take(6).ToList();
                 //Lấy ra người dùng theo userID, lấy role từ người dùng đấy
-                
+
                 if (user.RoleId != 1)
                 {
                     // Nếu không phải là admin, lọc ra những blog có status là 1
                     blog = blog.Where(x => x.Status == 1).ToList();
                 }
-               
-               
+
+
                 ViewData["currentPage"] = currentPage;
                 ViewData["startIndex"] = startIndex;
                 return View(blog);
@@ -137,7 +137,7 @@ namespace SWP.Controllers
         }
         public IActionResult Create()
         {
-            
+
             return View();
         }
 
@@ -146,54 +146,51 @@ namespace SWP.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(List<IFormFile> files, [Bind("Title,ShortDescription,Description,Status,Image")] CreateBlogRequest blog)
         {
-            if (ModelState.IsValid)
+            /* int roleId = (int)HttpContext.Session.GetInt32("USER_ROLE");
+             int userId = 0;
+             if(roleId ==   1) {
+                userId = (int)HttpContext.Session.GetInt32("USER_ID");
+             }*/
+
+            if (blog == null)
             {
-                /* int roleId = (int)HttpContext.Session.GetInt32("USER_ROLE");
-                 int userId = 0;
-                 if(roleId ==   1) {
-                    userId = (int)HttpContext.Session.GetInt32("USER_ID");
-                 }*/
-
-                if (blog == null)
-                {
-                    return Problem("Blog null");
-                }
-                string imageArray = "";
-                long size = files.Sum(f => f.Length);
-
-                var filePaths = new List<string>();
-                foreach (var formFile in files)
-                {
-                    if (formFile.Length > 0)
-                    {
-                        var fileName = formFile.FileName;
-                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", fileName);
-
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await formFile.CopyToAsync(stream);
-                        }
-
-                        filePaths.Add("/Images/" + fileName); // Store the relative path to the file
-                        imageArray += fileName + ",";
-                    }
-                }
-
-
-                Blog _blog = new Blog();
-                _blog.Title = blog.Title;
-                _blog.Description = blog.Description;
-                _blog.ShortDescription = blog.ShortDescription;
-                _blog.CreateDate = DateTime.Now;
-                _blog.UserId = blog.UserId;
-                _blog.Image = imageArray.Equals("") ? "" : imageArray.Substring(0, imageArray.Length - 1);
-                _blog.Status = blog.Status;
-               
-
-                context.Blogs.Add(_blog);
-                await context.SaveChangesAsync();
-
+                return Problem("Blog null");
             }
+            string imageArray = "";
+            long size = files.Sum(f => f.Length);
+
+            var filePaths = new List<string>();
+            foreach (var formFile in files)
+            {
+                if (formFile.Length > 0)
+                {
+                    var fileName = formFile.FileName;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await formFile.CopyToAsync(stream);
+                    }
+
+                    filePaths.Add("/Images/" + fileName); // Store the relative path to the file
+                    imageArray += fileName + ",";
+                }
+            }
+
+
+            Blog _blog = new Blog();
+            _blog.Title = blog.Title;
+            _blog.Description = blog.Description;
+            _blog.ShortDescription = blog.ShortDescription;
+            _blog.CreateDate = DateTime.Now;
+            _blog.UserId = blog.UserId;
+            _blog.Image = imageArray.Equals("") ? "" : imageArray.Substring(0, imageArray.Length - 1);
+            _blog.Status = blog.Status;
+
+
+            context.Blogs.Add(_blog);
+            await context.SaveChangesAsync();
+
             return RedirectToAction("Manage");
         }
         public async Task<IActionResult> Details(int? blogId)
@@ -215,7 +212,7 @@ namespace SWP.Controllers
         public async Task<IActionResult> Edit(int? blogId)
         {
             var blog = await GetBlogById(blogId);
-            ViewBag.Error = "";
+            ViewBag.Error = "Khoong tim thay blog";
             return View(blog);
         }
 
