@@ -12,24 +12,25 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    
     <link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
 
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+   @* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <script src="https://cdn.ckeditor.com/ckeditor5/30.0.0/classic/ckeditor.js"></script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-    </style>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>*@
+ 
+ <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+	
+</style>
 
 
 
@@ -203,9 +204,69 @@
             </div>
 
         </div>
-        <div class="container">
+        
+        <div class="custom-nav">
+        <ul id="MenuItems" class="mt-1">
 
-            <main role="main" class="pb-3">
+                        <li><a href="@Url.Action("Index", "Home")" class="custom-navbar-link" style="font-size: 15px;">Trang chủ</a></li>
+                        <li><a href="@Url.Action("ListProduct", "Home")" class="custom-navbar-link" style="font-size: 15px;">Sản phẩm</a></li>
+                        <li><a href="@Url.Action("ListBlog", "Home")" class="custom-navbar-link" style="font-size: 15px;">Blog</a></li>
+                        @if (role == 2)
+                        {
+                            <li><a asp-action="CustomerView" asp-controller="Order" style="font-size: 15px; color: #555 !important;">Đơn hàng</a></li>
+                        }
+
+
+
+        
+        </ul>
+        </div>
+       @if (role == 1)
+                    {
+
+                    }
+                    else
+                    {
+                    <a asp-controller="Cart" asp-action="GetCartItem" class="custom-navbar-link cart-icon"><img src="https://i.ibb.co/PNjjx3y/cart.png" alt="" width="30px" height="30px" /></a>
+                }
+				<div class="custom-icons">
+                    <div>
+                        @if (role != 0)
+                        {
+                            <a asp-controller="ProfileUsers" asp-action="Index" style="font-size: 15px;" class="custom-navbar-link">@userName</a>
+
+                            <div class="user-menu">
+                                <a href="#" class="profile">
+                                    <img src="/Images/280216366_5580116488679926_3510765946569464420_n-1536x1097.jpg" style="width: 40px;"> <!-- Điều chỉnh kích thước và thêm margin bên phải -->
+                                </a>
+                                <div class="user-menu-content">
+                                    <a asp-controller="ProfileUsers" asp-action="Index" class="profile">
+                                        <i class='bx bxs-user-circle'></i>
+                                        <span class="text">Tài khoản</span>
+                                    </a>
+                                    <a asp-controller="Auth" asp-action="Logout" class="logout">
+                                        <i class='bx bxs-log-out-circle'></i>
+                                        <span class="text">Đăng xuất</span>
+                                    </a>
+                                </div>
+                            </div>
+
+
+@*                    <a asp-controller="Auth" asp-action="Logout" style="font-size: 15px;" class="custom-navbar-link">Đăng xuất</a>
+*@                        }
+                        else
+                        {
+                            <a href="/auth" style="font-size: 15px;" class="custom-navbar-link">Đăng nhập</a>
+                        }
+                    </div>
+                   
+
+                </div>
+            </div>
+    </div>
+     <div class="container">
+
+    <main role="main" class="pb-3">
                 @RenderBody()
 
             </main>

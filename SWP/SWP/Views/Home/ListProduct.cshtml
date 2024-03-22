@@ -14,6 +14,14 @@
     <title>Boxing Shop</title>
     @* <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>*@
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+
+    <link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="https://cdn.ckeditor.com/ckeditor5/30.0.0/classic/ckeditor.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -694,6 +702,12 @@
         .xemthem {
             padding-left: 920px;
         }
+         .profile img {
+            width: 36px;
+            height: 36px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
 
         }</style>
 </head>
@@ -715,12 +729,14 @@
                         <li><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
                         <li><a href="#product">Sản phẩm</a></li>
                         <li><a href="@Url.Action("ListBlog", "Home")">Blog</a></li>
-
+                        @if (role == 2)
+                        {
+                            <li><a href="/Order/CustomerView" >Đơn hàng</a></li>
+                        }
                         @*          <li><a href="#">Contact</a></li>
                         *@
                         <!-- <li><a href="#">Contact</a></li> -->
-                        @*          <li><a href="account.html">Account</a></li>
-                        *@
+                        
                     </ul>
                 </nav>
                 @{
@@ -730,24 +746,46 @@
 
                 @if (!string.IsNullOrEmpty(userEmail) && userRole == 2)
                 {
-                    <a asp-action="CustomerView" asp-controller="Order">
+                   @* <a asp-action="CustomerView" asp-controller="Order">
                         <img src="https://i.ibb.co/q7hdLFp/orders-icon.png" alt="" width="30px" height="30px" />
-                    </a>
+                    </a>*@
                 }
-                <a asp-controller="Cart" asp-action="GetCartItem"><img src="https://i.ibb.co/PNjjx3y/cart.png" alt="" width="30px" height="30px" /></a>
+                <a asp-controller="Cart" asp-action="GetCartItem" class="custom-navbar-link cart-icon"><img src="https://i.ibb.co/PNjjx3y/cart.png" alt="" width="30px" height="30px" /></a>
                 <img src="https://i.ibb.co/6XbqwjD/menu.png" alt="" class="menu-icon" onclick="menutoggle()" />
-                <div class="navbar-nav ml-auto pr-100" style="margin-left:10px">
-                    @if (role != 0)
-                    {
-                        <a asp-controller="ProfileUsers" asp-action="Index">@userName</a>
-                        <a asp-controller="Auth" asp-action="Logout">Đăng xuất</a>
-                    }
-                    else
-                    {
-                        <a href="/auth">Đăng nhập</a>
-                    }
+                <div class="custom-icons">
+                    <div>
+                        @if (role != 0)
+                        {
+                            <a asp-controller="ProfileUsers" asp-action="Index" style="font-size: 15px;" class="custom-navbar-link">@userName</a>
+
+                            <div class="user-menu">
+                                <a href="#" class="profile">
+                                    <img src="/Images/280216366_5580116488679926_3510765946569464420_n-1536x1097.jpg" style="width: 40px;"> <!-- Điều chỉnh kích thước và thêm margin bên phải -->
+                                </a>
+                                <div class="user-menu-content">
+                                    <a asp-controller="ProfileUsers" asp-action="Index" class="profile">
+                                        <i class='bx bxs-user-circle'></i>
+                                        <span class="text">Tài khoản</span>
+                                    </a>
+                                    <a asp-controller="Auth" asp-action="Logout" class="logout">
+                                        <i class='bx bxs-log-out-circle'></i>
+                                        <span class="text">Đăng xuất</span>
+                                    </a>
+                                </div>
+                            </div>
+
+
+                            @*                    <a asp-controller="Auth" asp-action="Logout" style="font-size: 15px;" class="custom-navbar-link">Đăng xuất</a>
+                        *@                        }
+                        else
+                        {
+                            <a href="/auth" style="font-size: 15px;" class="custom-navbar-link">Đăng nhập</a>
+                        }
+                    </div>
+
 
                 </div>
+
             </div>
 
         </div>
