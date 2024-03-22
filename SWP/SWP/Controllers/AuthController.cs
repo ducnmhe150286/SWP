@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using SWP.Dao;
 using SWP.Dto;
 using SWP.Models;
+using System.Drawing;
 
 namespace SWP.Controllers
 {
@@ -50,6 +51,7 @@ namespace SWP.Controllers
                 HttpContext.Session.SetString("USER_EMAIL", user.Email);
                 //HttpContext.Session.SetString("USER_EMAIL", );
                 HttpContext.Session.SetInt32("USER_ROLE", role);
+                HttpContext.Session.SetString("AVATAR", user.Image);
                 HttpContext.Session.SetString("USER_NAME", user.FirstName +" "+ user.LastName);
                 HttpContext.Session.SetInt32("USER_ID", user.UserId);
                 if (role == 1)

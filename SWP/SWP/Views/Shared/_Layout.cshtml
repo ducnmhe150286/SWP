@@ -39,6 +39,7 @@
         string user = HttpContextAccessor.HttpContext.Session.GetString("USER_EMAIL") ?? "";
         string userName = HttpContextAccessor.HttpContext.Session.GetString("USER_NAME") ?? "";
         int role = HttpContextAccessor.HttpContext.Session.GetInt32("USER_ROLE") ?? 0;
+        string image = HttpContextAccessor.HttpContext.Session.GetString("AVATAR") ?? "";
         string url = "";
     }
 
@@ -129,7 +130,7 @@
 
                 <div class="dropdown">
                     <a href="#" class="profile">
-                        <img src="img/people.png">
+                        <img src="/uploads/@image">
                     </a>
                     <div class="dropdown-content">
                         <a asp-controller="ProfileUsers" asp-action="Index" class="profile">
