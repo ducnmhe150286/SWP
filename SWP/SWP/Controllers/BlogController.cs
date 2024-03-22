@@ -104,6 +104,11 @@ namespace SWP.Controllers
         [HttpPost]
         public async Task<IActionResult> Manage(int currentPage, string search, int? status)
         {
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"];
+            }
+
             var blog = GetBlogs().Result.ToList();
             if (blog != null)
             {
@@ -137,7 +142,7 @@ namespace SWP.Controllers
         }
         public IActionResult Create()
         {
-
+            TempData["SuccessMessage"] = "Cập nhật blog thành công";
             return View();
         }
 
@@ -151,7 +156,7 @@ namespace SWP.Controllers
              if(roleId ==   1) {
                 userId = (int)HttpContext.Session.GetInt32("USER_ID");
              }*/
-
+           
             if (blog == null)
             {
                 return Problem("Blog null");
@@ -190,11 +195,12 @@ namespace SWP.Controllers
 
             context.Blogs.Add(_blog);
             await context.SaveChangesAsync();
-
+            TempData["SuccessMessage"] = "Tạo mới blog thành công";
             return RedirectToAction("Manage");
         }
         public async Task<IActionResult> Details(int? blogId)
         {
+           
             var blog = await GetBlogById(blogId);
 
             return View(blog);
@@ -211,6 +217,7 @@ namespace SWP.Controllers
         }
         public async Task<IActionResult> Edit(int? blogId)
         {
+            TempData["SuccessMessage"] = "Cập nhật blog thành công";
             var blog = await GetBlogById(blogId);
             ViewBag.Error = "Khoong tim thay blog";
             return View(blog);
@@ -267,6 +274,7 @@ namespace SWP.Controllers
             }
             context.Update(_blog);
             await context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Cập nhật blog thành công";
 
             return RedirectToAction("Manage");
         }

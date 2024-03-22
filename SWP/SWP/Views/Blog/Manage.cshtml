@@ -19,6 +19,12 @@
     }
 </style>
 <script src="https://cdn.ckeditor.com/ckeditor5/30.0.0/classic/ckeditor.js"></script>
+@if (ViewBag.SuccessMessage != null)
+{
+    <div class="alert alert-success">
+        @ViewBag.SuccessMessage
+    </div>
+}
 <section class="">
     <div class="container">
         <div class="row justify-content-center">
@@ -151,7 +157,7 @@
             <script>
 
                 function confirmDelete() {
-                    if (confirm("Are you sure you want to delete this Blog?")) {
+                    if (confirm("Bạn có thực sự muốn xóa Blog?")) {
                         // Thực hiện hành động xóa ở đây
                         return true;
                     } else {
