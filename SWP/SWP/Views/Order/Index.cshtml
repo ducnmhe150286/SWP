@@ -99,12 +99,13 @@
         <!-- Option ẩn ban đầu -->
         <option value="" disabled selected style="display: none;">Chọn trạng thái tìm kiếm</option>
         <!-- Các options cho trạng thái -->
+        <option value="">Tất cả các đơn hàng</option>
         <option value="0">Chờ xác nhận</option>
         <option value="1">Xác nhận đơn hàng</option>
         <option value="2">Đang vận chuyển</option>
         <option value="3">Giao hàng thành công</option>
         <option value="4">Giao hàng không thành công</option>
-            <option value="5">Dã hủy</option>
+            <option value="5">Đơn Hàng đã hủy</option>
     </select>
 </div>
 
@@ -116,7 +117,8 @@
             <th>Tên Khách Hàng</th>
             <th>Số Điện Thoại</th>
             <th>Địa Chỉ</th>
-            <th>Ngày Tạo</th>
+            <th>Ngày Tạo Đơn Hàng</th>
+            <th>Ngày Giao Thành Công</th>
             <th>Trạng Thái</th>
             <th>Thao Tác</th>
         </tr>
@@ -130,6 +132,7 @@
                 <td>@order.PhoneNumber</td>
                 <td>@order.ShipAddress</td>
                 <td>@(order.OrderDate.HasValue ? order.OrderDate.Value.ToString("yyyy-MM-dd") : "N/A")</td>
+                <td>@(order.ShipDate.HasValue ? order.OrderDate.Value.ToString("yyyy-MM-dd") : "N/A")</td>
                 <td id="statusCell_@order.OrderId">
                     @if (order.Status == 0)
                     {
@@ -153,7 +156,7 @@
                     }
                         else if (order.Status == 5)
                         {
-                            <p>Dã hủy</p>
+                            <p>Đơn hàng đã hủy</p>
                         }
                 </td>
 
@@ -251,6 +254,8 @@
                                 break;
                         }
                         $('#updateModal_' + orderId).modal('hide');
+                        // Tải lại trang sau khi cập nhật thành công
+                        window.location.reload();
                     } else {
                         console.error("Có lỗi xảy ra khi lưu trạng thái: " + response.errorMessage);
                         alert(response.errorMessage); // Hiển thị thông báo lỗi trên màn hình
@@ -264,11 +269,14 @@
         $(document).ready(function () {
             $('#searchStatus').change(function () {
                 var searchStatus = $(this).val();
-                window.location.href = "@Url.Action("Index", "Order")?searchStatus=" + searchStatus;
+                if (searchStatus === "") {
+                    window.location.href = "@Url.Action("Index", "Order")";
+                } else {
+                    window.location.href = "@Url.Action("Index", "Order")?searchStatus=" + searchStatus;
+                }
             });
         });
     </script>
-
 <style>
     .pagination {
         display: inline-block;
