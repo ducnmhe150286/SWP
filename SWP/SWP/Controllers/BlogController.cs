@@ -264,10 +264,6 @@ namespace SWP.Controllers
                 _blog.UserId = blog.UserId;
                 _blog.Image = imageArray.Equals("") ? "" : imageArray.Substring(0, imageArray.Length - 1);
                 _blog.Status = blog.Status;
-                if (!ModelState.IsValid)
-                {
-                    return View(_blog); // Trả về view chỉnh sửa với các thông tin đã nhập và thông báo lỗi nếu có
-                }
             }
             context.Update(_blog);
             await context.SaveChangesAsync();

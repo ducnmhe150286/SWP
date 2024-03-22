@@ -63,7 +63,7 @@ namespace SWP.Controllers
             }
             else
             {
-                ViewBag.isUser = false;
+                
                 ViewBag.isUser = false; // Hoặc bất kỳ giá trị mặc định nào phù hợp
             }
 
