@@ -118,6 +118,13 @@ namespace SWP.Controllers
                     if (IsValidTransition(order.Status, byteStatus))
                     {
                         order.Status = byteStatus;
+
+                        // Nếu trạng thái là 'Giao hàng thành công', cập nhật trường ShipDate với ngày hiện tại
+                        if (status == 3)
+                        {
+                            order.ShipDate = DateTime.Now;
+                        }
+
                         context.SaveChanges();
                         return Json(new { success = true });
                     }
@@ -130,6 +137,8 @@ namespace SWP.Controllers
                 return Json(new { success = false, errorMessage = "Không tìm thấy đơn hàng." });
             }
         }
+
+
 
         private bool IsValidTransition(byte? currentStatus, byte? newStatus)
         {

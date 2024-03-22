@@ -77,40 +77,46 @@
 
         @if (Model.Count > 0)
         {
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Ảnh sản phẩm</th>
-                        <th>Tên sản phẩm</th>
-                        <th>Giá</th>
-                        <th>Số lượng</th>
-                        <th>Màu sắc</th>
-                        <th>Kích thước</th>
-                        <th>Tổng tiền</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var productDetail in Model)
-                    {
-                        <tr>
-                            <td>
-                                @foreach (var image in productDetail.ProductImages)
-                                {
-                                    <a href="@Url.Action("ProductDetail", "Order", new { orderId = productDetail.OrderId })">
-                                        <img src="~/Images/@image" alt="Product Image" width="100" height="100" />
-                                    </a>
-                                }
-                            </td>
-                            <td>@productDetail.ProductName</td>
-                            <td>@productDetail.Price</td>
-                            <td>@productDetail.Quantity</td>
-                            <td>@productDetail.ColorName</td>
-                            <td>@productDetail.SizeName</td>
-                            <td>@(productDetail.Price * productDetail.Quantity)</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            @foreach (var orderGroup in Model.GroupBy(x => x.OrderId))
+            {
+                <div class="order-group">
+                    
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Ảnh sản phẩm</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Giá</th>
+                                <th>Số lượng</th>
+                                <th>Màu sắc</th>
+                                <th>Kích thước</th>
+                                <th>Tổng tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var productDetail in orderGroup)
+                            {
+                                <tr>
+                                    <td>
+                                        @foreach (var image in productDetail.ProductImages)
+                                        {
+                                            <a href="@Url.Action("ProductDetail", "Order", new { orderId = productDetail.OrderId })">
+                                                <img src="~/Images/@image" alt="Product Image" width="100" height="100" />
+                                            </a>
+                                        }
+                                    </td>
+                                    <td>@productDetail.ProductName</td>
+                                    <td>@productDetail.Price</td>
+                                    <td>@productDetail.Quantity</td>
+                                    <td>@productDetail.ColorName</td>
+                                    <td>@productDetail.SizeName</td>
+                                    <td>@(productDetail.Price * productDetail.Quantity)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
         }
         else
         {
