@@ -33,7 +33,7 @@ namespace SWP.Controllers
             ViewData["error_quantity"] = TempData["error_quantity"];
             List<FeedBack> feedBacks = context.FeedBacks.Include(n => n.User).Where(n => n.Product.ProductId == productId).ToList();
             ViewData["listPro"] = listProSimilar;
-            if (email == null)
+            /*if (email == null)
             {
                 //  return Redirect("Auth");
             }
@@ -41,7 +41,8 @@ namespace SWP.Controllers
             {
                 var cusId = usersDao.GetUserByEmail(email);
                 var cart = context.CartItems.Where(x => x.CustomerId == cusId.UserId).ToList();
-                foreach(var item in cart) {
+                foreach (var item in cart)
+                {
                     foreach (var item1 in pro.ProductDetails)
                     {
                         if (item.DetailId == item1.DetailId)
@@ -51,9 +52,9 @@ namespace SWP.Controllers
                     }
                 }
 
-            }
-          
-          
+            }*/
+
+
             ViewBag.check = check;
             ViewBag.listFeedback = feedBacks;
             if(feedBacks != null && feedBacks.Count() != 0)

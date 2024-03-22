@@ -12,25 +12,25 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    
+
     <link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
 
 
-   @* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <script src="https://cdn.ckeditor.com/ckeditor5/30.0.0/classic/ckeditor.js"></script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>*@
- 
- <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-	
-</style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.0/css/boxicons.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    </style>
 
 
 
@@ -130,9 +130,22 @@
                 <i class='bx bx-menu'></i>
 
                 <div class="dropdown">
-                    <a href="#" class="profile">
-                        <img src="/uploads/@image">
-                    </a>
+                    @if (image != null)
+                    {
+                        <a href="#" class="profile">
+                            <img src="/uploads/@image" style="width: 40px;"> <!-- Điều chỉnh kích thước và thêm margin bên phải -->
+                        </a>
+
+                        <br>
+                    }
+                    else
+                    {
+                        <a href="#" class="profile">
+                            <img src=" ~ /uploads/avatar_defaul.png" style="width: 40px;"> <!-- Điều chỉnh kích thước và thêm margin bên phải -->
+                        </a>
+
+                        <br>
+                    }
                     <div class="dropdown-content">
                         <a asp-controller="ProfileUsers" asp-action="Index" class="profile">
                             <i class='bx bxs-user-circle'></i>
@@ -183,19 +196,37 @@
                     <div>
                         @if (role != 0)
                         {
-                            <a asp-controller="ProfileUsers" asp-action="Index" style="font-size: 15px;" class="custom-navbar-link">@userName</a>
+
 
                             <div class="user-menu">
-                                <a href="#" class="profile">
-                                    <img src="/uploads/@image" style="width: 40px;"> <!-- Điều chỉnh kích thước và thêm margin bên phải -->
-                                </a>
+                                @if (image != null)
+                                {
+                                    <a href="#" class="profile">
+                                        <img src="/uploads/@image" style="width: 40px;"> <!-- Điều chỉnh kích thước và thêm margin bên phải -->
+                                    </a>
+
+                                    <br>
+                                }
+                                else
+                                {
+                                    <a href="#" class="profile">
+                                        <img src=" ~ /uploads/avatar_defaul.png" style="width: 40px;"> <!-- Điều chỉnh kích thước và thêm margin bên phải -->
+                                    </a>
+
+                                    <br>
+                                }
+
+                                <a asp-controller="ProfileUsers" asp-action="Index" style="font-size: 15px;" class="custom-navbar-link">@userName</a>
                                 <div class="user-menu-content">
                                     <a asp-controller="ProfileUsers" asp-action="Index" class="profile">
                                         <i class='bx bxs-user-circle'></i>
                                         <span class="text">Tài khoản</span>
                                     </a>
+                                    <a asp-controller="OrderHistory" asp-action="Index" class="orderHistory">
+                                        <span class="text">Lịch sự đặt hàng</span>
+                                    </a>
                                     <a asp-controller="Auth" asp-action="Logout" class="logout">
-                                        <i class='bx bxs-log-out-circle'></i>
+                                        <i class='bx bxs-history'></i>
                                         <span class="text">Đăng xuất</span>
                                     </a>
                                 </div>
@@ -230,7 +261,8 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/toastr.js/toastr.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    @* <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>*@
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
     <script>
