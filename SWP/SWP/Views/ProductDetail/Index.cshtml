@@ -185,8 +185,8 @@
                     </div>
                 }
                 <div class="mt-4">
-                    <h3>Tất cả đánh giá</h3>
-                    @if (ViewBag.listFeedback != null)
+                    
+                    @if (ViewBag.listFeedback != null && ViewBag.listFeedback.Count > 0)
                     {
                         <div>
                             <!-- Review Form -->
@@ -223,7 +223,7 @@
                                     </div>
 
 
-                                    @if (ViewBag.isUser)
+                                   @* @if (ViewBag.isUser)
                                     {
                                         <div>
                                             <a asp-action="Delete" asp-controller="Feedback" asp-route-feedbackID="@item.FeedBackId">Xóa</a>
@@ -259,7 +259,7 @@
 
                                             <button type="submit" class="btn btn-primary">Cập nhật đánh giá</button>
                                         </form>
-                                    }
+                                    }*@
 
                                 </div>
                             }
