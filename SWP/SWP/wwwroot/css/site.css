@@ -155,7 +155,7 @@
                 margin-right: auto;
                 font-size: 24px;
                 font-weight: 600;
-            }
+            }f
 
             #content main .table-data .head .bx {
                 cursor: pointer;
@@ -606,7 +606,7 @@ body {
 }
 
 .custom-nav {
-    flex: 1;
+    flex: auto;
     text-align: center;
 }
 
@@ -634,9 +634,65 @@ body {
 }
 
 /* CSS for dropdown */
-.custom-navbar-nav .custom-dropdown:hover .custom-dropdown-menu,
+/*.custom-navbar-nav .custom-dropdown:hover .custom-dropdown-menu,
 .custom-navbar-nav .custom-dropdown.show .custom-dropdown-menu {
     display: block;
+}*/
+.custom-icons {
+    display: flex;
+    align-items: center;
+}
+.user-menu {
+    text-align: center;
+    align-content: center;
+    align-items: center;
+}
+
+.user-menu-content {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    min-width: 120px;
+    z-index: 1;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    top: 100%; /* Hiển thị dropdown dưới phần tử cha */
+    right: 0; /* Hiển thị dropdown ở bên phải của phần tử cha */
+}
+
+    .user-menu-content a {
+        display: block;
+        padding: 10px;
+        color: #333;
+        text-decoration: none;
+    }
+
+        .user-menu-content a:hover {
+            background-color: #f5f5f5;
+        }
+
+.user-menu:hover .user-menu-content {
+    display: block;
+}
+
+.user-menu:hover .profile {
+    background-color: #f9f9f9;
+}
+
+
+    .custom-icons .dropdown,
+    .custom-icons .custom-navbar-link {
+        margin-left: 20px; /* Adjust spacing between the dropdown and cart image */
+        margin-right: 20px; /* Adjust spacing between the dropdown and cart image */
+    }
+.cart-icon {
+    margin-left: -20px; /* Move the cart icon 20px to the left */
+}
+.profile img {
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+    border-radius: 50%;
 }
 @media screen and (max-width: 768px) {
     #sidebar {
