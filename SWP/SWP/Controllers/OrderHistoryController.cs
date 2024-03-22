@@ -21,6 +21,11 @@ namespace SWP.Controllers
             if (cusId is not null && cusId.RoleId == 2)
             {
                 var getOrder = historyDao.getAllOrder(cusId.UserId);
+                if(getOrder == null)
+                {
+                    ViewData["message_none"] = "Không có đơn hàng nào đã đặt.";
+                    return View();
+                }
                 ViewData["listItem"] = getOrder;
                 return View();
             }

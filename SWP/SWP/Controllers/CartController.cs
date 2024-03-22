@@ -20,7 +20,12 @@ namespace SWP.Controllers
             var cusId = userDao.GetUserByEmail(customer);
             if (cusId is not null && cusId.RoleId == 2)
             {
-                var check = cartDao.CheckQuantity(productId, quantity, size, color);
+                var cartItem = cartDao.addToCart(productId, quantity, size, color, cusId.UserId);
+
+                var listItem = cartDao.GetAddItem(cusId.UserId);
+                ViewData["listItem"] = listItem;
+                return View();
+                /*var check = cartDao.CheckQuantity(productId, quantity, size, color);
                 if(check == 0)
                 {
                     var cartItem = cartDao.addToCart(productId, quantity, size, color, cusId.UserId);
@@ -31,7 +36,7 @@ namespace SWP.Controllers
                 }
                 TempData["productId"] = productId;
                 TempData["error_quantity"] = $"Số lượng sản phẩm còn: {check} không đủ để mua! Vui lòng chọn sản phẩm khác";
-                return RedirectToAction("Index", "ProductDetail");
+                return RedirectToAction("Index", "ProductDetail");*/
                 
             }
             return RedirectToAction("Index", "Auth");
@@ -57,7 +62,7 @@ namespace SWP.Controllers
             var customer = HttpContext.Session.GetString("USER_EMAIL");
             var cusId = userDao.GetUserByEmail(customer);
             var update = cartDao.updateCartItem(productId, type, cusId.UserId);
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { productId = productId });
         }
     }
 }
