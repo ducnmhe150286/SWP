@@ -2,11 +2,12 @@
 @{
     var listItem = ViewData["listItem"] as List<CartItem>;
     decimal  sum = 0;
+    var i = 0;
 
 }
-<div class="card">
+<div class="card1" >
     <div class="row">
-        <div class="col-md-8 cart">
+        <div class="col-md-9 cart">
             <div class="title">
                 <div class="row">
                     <div class="col"><h4><b>Giỏ hàng của tôi</b></h4></div>
@@ -26,10 +27,13 @@
             <div class="row border-top ">
 
                 <div class="row main align-items-center">
-                    <div class="col-1">
+
+                    <div class="col-1" style="text-align: center;">
                        #
                     </div>
-
+                    <div class="col-1">
+                     STT
+                    </div>
                     <div class="col-2">Ảnh</div>
                     <div class="col">
                         <div class="row">Sản Phảm</div>
@@ -39,23 +43,28 @@
                       Số lượng
                     </div>
                     <div class="col">Giá</div>
+                    <div class="col">Tạm tính</div>
                 </div>
             </div>
             <form id="myform" method="post" asp-controller="CheckOut" asp-action="Index">
 
                     @foreach (var item in listItem)
                     {
-
-                        sum += (decimal)item.Detail.Product.Price * item.Quantity;
+                    
+                        i++;
+                    
+                    sum += (decimal)item.Detail.Product.Price * item.Quantity;
                         var temp = item.Detail.Product.Price * item.Quantity;
 
                         <div class="row border-top border-bottom">
 
                             <div class="row main align-items-center">
                                 <div class="col-1">
-                                <input type="checkbox" data-value="@temp" id="checkbox_@item.Detail.DetailId" class="selectedItems" name="selectedItems" value="@item.Detail.DetailId" />
+                                <input type="checkbox" checked data-value="@temp" id="checkbox_@item.Detail.DetailId" class="selectedItems" name="selectedItems" value="@item.Detail.DetailId" />
                                 </div>
-
+                            <div class="col-1">
+                                @i
+                            </div>
                                 <div class="col-2"><img class="img-fluid" src="/Images/@item.Detail.Product.ProductImages.First().Path"></div>
                                 <div class="col">
                                     <div class="row">@item.Detail.Product.ProductName</div>
@@ -71,7 +80,10 @@
                                     <a asp-action="UpdateCartItem" asp-route-productId="@item.Detail.DetailId" asp-route-type="1">+</a>
 
                                 </div>
-                                <div class="col">@string.Format("{0:N0}", @item.Detail.Product.Price) vnđ <a asp-action="UpdateCartItem" asp-route-productId="@item.Detail.DetailId" asp-route-type="2" class="close">&#10005;</a></div>
+                                <div class="col">@string.Format("{0:N0}", @item.Detail.Product.Price) vnđ </div>
+                            <div class="col">
+                                @string.Format("{0:N0}", @item.Detail.Product.Price * @item.Quantity ) vnđ <a asp-action="UpdateCartItem" asp-route-productId="@item.Detail.DetailId" asp-route-type="2" class="close">&#10005;</a>
+                            </div>
                             </div>
                         </div>
                     }
@@ -80,7 +92,7 @@
 
                 <div class="back-to-shop"><a asp-controller="Home" asp-action="Index">&leftarrow;</a><span class="text-muted">Trở về trang chủ</span></div>
             </div>
-            <div class="col-md-4 summary">
+            <div class="col-md-3 summary">
             
                 <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;  margin-top:auto;">
                     <div class="col">Tổng tiền</div>
@@ -105,10 +117,10 @@
         margin-bottom: 5vh;
     }
 
-    .card {
+    .card1 {
         margin: auto;
-        max-width: 950px;
-        width: 90%;
+        max-width: 1200px; /* Increase maximum width */
+        width: 95%; /* Adjust width */
         box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         border-radius: 1rem;
         border: transparent;
@@ -265,10 +277,16 @@
 
 <script>
     $(document).ready(function(){
-        $('input[type=checkbox]').prop('checked', false);
+         var sum = 0;
+        $(".selectedItems").each(function () {
+             var value = $(this).data('value');
+            sum += parseFloat(value);
+            
+      
+        });
+       
 
-
-        var sum = 0;
+       
         var formattedValue = sum.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
         console.log('1')
         $("#total_price").text(formattedValue);
