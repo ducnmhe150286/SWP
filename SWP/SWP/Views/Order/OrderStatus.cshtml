@@ -17,48 +17,99 @@
             padding: 0;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+        
 
-        h2 {
-            color: #333;
-            margin-top: 0;
-        }
-
-        .status-highlight {
-            color: #28eb45;
-            font-weight: bold;
-        }
-
-        .order-info {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .hh-grayBox {
+            background-color: #f8f8f8;
             margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 35px;
         }
 
-        .status-span {
-            margin: 0 10px;
-            padding: 10px 15px;
-            border-radius: 5px;
-            background-color: #f0f0f0;
-            cursor: pointer;
+        .pt45 {
+            padding-top: 45px;
         }
 
-            .status-span:hover {
-                background-color: #e0e0e0;
+        .order-tracking {
+            text-align: center;
+            width: 150px; /* Chiều rộng của mỗi phần tử order-tracking */
+            position: relative;
+            padding: 15px;
+            margin: 10px;
+        }
+
+            .order-tracking .is-complete {
+                display: block;
+                position: relative;
+                border-radius: 50%;
+                height: 30px;
+                width: 30px;
+                border: 0px solid #afafaf;
+                background-color: #f7be16;
+                margin: 0 auto;
+                transition: background 0.25s linear;
+                z-index: 2;
             }
 
-            .status-span.active {
-                background-color: #28eb45;
-                color: #fff;
+                .order-tracking .is-complete:after {
+                    display: block;
+                    position: absolute;
+                    content: '';
+                    height: 14px;
+                    width: 7px;
+                    top: -2px;
+                    bottom: 0;
+                    left: 5px;
+                    margin: auto 0;
+                    border: 0px solid #afafaf;
+                    border-width: 0px 2px 2px 0;
+                    transform: rotate(45deg);
+                    opacity: 0;
+                }
+
+            .order-tracking.completed .is-complete {
+                border-color: #27aa80;
+                background-color: #27aa80;
+            }
+
+                .order-tracking.completed .is-complete:after {
+                    border-color: #fff;
+                    border-width: 0px 3px 3px 0;
+                    width: 7px;
+                    left: 11px;
+                    opacity: 1;
+                }
+
+            .order-tracking p {
+                color: #a4a4a4;
+                font-size: 16px;
+                margin-top: 8px;
+                margin-bottom: 0;
+                line-height: 20px;
+            }
+
+            .order-tracking.completed p {
+                color: #000;
+            }
+
+            .order-tracking::before {
+                content: '';
+                display: block;
+                height: 3px;
+                width: calc(100% - 40px);
+                background-color: #f7be16;
+                top: 13px;
+                position: absolute;
+                left: calc(-50% + 20px);
+                z-index: 0;
+            }
+
+            .order-tracking:first-child:before {
+                display: none;
+            }
+
+            .order-tracking.completed:before {
+                background-color: #27aa80;
             }
 
         .btn {
@@ -99,44 +150,51 @@
             margin-top: 10px;
             display: none;
         }
-
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Trạng thái đơn hàng của bạn</h2>
+        <div class="hh-grayBox pt45 pb20">
+            <h2>Trạng thái đơn hàng của bạn</h2>
 
-        <div class="order-info">
-            <span class="status-span @if(Model.Status == 0) {
-            <text>active</text>
- }">Chờ xác nhận</span>
-            <span class="status-span @if(Model.Status == 1) {
-            <text>active</text>
- }">Xác nhận đơn hàng</span>
-            <span class="status-span @if(Model.Status == 2) {
-            <text>active</text>
- }">Đang vận chuyển</span>
-            <span class="status-span @if(Model.Status == 3) {
-            <text>active</text>
- }">Giao hàng thành công</span>
-            <span class="status-span @if(Model.Status == 4) {
-            <text>active</text>
- }">Giao hàng không thành công</span>
-            <span class="status-span @if(Model.Status == 5) {
-            <text>active</text>
- }">Đã hủy</span>
+            <div class="d-flex justify-content-center flex-wrap">
+                <div class="order-tracking @(Model.Status == 0 ? "completed" : "")">
+                    <span class="is-complete"></span>
+                    <p>Chờ xác nhận</p>
+                </div>
+                <div class="order-tracking @(Model.Status == 1 ? "completed" : "")">
+                    <span class="is-complete"></span>
+                    <p>Xác nhận đơn hàng</p>
+                </div>
+                <div class="order-tracking @(Model.Status == 2 ? "completed" : "")">
+                    <span class="is-complete"></span>
+                    <p>Đang vận chuyển</p>
+                </div>
+                <div class="order-tracking @(Model.Status == 3 ? "completed" : "")">
+                    <span class="is-complete"></span>
+                    <p>Giao hàng thành công</p>
+                </div>
+                <div class="order-tracking @(Model.Status == 4 ? "completed" : "")">
+                    <span class="is-complete"></span>
+                    <p>Giao hàng không thành công</p>
+                </div>
+                <div class="order-tracking @(Model.Status == 5 ? "completed" : "")">
+                    <span class="is-complete"></span>
+                    <p>Đã hủy</p>
+                </div>
+            </div>
+
+            <!-- Thêm nút hủy đơn hàng -->
+            <button class="btn cancel" onclick="cancelOrder(@Model.OrderId, @Model.Status)">Hủy đơn hàng</button>
+            <button class="btn back" onclick="window.history.back()">Quay lại</button>
+
+            <!-- Thêm phần hiển thị thông báo -->
+            <div id="cancelSuccessMessage">Đã hủy đơn hàng thành công!</div>
+            @if (TempData["CancelSuccess"] != null)
+            {
+                <div class="alert alert-success" role="alert">Đã hủy đơn hàng thành công!</div>
+            }
         </div>
-
-        <!-- Thêm nút hủy đơn hàng -->
-        <button class="btn cancel" onclick="cancelOrder(@Model.OrderId, @Model.Status)">Hủy đơn hàng</button>
-        <button class="btn back" onclick="window.history.back()">Back</button>
-
-        <!-- Thêm phần hiển thị thông báo -->
-        <div id="cancelSuccessMessage">Đã hủy đơn hàng thành công!</div>
-        @if (TempData["CancelSuccess"] != null)
-        {
-            <div class="alert alert-success" role="alert">Đã hủy đơn hàng thành công!</div>
-        }
     </div>
 
     <!-- Modal -->
@@ -144,10 +202,11 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="cancelOrderModalLabel">Lựa chọn lí do hủy đơn hàng</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h5class ="modal-title" id="cancelOrderModalLabel">
+                        Lựa chọn lí do hủy đơn hàng</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                 </div>
                 <div class="modal-body">
                     <!-- Droplist để người dùng chọn lí do hủy đơn hàng -->
@@ -166,7 +225,6 @@
             </div>
         </div>
     </div>
-
     <script>
         function cancelOrder(orderId, orderStatus) {
             if (orderStatus == 0 || orderStatus == 1) { // Nếu trạng thái là "Chờ xác nhận" hoặc "Đã xác nhận"
@@ -197,7 +255,8 @@
                     // Tải lại trang OrderStatus sau khi hủy đơn hàng thành công
                     location.reload();
                 },
-                error: function (xhr, status, error) {
+                error: function (
+                    xhr, status, error) {
                     // Xử lý lỗi nếu có
                     console.error(xhr.responseText);
                 }
@@ -211,3 +270,8 @@
     </script>
 </body>
 </html>
+
+
+
+
+
