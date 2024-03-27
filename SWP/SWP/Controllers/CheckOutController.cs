@@ -90,7 +90,7 @@ namespace SWP.Controllers
                 else
                 {
                     var check = checkOutDao.adddb(cusId.UserId, customerName, phoneNumber, address, listItem1, payment_method);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("CustomerView", "Order");
                 }
             }
             return RedirectToAction("Index", "Auth");
