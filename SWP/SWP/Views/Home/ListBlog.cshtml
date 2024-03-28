@@ -753,12 +753,58 @@
             border-radius: 50%;
         }
 
+        .blog-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 20px;
+            gap: 20px; /* This adds space between the columns */
+        }
+
+        .blog-entry {
+            border: 1px solid #ddd;
+            flex-basis: calc(50% - 20px); /* Adjusts the width accounting for the gap */
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .blog-entry-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover; /* Chế độ dàn trải ảnh */
+        }
+
+        .blog-entry-content {
+            padding: 15px;
+        }
+
+        .blog-title {
+            margin: 0;
+            color: #333;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .blog-description {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .blog-date {
+            color: #999;
+            font-size: 14px;
+        }
+
+        /* Media query for smaller screens */
+
+
     </style>
 </head>
 @{
     string user = HttpContextAccessor.HttpContext.Session.GetString("USER_EMAIL") ?? "";
     string userName = HttpContextAccessor.HttpContext.Session.GetString("USER_NAME") ?? "";
     int role = HttpContextAccessor.HttpContext.Session.GetInt32("USER_ROLE") ?? 0;
+    string image = HttpContextAccessor.HttpContext.Session.GetString("AVATAR") ?? "";
 }
 <body>
     <div class="header">
@@ -787,6 +833,7 @@
                 @{
                     var userEmail = HttpContextAccessor.HttpContext.Session.GetString("USER_EMAIL");
                     var userRole = HttpContextAccessor.HttpContext.Session.GetInt32("USER_ROLE") ?? 0;
+                
                 }
 
                 @if (!string.IsNullOrEmpty(userEmail) && userRole == 2)
@@ -801,16 +848,33 @@
                     <div>
                         @if (role != 0)
                         {
-                            <a asp-controller="ProfileUsers" asp-action="Index" style="font-size: 15px;" class="custom-navbar-link">@userName</a>
+                            
 
                             <div class="user-menu">
-                                <a href="#" class="profile">
-                                    <img src="/Images/280216366_5580116488679926_3510765946569464420_n-1536x1097.jpg" style="width: 40px;"> <!-- Điều chỉnh kích thước và thêm margin bên phải -->
-                                </a>
+                                @if (image != null)
+                                {
+                                    <a href="#" class="profile">
+                                        <img src="/uploads/@image" style="width: 40px;"> <!-- Điều chỉnh kích thước và thêm margin bên phải -->
+                                    </a>
+
+                                    <br>
+                                }
+                                else
+                                {
+                                    <a href="#" class="profile">
+                                        <img src=" ~ /uploads/avatar_defaul.png" style="width: 40px;"> <!-- Điều chỉnh kích thước và thêm margin bên phải -->
+                                    </a>
+
+                                    <br>
+                                }
+                                <a asp-controller="ProfileUsers" asp-action="Index" style="font-size: 15px;" class="custom-navbar-link">@userName</a>
                                 <div class="user-menu-content">
                                     <a asp-controller="ProfileUsers" asp-action="Index" class="profile">
                                         <i class='bx bxs-user-circle'></i>
                                         <span class="text">Tài khoản</span>
+                                    </a>
+                                    <a asp-controller="OrderHistory" asp-action="Index" class="orderHistory">
+                                        <span class="text">Lịch sự đặt hàng</span>
                                     </a>
                                     <a asp-controller="Auth" asp-action="Logout" class="logout">
                                         <i class='bx bxs-log-out-circle'></i>
@@ -839,30 +903,30 @@
     <!-- Featured products -->
     <div class="small-container">
         <h2 class="title">Danh sách Blog</h2>
-        <div class="row justify-content-center" id="blog">
-
-            @foreach (Blog item in ViewBag.Blog)
-            {
-                <!-- Blog entry -->
-                <div class="blog-entry">
-                    <div class="blog-entry-image">
-                        <!-- Image taking full width of the card -->
-                        <img src="/Images/@item.Image" class="img-fluid" alt="Image of @item.Title">
+       
+            <div class="blog-container">
+                @foreach (Blog item in ViewBag.Blog)
+                {
+                    <!-- Blog entry -->
+                    <div class="blog-entry">
+                        <div class="blog-entry-image">
+                            <!-- Image taking full width of the card -->
+                            <img src="/Images/@item.Image" class="img-fluid" alt="Image of @item.Title">
+                        </div>
+                        <div class="blog-entry-content">
+                            <!-- Title with clickable behavior -->
+                            <h3 class="blog-title" data-blog-id="@item.BlogId">@item.Title</h3>
+                            <!-- Short description -->
+                            <p class="blog-description">@item.ShortDescription</p>
+                            <!-- Posted date -->
+                            <p class="blog-date">@item.CreateDate.Value.ToString("dd/MM/yyyy")</p>
+                        </div>
                     </div>
-                    <div class="blog-entry-content">
-                        <!-- Title with clickable behavior -->
-                        <h3 class="blog-title" data-blog-id="@item.BlogId">@item.Title</h3>
-                        <!-- Short description -->
-                        <p class="blog-description">@item.ShortDescription</p>
-                        <!-- Posted date -->
-                        <p class="blog-date">@item.CreateDate.Value.ToString("dd/MM/yyyy")</p>
-                    </div>
-                </div>
 
-                <!-- END Blog entry -->
-            }
-
-        </div>
+                    <!-- END Blog entry -->
+                }
+            </div>
+        
         <div class="xemthem">
             <nav class="text-center" aria-label="Blog navigation">
                 <ul class="pagination">

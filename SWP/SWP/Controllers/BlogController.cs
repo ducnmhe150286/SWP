@@ -86,6 +86,7 @@ namespace SWP.Controllers
         }
         public async Task<IActionResult> Manage(int currentPage)
         {
+            
             var blog = context.Blogs.ToList();
             if (blog != null)
             {
@@ -104,6 +105,12 @@ namespace SWP.Controllers
         [HttpPost]
         public async Task<IActionResult> Manage(int currentPage, string search, int? status)
         {
+           
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"];
+            }
+
             var blog = GetBlogs().Result.ToList();
             if (blog != null)
             {
@@ -137,7 +144,7 @@ namespace SWP.Controllers
         }
         public IActionResult Create()
         {
-
+            TempData["SuccessMessage"] = "Cập nhật blog thành công";
             return View();
         }
 
@@ -151,7 +158,7 @@ namespace SWP.Controllers
              if(roleId ==   1) {
                 userId = (int)HttpContext.Session.GetInt32("USER_ID");
              }*/
-
+           
             if (blog == null)
             {
                 return Problem("Blog null");
@@ -190,11 +197,12 @@ namespace SWP.Controllers
 
             context.Blogs.Add(_blog);
             await context.SaveChangesAsync();
-
+            TempData["SuccessMessage"] = "Tạo mới blog thành công";
             return RedirectToAction("Manage");
         }
         public async Task<IActionResult> Details(int? blogId)
         {
+           
             var blog = await GetBlogById(blogId);
 
             return View(blog);
@@ -209,23 +217,25 @@ namespace SWP.Controllers
             }
             return RedirectToAction("Manage");
         }
-        public async Task<IActionResult> Edit(int? blogId)
+        public async Task<IActionResult> Update(int? blogId)
         {
+            TempData["SuccessMessage"] = "Cập nhật blog thành công";
             var blog = await GetBlogById(blogId);
             ViewBag.Error = "Khoong tim thay blog";
             return View(blog);
         }
 
-        // POST: Blog/Edit
+        // POST: Blog/Update
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(List<IFormFile> files, int? blogId, [Bind("BlogId,Title,ShortDescription,Description,Status,Image")] CreateBlogRequest blog)
+        public async Task<IActionResult> Update(List<IFormFile> files, int? blogId, [Bind("BlogId,Title,ShortDescription,Description,Status,Image")] CreateBlogRequest blog)
         {
             if (blog == null || blogId == null)
             {
                 return NotFound();
             }
             var _blog = await GetBlogById(blogId);
+           
             /* int roleId = (int)HttpContext.Session.GetInt32("USER_ROLE");
              int userId = 0;
              if(roleId ==   1) {
@@ -267,6 +277,7 @@ namespace SWP.Controllers
             }
             context.Update(_blog);
             await context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Cập nhật blog thành công";
 
             return RedirectToAction("Manage");
         }

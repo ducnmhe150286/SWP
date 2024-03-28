@@ -48,45 +48,54 @@
 </style>
 
 <div>
-    <div class="back-to-shop"><a asp-controller="Home" asp-action="Index">&leftarrow;</a><span class="text-muted">Trở về trang chủ</span></div>
-    <table id="example" class="table" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-                <th>Mã đơn hàng</th>
-                <th>Địa chỉ</th>
-                <th>Sđt</th>
-                <th>Ngày đặt hàng</th>
-                <th>Ngày nhận</th>
-                <th>Chị tiết</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in listItem)
-            {
+    @{
+        var message = ViewData["message_none"];
+
+    }
+
+    <p style="color:red">@message</p>
+    @if(message == null)
+    {
+        <div class="back-to-shop"><a asp-controller="Home" asp-action="Index">&leftarrow;</a><span class="text-muted">Trở về trang chủ</span></div>
+        <table id="example" class="table" cellspacing="0" width="100%">
+            <thead>
                 <tr>
-                    <td>@item.OrderId</td>
-                    <td>@item.ShipAddress</td>
-                    <td>@item.PhoneNumber</td>
-                    <td>@item.OrderDate</td>
-                    <td>@item.ShipDate</td>
-                    @if (@item.Status == 5)
-                    {
-                        <td>Đã nhận hàng</td>
-                    }
-                    else if (item.Status == 6)
-                    {
-                        <td>Đã hủy đơn</td>
-                    }
-                    <td>
-                        <button type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2" data-bs-toggle="model" data-bs-target="#exampleModal" onclick="showOrderDetails('@item.OrderId')"><i class="fa fa-edit"></i> </button>
-                    </td>
-
+                    <th>Mã đơn hàng</th>
+                    <th>Địa chỉ</th>
+                    <th>Sđt</th>
+                    <th>Ngày đặt hàng</th>
+                    <th>Ngày nhận</th>
+                    <th>Chị tiết</th>
                 </tr>
-            }
+            </thead>
+            <tbody>
+                @foreach (var item in listItem)
+                {
+                    <tr>
+                        <td>@item.OrderId</td>
+                        <td>@item.ShipAddress</td>
+                        <td>@item.PhoneNumber</td>
+                        <td>@item.OrderDate</td>
+                        <td>@item.ShipDate</td>
+                       @* @if (@item.Status == 5)
+                        {
+                            <td>Đã nhận hàng</td>
+                        }
+                        else if (item.Status == 6)
+                        {
+                            <td>Đã hủy đơn</td>
+                        }*@
+                        <td>
+                            <button type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2" data-bs-toggle="model" data-bs-target="#exampleModal" onclick="showOrderDetails('@item.OrderId')"><i class="fa fa-edit"></i> </button>
+
+                        </td>
+
+                    </tr>
+                }
 
 
-        </tbody>
-        @*<tfoot>
+            </tbody>
+            @*<tfoot>
         <tr>
         <th>Mã đơn hàng</th>
         <th>Địa chỉ</th>
@@ -97,7 +106,9 @@
         <th>Chị tiết</th>
         </tr>
         </tfoot>*@
-    </table>
+        </table>
+    }
+    
 </div>
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -121,17 +132,17 @@
 
 
 <script>
+    
     function showOrderDetails(orderId) {
         $.ajax({
             type: 'GET',
             url: '/OrderHistory/GetOrderDetail',
             data: { orderId: orderId },
             success: function (data) {
-
                 var orderDetailsHtml = '<p>Thông tin chi tiết đơn hàng: ' + orderId + '</p>';
                 var totalPrice = 0;
 
-                if (data.length > 0) {
+                if (data && data.length > 0) {
                     orderDetailsHtml += '<table class="table no-wrap user-table mb-0">' +
                         '<thead>' +
                         '<tr>' +
@@ -156,44 +167,67 @@
                             '<td>' + parseFloat(item.detail.product.price).toLocaleString('vi-VN', { style: 'currency', currency: 'vnd' }) + '</td>' +
                             '</tr>';
 
-
                         totalPrice += parseFloat(item.detail.product.price) * item.quantity;
                     });
 
                     orderDetailsHtml += '<tr>' +
                         '<td colspan="5"></td>' +
-                        '<td class="text-right font-medium">Tổng tiền: ' + totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'vnd' }) + '</td>'
-                        ;
+                        '<td class="text-right font-medium">Tổng tiền: ' + totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'vnd' }) + '</td>' +
+                        '</tr>';
 
                     orderDetailsHtml += '</tbody></table>';
                 } else {
                     orderDetailsHtml += '<p>Không có đơn hàng nào.</p>';
                 }
 
-                document.getElementById('orderDetailsContainer').innerHTML = orderDetailsHtml;
+                $('#orderDetailsContainer').html(orderDetailsHtml);
                 $('#exampleModal').modal('show');
             },
-            error: function (error) {
-                alert('Lỗi khi lấy thông tin đơn hàng:', error);
+            error: function (xhr, status, error) {
+                alert('Lỗi khi lấy thông tin đơn hàng: ' + error);
             }
-
         });
     }
 
     $(document).ready(function () {
         $('#example').dataTable({
-
-            columnDefs: [{
-                orderable: false,
-                className: 'select-checkbox select-checkbox-all',
-                targets: 0
+            "language": {
+                "paginate": {
+                    "first": "Đầu",
+                    "last": "Cuối",
+                    "next": "Tiếp",
+                    "previous": "Trước"
+                },
+                "search": "Tìm kiếm:",
+                "info": "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
+                "infoEmpty": "Hiển thị 0 đến 0 của 0 mục",
+                "infoFiltered": "(được lọc từ tổng số _MAX_ mục)",
+                "lengthMenu": "Hiển thị _MENU_ mục",
+                "zeroRecords": "Không tìm thấy dữ liệu phù hợp"
+            },
+            "columnDefs": [{
+                "orderable": false,
+                "className": 'select-checkbox select-checkbox-all',
+                "targets": 0
             }],
-            select: {
-                style: 'multi',
-                selector: 'td:first-child'
-            }
+            "select": {
+                "style": 'multi',
+                "selector": 'td:first-child'
+            },
         });
+
+        // Update table navigation text
+        $('#example_next').text('Tiếp theo');
+        $('#example_previous').text('Trước đó');
+        $('#example_first').text('Trang đầu');
+        $('#example_last').text('Trang cuối');
     });
+    $('#example_next').text('Tiếp theo');
+    $('#example_previous').text('Trước đó');
+    $('#example_first').text('Trang đầu');
+    $('#example_last').text('Trang cuối');
+   
+
 
 </script>
 

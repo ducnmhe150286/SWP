@@ -13,14 +13,15 @@
                     <div class="col"><h4><b>Giỏ hàng của tôi</b></h4></div>
                     <div class="col align-self-center text-right text-muted"></div>
                 </div>
-                @*@if (ViewData["message"] != null){
+                @if (TempData["message"] != null)
+                {
                     <div id="error-message" class="alert alert-warning d-flex align-items-center" role="alert">
                         <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill" /></svg>
                         <div >
-                            @ViewData["message"]
+                            @TempData["message"]
                         </div>
                     </div>
-                }*@
+                }
                 
             </div>
                  
@@ -43,7 +44,7 @@
                       Số lượng
                     </div>
                     <div class="col">Giá</div>
-                    <div class="col">Tạm tính</div>
+                    <div class="col">Thành tiền</div>
                 </div>
             </div>
             <form id="myform" method="post" asp-controller="CheckOut" asp-action="Index">
@@ -73,7 +74,7 @@
                                 </div>
                                 <div class="col">
 
-                                    <a asp-action="UpdateCartItem" asp-route-productId="@item.Detail.DetailId" asp-route-type="0">-</a>
+                                <a asp-action="UpdateCartItem" asp-route-productId="@item.Detail.DetailId" asp-route-type="0">-</a>
 
                                     <a href="#" class="border">@item.Quantity</a>
 

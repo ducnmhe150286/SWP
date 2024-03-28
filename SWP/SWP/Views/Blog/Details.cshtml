@@ -1,81 +1,102 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-@model SWP.Models.Blog
-<form enctype="multipart/form-data" asp-action="Details">
-    @if (Model != null)
-    {
-        <div class="row">
-
-            <div class="col-lg-8">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <p class="mb-0">Tiêu đề</p>
-                            </div>
-                            <div class="col-sm-9">
-                                <p class="text-muted mb-0">@Model.Title</p>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <p class="mb-0">Tóm tắt</p>
-                            </div>
-                            <div class="col-sm-9">
-                                <p class="text-muted mb-0">@Model.ShortDescription</p>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <p class="mb-0">Nội dung</p>
-                            </div>
-                            <div class="col-sm-9">
-                                <p class="text-muted mb-0">@Model.Description</p>
-                            </div>
-                        </div>
-                        <hr>
-                        
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <p class="mb-0">Ngày tạo</p>
-                            </div>
-                            <div class="col-sm-9">
-                                <p class="text-muted mb-0">@Model.CreateDate</p>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <p class="mb-0">Status</p>
-                            </div>
-                            <div class="col-sm-9">
-                                <p class="text-muted mb-0">@Model.Status</p>
-                            </div>
-                        </div>
-
-                        <hr>
-
-                    </div>
-                </div>
-                <div class="row">
-
-                    <div class="col-md-3">
-                        <div class="card mb-4 mb-md-0">
-
-                            <a class="btn btn-primary btn-lg" asp-area="" asp-controller="Blog" asp-action="Manage">Return list</a>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+﻿<style>
+    .blogjs {
+        margin-top: 200px
     }
 
+    .blogtitle {
+        margin-left: 100px;
+        cursor: pointer;
+    }
 
-</form>
+    .spanlog {
+        font-weight: 600;
+    }
+
+    .ttblog {
+        text-align: center;
+        margin-top: 100px;
+    }
+
+        .ttblog::after {
+            content: "";
+            display: block;
+            margin: 40px auto;
+            width: 80%; /* Chiều dài của thanh border */
+            height: 1px; /* Độ dày của thanh border */
+            background-color: rgb(120, 113, 113); /* Màu sắc của thanh border */
+        }
+
+    .ttblog {
+        font-size: 3rem;
+    }
+
+    .botraptong {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-bottom: 50px;
+    }
+
+    .imgblog {
+        object-fit: cover;
+        width: 600px;
+        cursor: pointer;
+    }
+
+    .desblog {
+        overflow: hidden;
+        max-width: 500px;
+        font-weight: 400;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    .titleb {
+        font-size: 1.8rem;
+        font-weight: 500;
+    }
+
+    .imgblog:hover {
+        filter: brightness(70%);
+        transition: 0.75s;
+        transform: scale(1.05);
+    }
+
+    .dateblog {
+        font-weight: 100;
+    }
+
+    .paging {
+        text-align: center;
+        cursor: pointer;
+    }
+</style>
+
+<div className="blogjs">
+    <div className="topcontentblog">
+        <div className="blogtitle">
+            <span>Trang chủ</span>
+            <span> | </span>
+            <span className='spanlog'>Blog &gt;</span>
+        </div>
+        <div className="ttblog">
+            <label>Blog</label>
+        </div>
+        <div className="botraptong">
+            <div className="blog1">
+                <img className='imgblog' src="https://fighterviet.com/wp-content/uploads/2023/02/nhung-loi-khuyen-de-tap-bjj-hieu-qua.jpg" alt="" /><br />
+                <label className='titleb'>Những lời khuyên để tập BJJ hiệu quả nhất</label> <br />
+                <span className='dateblog'>08/02/2023</span>
+                <p className='desblog'>Tìm kiếm một giáo viên uy tín và học theo hướng dẫn của họ là một trong những cách tốt nhất để tập BJJ hiệu quả. Bạn có thể tìm kiếm thông tin về các giáo viên BJJ uy tín trong cộng đồng các tay võ và tham gia các hoạt động tập luyện của […]</p>
+            </div>
+            <div className="blog1">
+                <img className='imgblog' src="https://fighterviet.com/wp-content/uploads/2022/12/tdee-la-gi-va-cach-tinh-tdee.jpg" alt="" /><br />
+                <label className='titleb'>TDEE là gì? Cách tính TDEE chuẩn nhất</label> <br />
+                <span className='dateblog'>01/01/2023</span>
+                <p className='desblog'>Khi muốn kiểm soát cần nặng thì điều bạn nên quan tâm chính là số lượng calo hấp thụ và tiêu thụ trong một ngày, từ đó, muốn kiểm tra lượng calo của bản thân thì công thức tính toán TDEE là thứ cần biết. Vậy TDEE là gì? TDEE được tính như thế nào? […]</p>
+            </div>
+        </div>
+        <div className="paging">
+            <span>1  2  3  ...  7  &gt;</span>
+        </div>
+    </div>
+</div>
