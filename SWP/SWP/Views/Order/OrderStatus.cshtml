@@ -130,13 +130,13 @@
                 }
 
             .btn.back {
-                background-color: #007bff;
+                background-color: #ff4d00;
                 color: #fff;
                 margin-left: 10px;
             }
 
                 .btn.back:hover {
-                    background-color: #0056b3;
+                    background-color: #ff4d00;
                 }
 
         #cancelSuccessMessage {
@@ -150,12 +150,34 @@
             margin-top: 10px;
             display: none;
         }
+
+        .customer-info-box {
+            margin-top: 20px; /* Khoảng cách từ top */
+            padding: 10px; /* Phần đệm bên trong khung thông tin */
+            border: 1px solid #ccc; /* Viền của khung thông tin */
+        }
+
+            .customer-info-box h3 {
+                
+                margin-bottom: 50px; /* Tạo khoảng cách dưới tiêu đề */
+            }
+
+        .customer-info p {
+            margin-bottom: 20px; /* Khoảng cách giữa các dòng thông tin */
+            
+        }
+
+            .customer-info p span {
+                opacity: 0.5; /* Điều chỉnh độ mờ của các giá trị từ Model */
+            }
+        
     </style>
+    
 </head>
 <body>
     <div class="container">
         <div class="hh-grayBox pt45 pb20">
-            <h2>Trạng thái đơn hàng của bạn</h2>
+            
 
             <div class="d-flex justify-content-center flex-wrap">
                 <div class="order-tracking @(Model.Status == 0 ? "completed" : "")">
@@ -183,9 +205,12 @@
                     <p>Đã hủy</p>
                 </div>
             </div>
-
+            
             <!-- Thêm nút hủy đơn hàng -->
-            <button class="btn cancel" onclick="cancelOrder(@Model.OrderId, @Model.Status)">Hủy đơn hàng</button>
+            @if (Model.Status != 5) // Kiểm tra nếu trạng thái không phải "Đã hủy"
+            {
+                <button class="btn cancel" onclick="cancelOrder(@Model.OrderId, @Model.Status)">Hủy đơn hàng</button>
+            }
             <button class="btn back" onclick="window.history.back()">Quay lại</button>
 
             <!-- Thêm phần hiển thị thông báo -->
@@ -194,80 +219,112 @@
             {
                 <div class="alert alert-success" role="alert">Đã hủy đơn hàng thành công!</div>
             }
+            <!-- Thông tin khách hàng -->
+            <div class="customer-info-box">
+                <h3><strong>Thông tin khách hàng</strong></h3>
+                <div class="customer-info">
+                    <p>Tên khách hàng: <span>@Model.CustomerName</span></p>
+                    <p>Số điện thoại: <span>@Model.PhoneNumber</span></p>
+                    <p>Địa chỉ giao hàng: <span>@Model.ShipAddress</span></p>
+                    <p>Ngày đặt hàng: <span>@Model.OrderDate</span></p>
+                </div>
         </div>
+        
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="cancelOrderModal" tabindex="-1" role="dialog" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5class ="modal-title" id="cancelOrderModalLabel">
-                        Lựa chọn lí do hủy đơn hàng</h5>
+        <!-- Modal -->
+        <div class="modal fade" id="cancelOrderModal" tabindex="-1" role="dialog" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="cancelOrderModalLabel">Lựa chọn lí do hủy đơn hàng</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                </div>
-                <div class="modal-body">
-                    <!-- Droplist để người dùng chọn lí do hủy đơn hàng -->
-                    <select class="form-control" id="cancelReason">
-                        <option value="1">Muốn thay đổi địa chỉ</option>
-                        <option value="2">Muốn thay đổi sản phẩm</option>
-                        <option value="3">Muốn đổi kích thước</option>
-                        <option value="4">Muốn đổi mầu sắc</option>
-                        <option value="5">Lý do khác</option>
-                    </select>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmCancelOrder()">Xác nhận hủy đơn hàng</button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Droplist để người dùng chọn lí do hủy đơn hàng -->
+                        <select class="form-control" id="cancelReason">
+                            <option value="1">Muốn thay đổi địa chỉ</option>
+                            <option value="2">Muốn thay đổi sản phẩm</option>
+                            <option value="3">Muốn đổi kích thước</option>
+                            <option value="4">Muốn đổi mầu sắc</option>
+                            <option value="5">Lý do khác</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-primary" onclick="confirmCancelOrder()">Xác nhận hủy đơn hàng</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     <script>
-        function cancelOrder(orderId, orderStatus) {
-            if (orderStatus == 0 || orderStatus == 1) { // Nếu trạng thái là "Chờ xác nhận" hoặc "Đã xác nhận"
-                // Hiển thị cửa sổ yêu cầu chọn lí do hủy đơn hàng
-                $('#cancelOrderModal').modal('show');
-            } else {
-                // Hiển thị thông báo không thể hủy đơn hàng
-                alert("Không thể hủy đơn hàng với trạng thái hiện tại.");
-            }
-        }
-
-        function confirmCancelOrder() {
-            var cancelReason = $('#cancelReason').val(); // Lấy giá trị lí do hủy đơn hàng từ droplist
-            var orderId = @Model.OrderId; // Lấy OrderId từ model
-
-            // Gửi yêu cầu hủy đơn hàng đến server
-            $.ajax({
-                type: 'POST',
-                url: '/Order/CancelOrder',
-                data: { orderId: orderId, cancelReason: cancelReason },
-                success: function (response) {
-                    // Ẩn modal chọn lý do hủy đơn hàng
-                    $('#cancelOrderModal').modal('hide');
-
-                    // Hiển thị thông báo hủy đơn hàng thành công
-                    $('#cancelSuccessMessage').show();
-
-                    // Tải lại trang OrderStatus sau khi hủy đơn hàng thành công
-                    location.reload();
-                },
-                error: function (
-                    xhr, status, error) {
-                    // Xử lý lỗi nếu có
-                    console.error(xhr.responseText);
+            function cancelOrder(orderId, orderStatus) {
+                if (orderStatus == 0 || orderStatus == 1) { // Nếu trạng thái là "Chờ xác nhận" hoặc "Đã xác nhận"
+                    // Hiển thị cửa sổ yêu cầu chọn lí do hủy đơn hàng
+                    $('#cancelOrderModal').modal('show');
+                } else {
+                    // Hiển thị thông báo không thể hủy đơn hàng
+                    alert("Không thể hủy đơn hàng với trạng thái hiện tại.");
                 }
-            });
+            }
 
-            // Tắt thông báo sau 5 giây
-            setTimeout(function () {
-                $('#cancelSuccessMessage').fadeOut('slow');
-            }, 5000);
-        }
-    </script>
+            function confirmCancelOrder() {
+                var cancelReason = $('#cancelReason').val(); // Lấy giá trị lí do hủy đơn hàng từ droplist
+                var orderId = @Model.OrderId; // Lấy OrderId từ model
+
+                // Gửi yêu cầu hủy đơn hàng đến server
+                $.ajax({
+                    type: 'POST',
+                    url: '/Order/CancelOrder',
+                    data: { orderId: orderId, cancelReason: cancelReason },
+                    success: function (response) {
+                        // Ẩn modal chọn lý do hủy đơn hàng
+                        $('#cancelOrderModal').modal('hide');
+
+                        // Hiển thị thông báo hủy đơn hàng thành công
+                        $('#cancelSuccessMessage').show();
+
+                        // Tải lại trang OrderStatus sau khi hủy đơn hàng thành công
+                        location.reload();
+                    },
+                    error: function (
+                        xhr, status, error) {
+                        // Xử lý lỗi nếu có
+                        console.error(xhr.responseText);
+                    }
+                });
+
+                // Tắt thông báo sau 5 giây
+                setTimeout(function () {
+                    $('#cancelSuccessMessage').fadeOut('slow');
+                }, 5000);
+            }
+
+            // Lấy thẻ button có class là "btn-secondary" trong modal
+            const closeButton = document.querySelector('#cancelOrderModal .btn-secondary');
+
+            // Kiểm tra xem button có tồn tại không
+            if (closeButton) {
+                // Thêm sự kiện click vào button
+                closeButton.addEventListener('click', function () {
+                    // Lấy thẻ modal
+                    const modal = document.querySelector('#cancelOrderModal');
+                    // Ẩn modal bằng cách gán class "fade" vào modal
+                    modal.classList.add('fade');
+                    // Đợi hiệu ứng fade out hoàn thành (300ms) trước khi ẩn modal hoàn toàn
+                    setTimeout(function () {
+                        // Lấy orderId từ URL hiện tại
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const orderId = urlParams.get('orderId');
+                        // Tạo URL mới với orderId và chuyển hướng trang
+                        const redirectUrl = 'https://localhost:7240/Order/ProductDetail?orderId=' + orderId;
+                        window.location.href = redirectUrl;
+                    }, 300);
+                });
+            }
+        </script>
 </body>
 </html>
 
