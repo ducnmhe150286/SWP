@@ -523,16 +523,27 @@ namespace SWP.Controllers
             using (var context = new SWPContext())
             {
                 var productToUpdate = context.Products
+                    .Include(p => p.ProductDetails) // Include ProductDetail for checking its existence
                     .Where(p => p.ProductId == id)
                     .FirstOrDefault();
 
                 if (productToUpdate != null)
                 {
-                    // Cập nhật trạng thái: Chuyển đổi giữa 0 và 1
-                    productToUpdate.Status = (productToUpdate.Status == 1) ? 0 : 1;
+                    // Check if status is currently 0 and productDetail exists
+                    if (productToUpdate.Status == 0 && productToUpdate.ProductDetails.Any() == false)
+                    {
+                        // Set status to the opposite value
 
-                    context.SaveChanges();
-                    TempData["SuccessMessage"] = "Cập nhật trạng thái sản phẩm thành công!";
+                        TempData["ErrorMessage"] = "Không thể cập nhật trạng thái sản phẩm do không có thông tin nhập chi tiết về sản phẩm.";
+
+                    }
+                    else
+                    {
+                        productToUpdate.Status = (productToUpdate.Status == 1) ? 0 : 1;
+                        context.SaveChanges();
+                        TempData["SuccessMessage"] = "Cập nhật trạng thái sản phẩm thành công!";
+
+                    }
                 }
                 else
                 {
@@ -540,7 +551,7 @@ namespace SWP.Controllers
                 }
             }
 
-            // Kèm theo các tham số tìm kiếm và phân trang khi chuyển hướng
+            // Include search and pagination parameters when redirecting
             return RedirectToAction("Products", new
             {
                 searchString = searchString,
