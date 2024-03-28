@@ -86,7 +86,12 @@ namespace SWP.Controllers
         }
         public async Task<IActionResult> Manage(int currentPage)
         {
-            
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Email == HttpContext.Session.GetString("USER_EMAIL"));
+            if (user == null || user.RoleId != 1) // Nếu không phải là Admin
+            {
+                return RedirectToAction("Index", "Auth"); // Chuyển hướng đến trang đăng nhập
+            }
+
             var blog = context.Blogs.ToList();
             if (blog != null)
             {
@@ -158,7 +163,11 @@ namespace SWP.Controllers
              if(roleId ==   1) {
                 userId = (int)HttpContext.Session.GetInt32("USER_ID");
              }*/
-           
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Email == HttpContext.Session.GetString("USER_EMAIL"));
+            if (user == null || user.RoleId != 1) // Nếu không phải là Admin
+            {
+                return RedirectToAction("Index", "Auth"); // Chuyển hướng đến trang đăng nhập
+            }
             if (blog == null)
             {
                 return Problem("Blog null");
@@ -219,6 +228,11 @@ namespace SWP.Controllers
         }
         public async Task<IActionResult> Update(int? blogId)
         {
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Email == HttpContext.Session.GetString("USER_EMAIL"));
+            if (user == null || user.RoleId != 1) // Nếu không phải là Admin
+            {
+                return RedirectToAction("Index", "Auth"); // Chuyển hướng đến trang đăng nhập
+            }
             TempData["SuccessMessage"] = "Cập nhật blog thành công";
             var blog = await GetBlogById(blogId);
             ViewBag.Error = "Khoong tim thay blog";

@@ -39,28 +39,37 @@ namespace SWP.Controllers
             }
         }
 
-        public IActionResult Index(int currentPage)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Email == HttpContext.Session.GetString("USER_EMAIL"));
+            if (user == null || user.RoleId != 1) // Nếu không phải là Admin
+            {
+                return RedirectToAction("Index", "Auth"); // Chuyển hướng đến trang đăng nhập
+            }
             var feedbacks = context.FeedBacks.Include(f => f.User).Include(d => d.Product).ToList();
             if (feedbacks != null)
             {
-                int startIndex = 6 * currentPage + 1;
-                ViewData["NumberOfPages"] = feedbacks.Count / 6;
-                feedbacks = feedbacks.Skip(6 * currentPage).Take(6).ToList();
-                ViewData["currentPage"] = currentPage;
-                ViewData["startIndex"] = startIndex;
-                return View(feedbacks);
-               // ViewBag.Feedbacks = feedbacks;
-                
+                // Tính toán số lượng phản hồi và số trang
+                int totalFeedbacks = feedbacks.Count();
+                int totalPages = (int)Math.Ceiling((double)totalFeedbacks / pageSize);
+
+                // Lấy phản hồi cho trang hiện tại
+                var feedbacksForPage = feedbacks.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                ViewBag.CurrentPage = page;
+                ViewBag.TotalPages = totalPages;
+
+                return View(feedbacksForPage);
             }
             return View();
         }
-       /* public ActionResult CustomerComment(int productId, LoginModel loginModel)
-        {
-            var user = usersDao.login(loginModel);
-            var data = new FeedbackDao().ListFeedbackViewModel(productId);
-            HttpContext.Session.SetInt32("USER_ID", user.UserId);
-        }*/
+
+        /* public ActionResult CustomerComment(int productId, LoginModel loginModel)
+         {
+             var user = usersDao.login(loginModel);
+             var data = new FeedbackDao().ListFeedbackViewModel(productId);
+             HttpContext.Session.SetInt32("USER_ID", user.UserId);
+         }*/
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int productId, string reviewContent, int rating)

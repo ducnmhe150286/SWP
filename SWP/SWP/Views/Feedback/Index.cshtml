@@ -1,4 +1,52 @@
 ﻿@model IEnumerable<SWP.Models.FeedBack>
+<style>
+    .pagination {
+        display: inline-block;
+        margin-top: 20px; /* Điều chỉnh khoảng cách giữa bảng và nút phân trang */
+    }
+
+        .pagination a {
+            color: black;
+            float: left;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: background-color .3s;
+            border: 1px solid #ddd;
+            font-size: 16px; /* Điều chỉnh kích thước chữ */
+        }
+
+            .pagination a.active {
+                background-color: #4CAF50;
+                color: white;
+                border: 1px solid #4CAF50;
+            }
+
+            .pagination a:hover:not(.active) {
+                background-color: #ddd;
+            }
+    /* Style for the table */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    /* Style for odd rows */
+    tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+</style>
 <main>
 <h2>Danh sách đánh giá</h2>
 
@@ -27,27 +75,42 @@
 
     <tbody>
 
-        @{
-            int startIndex = (int)ViewData["startIndex"];
-        }
-        @foreach (var feedback in Model)
-        {
-            <tr>
-                <td>@startIndex</td>
-                <td>@feedback.User.FirstName @feedback.User.LastName</td>
-                <td>@feedback.Product.ProductName</td>
-                <td>@feedback.Rating Sao</td>
-                <td>@feedback.Comment</td>
-                <td>@feedback.CreatedDate.Value.ToString("dd/MM/yyyy")</td>
-                
-            </tr>
-            startIndex++;
-        }
+
+            @foreach (var feedback in Model.Select((value, index) => new { Value = value, Index = index + 1 }))
+            {
+                <tr>
+                    <td>@feedback.Index</td>
+                    <td>@feedback.Value.User.FirstName @feedback.Value.User.LastName</td>
+                    <td>@feedback.Value.Product.ProductName</td>
+                    <td>@feedback.Value.Rating Sao</td>
+                    <td>@feedback.Value.Comment</td>
+                    <td>@feedback.Value.CreatedDate.Value.ToString("dd/MM/yyyy")</td>
+                </tr>
+            }
+
+         
+        
 
 
     </tbody>
 
 </table>
+    <div class="pagination">
+        @if (ViewBag.CurrentPage > 1)
+        {
+            <a href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })">&laquo; Previous</a>
+        }
+
+        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            <a href="@Url.Action("Index", new { page = i })" class="@(i == ViewBag.CurrentPage ? "active" : "")">@i</a>
+        }
+
+        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+        {
+            <a href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })">Next &raquo;</a>
+        }
+    </div>
 </main>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript">
