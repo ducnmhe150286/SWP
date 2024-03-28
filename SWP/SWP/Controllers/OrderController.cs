@@ -12,36 +12,61 @@ namespace SWP.Controllers
 {
     public class OrderController : Controller
     {
-        
+
         public IActionResult Index(int? searchStatus, int page = 1, int pageSize = 5)
         {
-            using (var context = new SWPContext())
+            // Lấy userId từ session
+            var userId = HttpContext.Session.GetInt32("USER_ID");
+
+
+            // Kiểm tra userId có null không
+            if (userId == null)
             {
-                var query = context.Orders.AsQueryable();
-
-                // Lọc theo trạng thái nếu được chỉ định
-                if (searchStatus.HasValue)
+                // Nếu userId null, chuyển hướng đến trang đăng nhập
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+                using (var context = new SWPContext())
                 {
-                    query = query.Where(o => o.Status == searchStatus);
+                    // Lấy RoleId của User dựa trên userId, chẳng hạn từ CSDL hoặc bất kỳ nguồn dữ liệu nào khác
+                    var user = context.Users.Find(userId);
+
+                    // Kiểm tra nếu RoleId của User là 2
+                    if (user != null && user.RoleId == 2)
+                    {
+                        // Thực hiện các hành động nếu RoleId của User là 2
+                        return RedirectToAction("Login", "Account");
+                    }
                 }
+                using (var context = new SWPContext())
+                {
+                    var query = context.Orders.AsQueryable();
 
-                var totalOrders = query.Count();
+                    // Lọc theo trạng thái nếu được chỉ định
+                    if (searchStatus.HasValue)
+                    {
+                        query = query.Where(o => o.Status == searchStatus);
+                    }
 
-                var orderList = query
-                    .OrderBy(o => o.OrderDate)
-                    .Skip((page - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToList();
+                    var totalOrders = query.Count();
 
-                var totalPages = (int)Math.Ceiling((double)totalOrders / pageSize);
+                    var orderList = query
+                        .OrderBy(o => o.OrderDate)
+                        .Skip((page - 1) * pageSize)
+                        .Take(pageSize)
+                        .ToList();
 
-                ViewBag.CurrentPage = page;
-                ViewBag.TotalPages = totalPages;
+                    var totalPages = (int)Math.Ceiling((double)totalOrders / pageSize);
 
-                // Truyền tham số searchStatus vào view để giữ trạng thái tìm kiếm khi phân trang
-                ViewBag.SearchStatus = searchStatus;
+                    ViewBag.CurrentPage = page;
+                    ViewBag.TotalPages = totalPages;
 
-                return View(orderList);
+                    // Truyền tham số searchStatus vào view để giữ trạng thái tìm kiếm khi phân trang
+                    ViewBag.SearchStatus = searchStatus;
+
+                    return View(orderList);
+                }
             }
         }
 

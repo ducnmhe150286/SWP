@@ -141,26 +141,60 @@ namespace SWP.Controllers
 
                     if (existingSize != null)
                     {
+                        // Kiểm tra xem có sản phẩm sử dụng kích thước này không
+                        if (HasProductDetailInSize(existingSize.SizeId))
+                        {
+                            // Nếu có sản phẩm sử dụng kích thước này, chỉ cho phép chỉnh sửa tên kích thước
+                            existingSize.SizeName = editedSize.SizeName;
+                        }
+                        else
+                        {
+                            // Kiểm tra xem người dùng có chỉnh sửa cả trạng thái không
+                            if (existingSize.Status != editedSize.Status)
+                            {
+                                // Nếu người dùng cố gắng chỉnh sửa cả trạng thái
+                                TempData["ErrorMessage"] = "Không thể thay đổi trạng thái vì đang có sản phẩm sử dụng kích thước này.";
+                                return RedirectToAction("Index");
+                            }
 
-                        existingSize.SizeName = editedSize.SizeName;
-                        existingSize.Status = editedSize.Status;
+                            // Kiểm tra xem tên mới của kích thước có trùng với bất kỳ tên nào khác trong cơ sở dữ liệu không
+                            var sizeNameExists = context.Sizes.Any(c => c.SizeId != existingSize.SizeId && c.SizeName == editedSize.SizeName);
+                            if (sizeNameExists)
+                            {
+                                ModelState.AddModelError("SizeName", "Tên kích thước đã tồn tại. Vui lòng chọn tên khác.");
+                                return View(existingSize);
+                            }
+
+                            // Cho phép chỉnh sửa cả tên và trạng thái
+                            existingSize.SizeName = editedSize.SizeName;
+                            existingSize.Status = editedSize.Status;
+                        }
 
                         context.SaveChanges();
                     }
                     else
                     {
-                        // Xử lý khi không tìm thấy Category
+                        // Xử lý khi không tìm thấy Size
                         return NotFound();
                     }
                 }
 
                 // Chuyển hướng đến trang danh sách (Index) để hiển thị danh sách cập nhật
-                TempData["SuccessMessage"] = "Category đã được cập nhật thành công.";
+                TempData["SuccessMessage"] = "Size đã được cập nhật thành công.";
                 return RedirectToAction("Index");
             }
 
             // Nếu có lỗi, hiển thị lại trang Edit với thông tin nhập trước
             return View(editedSize);
+        }
+        private bool HasProductDetailInSize(int sizeId)
+        {
+            using (var context = new SWPContext())
+            {
+                // Kiểm tra xem có sản phẩm nào sử dụng Category có ID là categoryId không
+                var HasProductDetailInSize = context.ProductDetails.Where(p => p.SizeId == sizeId).ToList();
+                return HasProductDetailInSize.Any();
+            }
         }
     }
 }
