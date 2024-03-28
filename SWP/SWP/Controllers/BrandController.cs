@@ -139,16 +139,34 @@ namespace SWP.Controllers
 
                     if (existingBrand != null)
                     {
-                        // Kiểm tra xem có sản phẩm sử dụng Brand không
+                        // Kiểm tra xem có sản phẩm sử dụng Category không
                         if (HasProductsInBrand(existingBrand.BrandId))
                         {
-                            // Hiển thị thông báo cho người dùng
-                            TempData["ErrorMessage"] = "Không thể thay đổi trạng thái vì đang có sản phẩm sử dụng thương hiệu này.";
-                            return RedirectToAction("Index");
+                            // Nếu có sản phẩm sử dụng danh mục này, chỉ cho phép chỉnh sửa tên danh mục
+                            existingBrand.BrandName = existingBrand.BrandName;
                         }
+                        else
+                        {
+                            // Kiểm tra xem người dùng có chỉnh sửa cả trạng thái không
+                            if (existingBrand.Status != existingBrand.Status)
+                            {
+                                // Nếu người dùng cố gắng chỉnh sửa cả trạng thái
+                                TempData["ErrorMessage"] = "Không thể thay đổi trạng thái vì đang có sản phẩm sử dụng danh mục này.";
+                                return RedirectToAction("Index");
+                            }
 
-                        existingBrand.BrandName = editedBrand.BrandName;
-                        existingBrand.Status = editedBrand.Status;
+                            // Kiểm tra xem tên mới của danh mục có trùng với bất kỳ tên nào khác trong cơ sở dữ liệu không
+                            var BrandNameExists = context.Brands.Any(c => c.BrandId != existingBrand.BrandId && c.BrandName == editedBrand.BrandName);
+                            if (BrandNameExists)
+                            {
+                                ModelState.AddModelError("CategoryName", "Tên danh mục đã tồn tại. Vui lòng chọn tên khác.");
+                                return View(existingBrand);
+                            }
+
+                            // Cho phép chỉnh sửa cả tên và trạng thái
+                            existingBrand.BrandName = existingBrand.BrandName;
+                            existingBrand.Status = existingBrand.Status;
+                        }
 
                         context.SaveChanges();
                     }

@@ -24,8 +24,9 @@
     {
     new SelectListItem { Text = "Hoạt động", Value = "1"},
     new SelectListItem { Text = "Không hoạt động", Value = "0" }
-    }, "Chọn trạng thái", new { @class = "form-control" })
+    }, new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+        
     </div>
 
     <button type="submit" class="btn btn-primary">CẬP NHẬT</button>

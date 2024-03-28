@@ -141,25 +141,60 @@ namespace SWP.Controllers
                     if (existingColor != null)
                     {
 
-                        existingColor.ColorName = editedColor.ColorName;
-                        existingColor.Status = editedColor.Status;
+                        // Kiểm tra xem có sản phẩm sử dụng màu sắc không
+                        if (HasProductDetailInColor(existingColor.ColorId))
+                        {
+                            // Nếu có sản phẩm sử dụng màu sắc này, chỉ cho phép chỉnh sửa tên màu sắc
+                            existingColor.ColorName = editedColor.ColorName;
+                        }
+                        else
+                        {
+                            // Kiểm tra xem người dùng có chỉnh sửa cả trạng thái không
+                            if (existingColor.Status != editedColor.Status)
+                            {
+                                // Nếu người dùng cố gắng chỉnh sửa cả trạng thái
+                                TempData["ErrorMessage"] = "Không thể thay đổi trạng thái vì đang có sản phẩm sử dụng màu sắc này.";
+                                return RedirectToAction("Index");
+                            }
+
+                            // Kiểm tra xem tên mới của màu sắc có trùng với bất kỳ tên nào khác trong cơ sở dữ liệu không
+                            var colorNameExists = context.Colors.Any(c => c.ColorId != existingColor.ColorId && c.ColorName == editedColor.ColorName);
+                            if (colorNameExists)
+                            {
+                                ModelState.AddModelError("ColorName", "Tên màu sắc đã tồn tại. Vui lòng chọn tên khác.");
+                                return View(existingColor);
+                            }
+
+                            // Cho phép chỉnh sửa cả tên và trạng thái
+                            existingColor.ColorName = editedColor.ColorName;
+                            existingColor.Status = editedColor.Status;
+                        }
 
                         context.SaveChanges();
                     }
                     else
                     {
-                        // Xử lý khi không tìm thấy Category
+                        // Xử lý khi không tìm thấy Color
                         return NotFound();
                     }
                 }
 
                 // Chuyển hướng đến trang danh sách (Index) để hiển thị danh sách cập nhật
-                TempData["SuccessMessage"] = "Category đã được cập nhật thành công.";
+                TempData["SuccessMessage"] = "Màu sắc đã được cập nhật thành công.";
                 return RedirectToAction("Index");
             }
 
             // Nếu có lỗi, hiển thị lại trang Edit với thông tin nhập trước
             return View(editedColor);
+        }
+        private bool HasProductDetailInColor(int colorId)
+        {
+            using (var context = new SWPContext())
+            {
+                // Kiểm tra xem có sản phẩm nào sử dụng Category có ID là categoryId không
+                var productDetailInColor = context.ProductDetails.Where(p => p.ColorId == colorId).ToList();
+                return productDetailInColor.Any();
+            }
         }
     }
 }

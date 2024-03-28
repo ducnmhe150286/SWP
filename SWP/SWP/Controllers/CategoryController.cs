@@ -139,6 +139,13 @@ namespace SWP.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Kiểm tra tính hợp lệ của tên danh mục
+                if (!IsValidName(editedCategory.CategoryName))
+                {
+                    ModelState.AddModelError("CategoryName", "Tên danh mục chỉ được chứa chữ cái.");
+                    return View(editedCategory);
+                }
+
                 using (var context = new SWPContext())
                 {
                     var existingCategory = context.Categories.Find(editedCategory.CategoryId);
@@ -148,12 +155,31 @@ namespace SWP.Controllers
                         // Kiểm tra xem có sản phẩm sử dụng Category không
                         if (HasProductsInCategory(existingCategory.CategoryId))
                         {
-                            TempData["ErrorMessage"] = "Không thể thay đổi trạng thái vì đang có sản phẩm sử dụng danh mục này.";
-                            return RedirectToAction("Index");
+                            // Nếu có sản phẩm sử dụng danh mục này, chỉ cho phép chỉnh sửa tên danh mục
+                            existingCategory.CategoryName = editedCategory.CategoryName;
                         }
+                        else
+                        {
+                            // Kiểm tra xem người dùng có chỉnh sửa cả trạng thái không
+                            if (editedCategory.Status != existingCategory.Status)
+                            {
+                                // Nếu người dùng cố gắng chỉnh sửa cả trạng thái
+                                TempData["ErrorMessage"] = "Không thể thay đổi trạng thái vì đang có sản phẩm sử dụng danh mục này.";
+                                return RedirectToAction("Index");
+                            }
 
-                        existingCategory.CategoryName = editedCategory.CategoryName;
-                        existingCategory.Status = editedCategory.Status;
+                            // Kiểm tra xem tên mới của danh mục có trùng với bất kỳ tên nào khác trong cơ sở dữ liệu không
+                            var categoryNameExists = context.Categories.Any(c => c.CategoryId != editedCategory.CategoryId && c.CategoryName == editedCategory.CategoryName);
+                            if (categoryNameExists)
+                            {
+                                ModelState.AddModelError("CategoryName", "Tên danh mục đã tồn tại. Vui lòng chọn tên khác.");
+                                return View(editedCategory);
+                            }
+
+                            // Cho phép chỉnh sửa cả tên và trạng thái
+                            existingCategory.CategoryName = editedCategory.CategoryName;
+                            existingCategory.Status = editedCategory.Status;
+                        }
 
                         context.SaveChanges();
                     }
@@ -171,8 +197,7 @@ namespace SWP.Controllers
 
             // Nếu có lỗi, hiển thị lại trang Edit với thông tin nhập trước
             return View(editedCategory);
-        }
-
+        }   
         private bool HasProductsInCategory(int categoryId)
         {
             using (var context = new SWPContext())
