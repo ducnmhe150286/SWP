@@ -5,8 +5,14 @@
 }
 
 
+@if (ViewBag.SuccessMessage != null)
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.SuccessMessage
+    </div>
+}
 
-<hr />
+
 <div class="container">
     <div class="row justify-content-center">
         <h1>Tạo bài viết mới</h1>
@@ -45,17 +51,22 @@
                    </textarea>
                 <span asp-validation-for=Description class=text-danger></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Tạo mới" class="btn btn-primary" />
+            <div class="form-group" >
+
+                <input type="submit" value="Tạo mới" class="btn btn-success" />
                 
             </div>
         </form>
     </div>
 </div>
 </div>
-<div class="form-group">
-    <a asp-action="Manage">Danh sách blog</a>
+<div class="ms-auto">
+    <div class="btn-group shadow-0 border">
+        <a asp-controller="Blog" asp-action="Manage" class="btn btn-primary shadow-0 me-1">Danh sách Blog</a>
+    </div>
 </div>
+
+
 <script>
     ClassicEditor
         .create( document.querySelector( '#editor' ) )
@@ -68,3 +79,9 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+<style>
+    .custom-btn {
+        padding: 6px 12px; /* Điều chỉnh padding để làm cho nút nhỏ hơn */
+        border: none; /* Loại bỏ viền */
+    }
+</style>

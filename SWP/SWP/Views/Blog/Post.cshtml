@@ -6,25 +6,24 @@
 
 <div class="blog-post">
     <h1>@Model.Title</h1>
-    <p class="blog-meta">Posted on <span>@Model.CreateDate.Value.ToString("yyyy/MM/dd")</span></p>
+    <p class="blog-meta"><span>@Model.CreateDate.Value.ToString("yyyy/MM/dd")</span></p>
     <p class="blog-description">@Html.Raw(Model.Description)</p>
 </div>
 <div class="form-group">
     <a asp-action="Index" asp-controller="Blog">Danh sách blog</a>
 </div>
 <style>
-    .container {
-        max-width: 800px; /* Đặt kích thước tối đa cho container */
-        margin: 0 auto; /* Đặt margin tự động ở cả hai bên để căn giữa */
-        padding: 20px; /* Tạo khoảng cách giữa nội dung và cạnh của container */
+    ..container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
     }
 
     .blog-post {
         margin-bottom: 30px;
-        background-color: #f9f9f9; /* Màu nền cho bài viết */
-        padding: 20px; /* Tạo khoảng cách giữa nội dung và cạnh của bài viết */
-        border-radius: 8px; /* Bo tròn các cạnh */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Tạo hiệu ứng bóng đổ */
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
     }
 
     .blog-meta {
@@ -38,9 +37,49 @@
             color: #333;
         }
 
-    
     .blog-description {
-        line-height: 1.6;
+    display: block;
+    text-align: center; /* Đảm bảo các hình ảnh được căn giữa theo chiều ngang */
+}
+
+
+    /* Đảm bảo các ảnh có độ rộng bằng nhau và căn chỉnh nội dung */
+    img {
+        display: block; /* Để ngăn các ảnh bị lệch dòng */
+        max-width: 100%; /* Đảm bảo rằng ảnh không vượt quá chiều rộng của blog-post */
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 10px;
     }
+
+    /* Căn chỉnh tiêu đề và thẻ span chứa ngày đăng bài */
+    .blog-post > h1,
+    .blog-meta > span {
+        margin: 0; /* Loại bỏ margin mặc định */
     }
+
+    /* Đảm bảo rằng các blog-post có chiều cao bằng nhau */
+    .blog-post {
+        display: flex;
+        flex-direction: column;
+    }
+
+        /* Căn chỉnh các thành phần bên trong blog-post */
+        .blog-post > * {
+            flex: 1; /* Chia sẻ không gian theo chiều dọc */
+        }
+
+            /* Đảm bảo rằng nội dung không bị căn lề sang trái */
+            .blog-post > *:not(img) {
+                text-align: justify;
+            }
+
+    .blog-description img {
+        display: block; /* Để ngăn các ảnh bị lệch dòng */
+        margin: 0 auto; /* Để căn giữa ảnh theo chiều ngang */
+        max-width: 100%; /* Đảm bảo rằng ảnh không vượt quá chiều rộng của phần mô tả */
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
 </style>

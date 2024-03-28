@@ -175,7 +175,7 @@ namespace SWP.Controllers
             if (userId == null)
             {
                 // Nếu userId null, chuyển hướng đến trang đăng nhập
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Index", "Auth");
             }
 
             using (var context = new SWPContext())
