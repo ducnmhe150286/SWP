@@ -78,7 +78,7 @@
 
                                     <a href="#" class="border">@item.Quantity</a>
 
-                                    <a asp-action="UpdateCartItem" asp-route-productId="@item.Detail.DetailId" asp-route-type="1">+</a>
+                                    <a asp-action="UpdateCartItem" asp-route-productId="@item.Detail.DetailId" asp-route-type="1" asp-route-productName="@item.Detail.Product.ProductName">+</a>
 
                                 </div>
                                 <div class="col">@string.Format("{0:N0}", @item.Detail.Product.Price) vnđ </div>
