@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SWP.Dao;
 using SWP.Models;
 
@@ -8,10 +9,13 @@ namespace SWP.Controllers
     {
         public UsersDao userDao;
         public OrderHistoryDao historyDao;
+        SWPContext context;
+
         public OrderHistoryController()
         {
             userDao = new UsersDao();
             historyDao = new OrderHistoryDao();
+            context = new SWPContext();
         }
         public IActionResult Index()
         {
@@ -27,6 +31,9 @@ namespace SWP.Controllers
                     return View();
                 }
                 ViewData["listItem"] = getOrder;
+
+               
+
                 return View();
             }
             return RedirectToAction("Index", "Auth");
@@ -45,5 +52,8 @@ namespace SWP.Controllers
             }
             return null;
         }
+       
+
+        
     }
 }

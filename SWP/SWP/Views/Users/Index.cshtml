@@ -6,17 +6,114 @@
 @{
 }
 <style>
+    /* Thêm padding cho body để tạo khoảng cách với viền màn hình */
+    body {
+        padding-top: 20px; /* Khoảng cách trên */
+        padding-bottom: 20px; /* Khoảng cách dưới */
+        padding-left: 15px; /* Thêm padding bên trái */
+        padding-right: 15px; /* Thêm padding bên phải */    
+    }
+
+    /* Style cho nội dung bên trong */
+    .container {
+        max-width: 1200px; /* Giới hạn chiều rộng của nội dung */
+        margin: 0 auto; /* Canh giữa nội dung */
+          padding-left: 15px; /* Thêm padding bên trái */
+        padding-right: 15px; /* Thêm padding bên phải */
+    }
+
+    /* Căn giữa nội dung */
     .center-text {
         text-align: center;
     }
 
+    /* Đổi con trỏ chuột khi di chuyển qua các hàng của bảng */
     .table-hover-pointer tbody tr:hover {
         cursor: pointer;
     }
 
+    /* Khoảng cách giữa các button */
     .btn-space {
-        margin-right: 5px; /* Điều chỉnh giá trị margin tùy ý */
+        margin-right: 5px;
     }
+
+    /* Style cho form input */
+    .input-group {
+        margin-bottom: 20px;
+    }
+
+    /* Style cho button Tìm kiếm */
+    .btn-primary {
+        border-radius: 20px; /* Bo góc */
+    }
+
+    /* Style cho table */
+    .table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        .table th, .table td {
+            padding: 8px;
+            text-align: center;
+        }
+
+        .table th {
+            background-color: #f2f2f2; /* Màu nền */
+            font-weight: bold;
+            color: #333; /* Màu chữ */
+            border-bottom: 2px solid #ddd; /* Đường viền dưới */
+        }
+
+        .table td {
+            border-bottom: 1px solid #ddd; /* Đường viền dưới */
+        }
+
+    /* Style cho pagination */
+    .pagination {
+        margin: 0;
+    }
+
+        .pagination li {
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+            .pagination li a {
+                text-decoration: none;
+                padding: 5px 10px;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                color: #333;
+            }
+
+            .pagination li.active a {
+                background-color: #007bff;
+                color: #fff;
+                border-color: #007bff;
+            }
+
+            .pagination li.disabled a {
+                color: #666;
+                pointer-events: none;
+            }
+
+    /* Style cho thông báo lỗi */
+    .alert-danger {
+        margin-bottom: 20px;
+    }
+
+    /* Style cho sidebar */
+    .col-lg-3 {
+        background-color: #f8f9fa; /* Màu nền */
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    font-size: 24px; /* Kích thước font */
+    font-weight: bold; /* Độ đậm của font */
+    color: #333; /* Màu chữ */
+
 </style>
 @if (ViewBag.ErrorMessage != null)
 {
@@ -180,5 +277,111 @@
             </script>
         </div>
     </div>
-    </main>
+    </div>
+    </header>*@
+
+    <!-- Search form -->
+    <form method="post" asp-controller="Users" asp-action="Index" class="mb-4">
+       <div class="input-group input-group-sm">
+        <input type="text" name="search" class="form-control" placeholder="Tìm kiếm" value="@ViewBag.strSearch">
+        <button type="submit" class="btn btn-primary ml-2">Tìm kiếm</button>
+    </div>
+    </form>
+
+
+
+
+    @if (Model != null)
+    {
+        <table class="table table-bordered table-hover table-responsive w-100 table-hover-pointer">
+            <thead>
+                <tr>
+                    <th>Stt</th>
+                    <th>Ảnh đại diện</th>
+                    <th>Họ</th>
+                    <th>Tên</th>
+                    <th>Sđt</th>
+                    <th>Email</th>
+                    <th>Ngày tạo</th>
+                    <th>Vai trò</th>
+
+
+                    @*<th>Tác vụ</th>*@
+                </tr>
+            </thead>
+
+            <tbody class="text-center">
+                @{
+                    int startIndex = (int)ViewData["startIndex"];
+
+                }
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>@startIndex</td>
+                        <td>
+                            <a href="@Url.Action("Details", "Users", new { userId = item.UserId })">
+                                <img src="/uploads/@item.Image" style="width: 150px" class="card-img-top" />
+                            </a>
+                        </td>
+
+                        <td>@item.FirstName</td>
+                        <td>@item.LastName</td>
+                        <td>@item.PhoneNumber</td>
+                        <td>@item.Email</td>
+                        <td>@item.CreatedDate</td>
+                        @if (item.RoleId == 1)
+                        {
+                            <td>Quản lý</td>
+                        }
+                        @if (item.RoleId == 2)
+                        {
+                            <td>Khách hàng</td>
+                        }
+
+
+                    </tr>
+                    startIndex++;
+                }
+            </tbody>
+        </table>
+    }
+
+
+
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
+        <ul class="pagination">
+            @if (ViewBag.currentPage != 0)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-controller="Users" asp-action="Index" asp-route-currentPage="@(ViewBag.currentPage - 1)" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            }
+            @for (int i = 1; i <= ViewBag.NumberOfPages; i++)
+            {
+                <li class="page-item "><a class="page-link" asp-controller="Users" asp-action="Index" asp-route-currentPage="@i">@i</a></li>
+
+            }
+            @if (ViewBag.currentPage < ViewBag.NumberOfPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-controller="Users" asp-action="Index" asp-route-currentPage="@(ViewBag.currentPage + 1)" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            }
+
+        </ul>
+    </nav>
+    <!-- Pagination -->
+
+
+
+
 </body>
