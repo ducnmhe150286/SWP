@@ -213,7 +213,7 @@ namespace SWP.Controllers
                     newProduct.Price = decimal.Parse(Price);
                     //newProduct.Quantity = newProduct.Quantity.HasValue ? newProduct.Quantity : null;
                     //newProduct.IsSale = newProduct.IsSale.HasValue ? newProduct.IsSale : false;
-                    newProduct.Status = newProduct.Status.HasValue ? newProduct.Status : null;
+                    newProduct.Status = newProduct.Status.HasValue ? newProduct.Status : 0;
                     newProduct.BrandId = newProduct.BrandId;
                     newProduct.CategoryId = newProduct.CategoryId;
                     context.Products.Add(newProduct);
@@ -335,7 +335,16 @@ namespace SWP.Controllers
                         return RedirectToAction("EditProduct", new { id = updatedProduct.ProductId });
                     }
 
-                    var existingProduct = context.Products.Find(updatedProduct.ProductId);
+                    var existingProduct = context.Products
+                        .Include(p => p.ProductDetails) 
+                        .FirstOrDefault(p => p.ProductId == updatedProduct.ProductId);
+                    if (existingProduct.Status == 0 && existingProduct.ProductDetails.Any() == false && updatedProduct.Status == 1)
+                    {
+                        TempData["ErrorMessage"] = "Không thể cập nhật trạng thái sản phẩm do không có thông tin chi tiết về sản phẩm.";
+                        return RedirectToAction("EditProduct", new { id = updatedProduct.ProductId });
+                    }
+
+
                     var existingProductImage = context.Products
                         .Include(p => p.ProductImages)
                         .FirstOrDefault(p => p.ProductId == updatedProduct.ProductId);
