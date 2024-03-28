@@ -74,7 +74,9 @@ namespace SWP.Controllers
 
                 }
 
-                var productList = query.OrderByDescending(p => p.CreatedDate).ToList();
+                var productList = query.Where(p => p.ProductDetails.Sum(pd => pd.Quantity) != 0)
+                                       .OrderByDescending(p => p.CreatedDate)
+                                       .ToList();
                 if (productList.Count == 0)
                 {
                     TempData["ErrorMessage"] = "Không có dữ liệu sản phẩm.";
@@ -145,7 +147,9 @@ namespace SWP.Controllers
 
                 }
 
-                var productList = query.OrderByDescending(p => p.CreatedDate).ToList();
+                var productList = query.Where(p => p.ProductDetails.Sum(pd => pd.Quantity) != 0)
+                                       .OrderByDescending(p => p.CreatedDate)
+                                       .ToList();
                 if (productList.Count == 0)
                 {
                     TempData["ErrorMessage"] = "Không có dữ liệu sản phẩm.";
