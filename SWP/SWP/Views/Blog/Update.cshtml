@@ -7,7 +7,7 @@
     </div>
 }
 
-<form asp-action="Edit" enctype="multipart/form-data" method="post" asp-controller="Blog">
+<form asp-action="Update" enctype="multipart/form-data" method="post" asp-controller="Blog">
     <input type="hidden" asp-for="BlogId" />
     @if(Model != null)
     {
