@@ -105,98 +105,95 @@
         <option value="2">Đang vận chuyển</option>
         <option value="3">Giao hàng thành công</option>
         <option value="4">Giao hàng không thành công</option>
-            <option value="5">Đơn Hàng đã hủy</option>
+        <option value="5">Đơn Hàng đã hủy</option>
     </select>
 </div>
 
-<table>
-    <thead>
-        <tr>
-
-            <th>Mã Đơn Hàng</th>
-            <th>Tên Khách Hàng</th>
-            <th>Số Điện Thoại</th>
-            <th>Địa Chỉ</th>
-            <th>Ngày Tạo Đơn Hàng</th>
-            <th>Ngày Giao Thành Công</th>
-            <th>Trạng Thái</th>
-            <th>Thao Tác</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var order in Model)
-        {
+    <table>
+        <thead>
             <tr>
-                <td>@order.OrderId</td>
-                <td>@order.CustomerName</td>
-                <td>@order.PhoneNumber</td>
-                <td>@order.ShipAddress</td>
-                <td>@(order.OrderDate.HasValue ? order.OrderDate.Value.ToString("yyyy-MM-dd") : "N/A")</td>
-                <td>@(order.ShipDate.HasValue ? order.OrderDate.Value.ToString("yyyy-MM-dd") : "N/A")</td>
-                <td id="statusCell_@order.OrderId">
-                    @if (order.Status == 0)
-                    {
-                        <p>Chờ xác nhận</p>
-                    }
-                    else if (order.Status == 1)
-                    {
-                        <p>Xác nhận đơn hàng</p>
-                    }
-                    else if (order.Status == 2)
-                    {
-                        <p>Đang vận chuyển</p>
-                    }
-                    else if (order.Status == 3)
-                    {
-                        <p>Giao hàng thành công</p>
-                    }
-                    else if (order.Status == 4)
-                    {
-                        <p>Giao hàng không thành công</p>
-                    }
-                        else if (order.Status == 5)
+                <th>#</th>
+                <th>Tên Khách Hàng</th>
+                <th>Số Điện Thoại</th>
+                <th>Địa Chỉ</th>
+                <th>Ngày Tạo Đơn Hàng</th>
+                <th>Ngày Giao Thành Công</th>
+                <th>Trạng Thái</th>
+                <th>Thao Tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model.Select((value, index) => new { Value = value, Index = index }))
+            {
+                <tr>
+                    <td>@(order.Index + 1)</td>
+                    <td>@order.Value.CustomerName</td>
+                    <td>@order.Value.PhoneNumber</td>
+                    <td>@order.Value.ShipAddress</td>
+                    <td>@(order.Value.OrderDate.HasValue ? order.Value.OrderDate.Value.ToString("yyyy-MM-dd") : "")</td>
+                    <td>@(order.Value.ShipDate.HasValue ? order.Value.OrderDate.Value.ToString("yyyy-MM-dd") : "")</td>
+                    <td id="statusCell_@order.Value.OrderId">
+                        @if (order.Value.Status == 0)
+                        {
+                            <p>Chờ xác nhận</p>
+                        }
+                        else if (order.Value.Status == 1)
+                        {
+                            <p>Xác nhận đơn hàng</p>
+                        }
+                        else if (order.Value.Status == 2)
+                        {
+                            <p>Đang vận chuyển</p>
+                        }
+                        else if (order.Value.Status == 3)
+                        {
+                            <p>Giao hàng thành công</p>
+                        }
+                        else if (order.Value.Status == 4)
+                        {
+                            <p>Giao hàng không thành công</p>
+                        }
+                        else if (order.Value.Status == 5)
                         {
                             <p>Đơn hàng đã hủy</p>
                         }
-                </td>
-
-                <td>
-                    <a href="@Url.Action("ViewDetail", "Order", new { id = order.OrderId })">Xem chi tiết</a>
-                    <button type="button" class="btn btn-primary" onclick="openModal('@order.OrderId')">Cập nhật</button>
-                    <div class="modal fade" id="updateModal_@order.OrderId" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="updateModalLabel">Cập nhật Trạng Thái Đơn Hàng</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label for="statusSelect_@order.OrderId">Chọn trạng thái:</label>
-                                        <select class="form-control" id="statusSelect_@order.OrderId">
-                                            <option value="0">Chờ xác nhận</option>
-                                            <option value="1">Xác nhận đơn hàng</option>
-                                            <option value="2">Đang vận chuyển</option>
-                                            <option value="3">Giao hàng thành công</option>
-                                            <option value="4">Giao hàng không thành công</option>
-                                        </select>
+                    </td>
+                    <td>
+                        <a href="@Url.Action("ViewDetail", "Order", new { id = order.Value.OrderId })">Xem chi tiết</a>
+                        <button type="button" class="btn btn-primary" onclick="openModal('@order.Value.OrderId')">Cập nhật</button>
+                        <div class="modal fade" id="updateModal_@order.Value.OrderId" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="updateModalLabel">Cập nhật Trạng Thái Đơn Hàng</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                                    <button type="button" class="btn btn-primary" onclick="saveStatus('@order.OrderId')">Lưu</button>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label for="statusSelect_@order.Value.OrderId">Chọn trạng thái:</label>
+                                            <select class="form-control" id="statusSelect_@order.Value.OrderId">
+                                                <option value="0">Chờ xác nhận</option>
+                                                <option value="1">Xác nhận đơn hàng</option>
+                                                <option value="2">Đang vận chuyển</option>
+                                                <option value="3">Giao hàng thành công</option>
+                                                <option value="4">Giao hàng không thành công</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModalAndRedirect()">Đóng</button>
+                                        <button type="button" class="btn btn-primary" onclick="saveStatus('@order.Value.OrderId')">Lưu</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </td>
-            </tr>
-        }
-
-    </tbody>
-</table>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
     <script>
         function openModal(orderId) {
@@ -268,7 +265,7 @@
         }
         $(document).ready(function () {
             $('#searchStatus').change(function () {
-                var searchStatus = $(this).val();
+                var searchStatus = $(this).val();                
                 if (searchStatus === "") {
                     window.location.href = "@Url.Action("Index", "Order")";
                 } else {
@@ -276,6 +273,13 @@
                 }
             });
         });
+        // Function to close modal and redirect to the desired page
+        function closeModalAndRedirect() {
+            // Đóng modal
+            $('#cancelOrderModal').modal('hide');
+            
+            window.location.href = 'https://localhost:7240/order';
+        }
     </script>
 <style>
     .pagination {

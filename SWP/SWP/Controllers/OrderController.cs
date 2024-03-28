@@ -166,7 +166,7 @@ namespace SWP.Controllers
 
 
 
-        public IActionResult CustomerView()
+        public IActionResult CustomerView(byte? status = null)
         {
             // Lấy userId từ session
             var userId = HttpContext.Session.GetInt32("USER_ID");
@@ -180,18 +180,21 @@ namespace SWP.Controllers
 
             using (var context = new SWPContext())
             {
-                // Lấy danh sách đơn hàng của khách hàng có UserId là userId
-                var orders = context.Orders.Where(o => o.UserId == userId).ToList();
+                IQueryable<Order> ordersQuery = context.Orders.Where(o => o.UserId == userId);
 
-                // Danh sách sản phẩm đã đặt hàng của khách hàng
+                // Thêm điều kiện lọc theo status nếu status được chỉ định
+                if (status != null)
+                {
+                    ordersQuery = ordersQuery.Where(o => o.Status == status);
+                }
+
+                var orders = ordersQuery.ToList();
                 var orderProductDetails = new List<OrderProductDetailViewModel>();
 
                 foreach (var order in orders)
                 {
-                    // Lấy chi tiết đơn hàng cho mỗi đơn hàng
                     var orderDetails = context.Orderdetails.Where(od => od.OrderId == order.OrderId).ToList();
 
-                    // Lấy thông tin chi tiết về từng sản phẩm đã đặt hàng
                     foreach (var orderDetail in orderDetails)
                     {
                         var productDetail = context.ProductDetails
@@ -211,17 +214,30 @@ namespace SWP.Controllers
                                 ColorName = productDetail.Color?.ColorName,
                                 SizeName = productDetail.Size?.SizeName,
                                 ProductImages = productDetail.Product.ProductImages.Select(pi => pi.Path).ToList(),
-                                OrderId = order.OrderId // Gán orderId vào OrderProductDetailViewModel
-                            }) ;
+                                OrderId = order.OrderId
+                            });
                         }
                     }
                 }
 
+                // Truyền danh sách sản phẩm đến view và thêm status vào ViewBag để sử dụng trong view
+                ViewBag.Status = status;
                 return View(orderProductDetails);
             }
         }
+
+
         public IActionResult ProductDetail(int orderId)
         {
+            // Lấy userId từ session
+            var userId = HttpContext.Session.GetInt32("USER_ID");
+
+            // Kiểm tra userId có null không
+            if (userId == null)
+            {
+                // Nếu userId null, chuyển hướng đến trang đăng nhập
+                return RedirectToAction("Login", "Account");
+            }
             using (var context = new SWPContext())
             {
                 // Kiểm tra orderId có hợp lệ hay không
@@ -232,7 +248,7 @@ namespace SWP.Controllers
                 }
 
                 // Lấy thông tin đơn hàng chứa sản phẩm đang được chọn
-                var order = context.Orders.FirstOrDefault(o => o.OrderId == orderId);
+                var order = context.Orders.FirstOrDefault(o => o.OrderId == orderId && o.UserId == userId);
 
                 if (order == null)
                 {
@@ -243,8 +259,12 @@ namespace SWP.Controllers
                 var orderDetailViewModel = new OrderDetailViewModel
                 {
                     OrderId = order.OrderId,
-                    // Kiểm tra xem Status có null không
-                    Status = order.Status.HasValue ? order.Status.Value : default(byte)
+                    Status = order.Status.HasValue ? order.Status.Value : default(byte),
+                    // Gán thông tin khách hàng vào ViewModel
+                    CustomerName = order.CustomerName,
+                    PhoneNumber = order.PhoneNumber,
+                    ShipAddress = order.ShipAddress,
+                    OrderDate = order.OrderDate // Giả sử bạn có thuộc tính OrderDate trong model Order
                 };
 
                 return View("OrderStatus", orderDetailViewModel);
