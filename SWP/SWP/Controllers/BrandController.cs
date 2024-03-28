@@ -7,24 +7,50 @@ namespace SWP.Controllers
 {
     public class BrandController : Controller
     {
+
         public IActionResult Index(int page = 1, int pageSize = 5)
         {
-            using (var context = new SWPContext())
+            // Lấy userId từ session
+            var userId = HttpContext.Session.GetInt32("USER_ID");
+
+
+            // Kiểm tra userId có null không
+            if (userId == null)
             {
-                var totalBrands = context.Brands.Count();
+                // Nếu userId null, chuyển hướng đến trang đăng nhập
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+                using (var context = new SWPContext())
+                {
+                    // Lấy RoleId của User dựa trên userId, chẳng hạn từ CSDL hoặc bất kỳ nguồn dữ liệu nào khác
+                    var user = context.Users.Find(userId);
 
-                var brandList = context.Brands
-                    .OrderBy(b => b.BrandId)
-                    .Skip((page - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToList();
+                    // Kiểm tra nếu RoleId của User là 2
+                    if (user != null && user.RoleId == 2)
+                    {
+                        // Thực hiện các hành động nếu RoleId của User là 2
+                        return RedirectToAction("Login", "Account");
+                    }
+                }
+                using (var context = new SWPContext())
+                {
+                    var totalBrands = context.Brands.Count();
 
-                var totalPages = (int)Math.Ceiling((double)totalBrands / pageSize);
+                    var brandList = context.Brands
+                        .OrderBy(b => b.BrandId)
+                        .Skip((page - 1) * pageSize)
+                        .Take(pageSize)
+                        .ToList();
 
-                ViewBag.CurrentPage = page;
-                ViewBag.TotalPages = totalPages;
+                    var totalPages = (int)Math.Ceiling((double)totalBrands / pageSize);
 
-                return View(brandList);
+                    ViewBag.CurrentPage = page;
+                    ViewBag.TotalPages = totalPages;
+
+                    return View(brandList);
+                }
             }
         }
         [HttpGet]

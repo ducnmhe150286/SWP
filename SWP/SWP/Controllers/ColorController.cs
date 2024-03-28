@@ -9,22 +9,47 @@ namespace SWP.Controllers
     {
         public IActionResult Index(int page = 1, int pageSize = 5)
         {
-            using (var context = new SWPContext())
+            // Lấy userId từ session
+            var userId = HttpContext.Session.GetInt32("USER_ID");
+
+
+            // Kiểm tra userId có null không
+            if (userId == null)
             {
-                var totalColors = context.Colors.Count();
+                // Nếu userId null, chuyển hướng đến trang đăng nhập
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+                using (var context = new SWPContext())
+                {
+                    // Lấy RoleId của User dựa trên userId, chẳng hạn từ CSDL hoặc bất kỳ nguồn dữ liệu nào khác
+                    var user = context.Users.Find(userId);
 
-                var colorList = context.Colors
-                    .OrderBy(c => c.ColorId)
-                    .Skip((page - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToList();
+                    // Kiểm tra nếu RoleId của User là 2
+                    if (user != null && user.RoleId == 2)
+                    {
+                        // Thực hiện các hành động nếu RoleId của User là 2
+                        return RedirectToAction("Login", "Account");
+                    }
+                }
+                using (var context = new SWPContext())
+                {
+                    var totalColors = context.Colors.Count();
 
-                var totalPages = (int)Math.Ceiling((double)totalColors / pageSize);
+                    var colorList = context.Colors
+                        .OrderBy(c => c.ColorId)
+                        .Skip((page - 1) * pageSize)
+                        .Take(pageSize)
+                        .ToList();
 
-                ViewBag.CurrentPage = page;
-                ViewBag.TotalPages = totalPages;
+                    var totalPages = (int)Math.Ceiling((double)totalColors / pageSize);
 
-                return View(colorList);
+                    ViewBag.CurrentPage = page;
+                    ViewBag.TotalPages = totalPages;
+
+                    return View(colorList);
+                }
             }
         }
         [HttpGet]
