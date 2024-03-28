@@ -128,7 +128,7 @@ namespace SWP.Controllers
                 // Kiểm tra xem có sản phẩm đang sử dụng Brand hay không
                 if (brandToDelete.Products.Any())
                 {
-                    TempData["ErrorMessage"] = "Không thể xóa vì danh mục đang có sản phẩm sử dụng.";
+                    TempData["ErrorMessage"] = "Không thể xóa vì thương hiệu này đang có sản phẩm sử dụng.";
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -185,7 +185,7 @@ namespace SWP.Controllers
                             var BrandNameExists = context.Brands.Any(c => c.BrandId != existingBrand.BrandId && c.BrandName == editedBrand.BrandName);
                             if (BrandNameExists)
                             {
-                                ModelState.AddModelError("CategoryName", "Tên danh mục đã tồn tại. Vui lòng chọn tên khác.");
+                                ModelState.AddModelError("CategoryName", "Tên Thương hiệu này đã tồn tại. Vui lòng chọn tên khác.");
                                 return View(existingBrand);
                             }
 

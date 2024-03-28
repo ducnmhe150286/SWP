@@ -66,7 +66,7 @@ namespace SWP.Controllers
             {
                 if (!IsValidName(newSize.SizeName))
                 {
-                    ModelState.AddModelError("SizeName", "Tên danh mục chỉ được chứa chữ cái.");
+                    ModelState.AddModelError("SizeName", "Tên Kích thước chỉ được chứa chữ cái hoặc số.");
                     // Xử lý lỗi nếu cần thiết
                     return View(newSize);
                 }
@@ -75,7 +75,7 @@ namespace SWP.Controllers
                 {
                     if (context.Sizes.Any(s => s.SizeName == newSize.SizeName))
                     {
-                        ModelState.AddModelError("SizeName", "Tên danh mục đã tồn tại. Vui lòng chọn tên khác.");
+                        ModelState.AddModelError("SizeName", "Tên kích thước đã tồn tại. Vui lòng chọn tên khác.");
                         // Xử lý lỗi nếu cần thiết
                         return View(newSize);
                     }
@@ -111,7 +111,7 @@ namespace SWP.Controllers
         private bool IsValidName(string name)
         {
             // Kiểm tra xem tên chỉ chứa chữ cái
-            return !string.IsNullOrWhiteSpace(name) && Regex.IsMatch(name, "^[a-zA-Zà-ỹẠ-Ỹ\\s]+$");
+            return !string.IsNullOrWhiteSpace(name) && Regex.IsMatch(name, "^[a-zA-Z0-9à-ỹẠ-Ỹ\\s]+$");
         }
         [HttpPost]
         public IActionResult Delete(int id)
@@ -128,7 +128,7 @@ namespace SWP.Controllers
                 // Kiểm tra xem có sản phẩm đang sử dụng Category hay không
                 if (sizeToDelete.ProductDetails.Any())
                 {
-                    TempData["ErrorMessage"] = "Không thể xóa vì thương hiệu đang có sản phẩm sử dụng.";
+                    TempData["ErrorMessage"] = "Không thể xóa vì kích thước này đang có sản phẩm sử dụng.";
                     return RedirectToAction(nameof(Index));
                 }
 
