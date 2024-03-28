@@ -141,7 +141,7 @@
             <td>@Model.PhoneNumber</td>
             <td>@Model.ShipAddress</td>
             <td>@Model.OrderDate</td>
-            <td>@Model.TotalAmount</td>
+            <td>@string.Format("{0:#,##0 đ}", Model.TotalAmount)</td>
             <td>
                 @if (Model.Status == 0)
                 {
@@ -218,11 +218,11 @@
                     }
                 </td>
                 <td>@productDetail.ProductName</td>
-                <td>@productDetail.Price</td>
+                <td>@string.Format("{0:#,##0 đ}", productDetail.Price)</td>
                 <td>@productDetail.Quantity</td>
                 <td>@productDetail.ColorName</td>
                 <td>@productDetail.SizeName</td>
-                <td>@(productDetail.Price * productDetail.Quantity)</td>
+                <td>@string.Format("{0:#,##0 đ}", productDetail.Price * productDetail.Quantity)</td>
             </tr>
         }
     </tbody>

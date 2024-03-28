@@ -77,14 +77,14 @@
                         <td>@item.PhoneNumber</td>
                         <td>@item.OrderDate</td>
                         <td>@item.ShipDate</td>
-                        @if (@item.Status == 5)
+                       @* @if (@item.Status == 5)
                         {
                             <td>Đã nhận hàng</td>
                         }
                         else if (item.Status == 6)
                         {
                             <td>Đã hủy đơn</td>
-                        }
+                        }*@
                         <td>
                             <button type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2" data-bs-toggle="model" data-bs-target="#exampleModal" onclick="showOrderDetails('@item.OrderId')"><i class="fa fa-edit"></i> </button>
 
@@ -139,11 +139,10 @@
             url: '/OrderHistory/GetOrderDetail',
             data: { orderId: orderId },
             success: function (data) {
-
                 var orderDetailsHtml = '<p>Thông tin chi tiết đơn hàng: ' + orderId + '</p>';
                 var totalPrice = 0;
 
-                if (data.length > 0) {
+                if (data && data.length > 0) {
                     orderDetailsHtml += '<table class="table no-wrap user-table mb-0">' +
                         '<thead>' +
                         '<tr>' +
@@ -168,27 +167,25 @@
                             '<td>' + parseFloat(item.detail.product.price).toLocaleString('vi-VN', { style: 'currency', currency: 'vnd' }) + '</td>' +
                             '</tr>';
 
-
                         totalPrice += parseFloat(item.detail.product.price) * item.quantity;
                     });
 
                     orderDetailsHtml += '<tr>' +
                         '<td colspan="5"></td>' +
-                        '<td class="text-right font-medium">Tổng tiền: ' + totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'vnd' }) + '</td>'
-                        ;
+                        '<td class="text-right font-medium">Tổng tiền: ' + totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'vnd' }) + '</td>' +
+                        '</tr>';
 
                     orderDetailsHtml += '</tbody></table>';
                 } else {
                     orderDetailsHtml += '<p>Không có đơn hàng nào.</p>';
                 }
 
-                document.getElementById('orderDetailsContainer').innerHTML = orderDetailsHtml;
+                $('#orderDetailsContainer').html(orderDetailsHtml);
                 $('#exampleModal').modal('show');
             },
-            error: function (error) {
-                alert('Lỗi khi lấy thông tin đơn hàng:', error);
+            error: function (xhr, status, error) {
+                alert('Lỗi khi lấy thông tin đơn hàng: ' + error);
             }
-
         });
     }
 
@@ -199,9 +196,7 @@
                     "first": "Đầu",
                     "last": "Cuối",
                     "next": "Tiếp",
-                    "previous": "Trước",
-
-
+                    "previous": "Trước"
                 },
                 "search": "Tìm kiếm:",
                 "info": "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
@@ -220,11 +215,19 @@
                 "selector": 'td:first-child'
             },
         });
+
+        // Update table navigation text
+        $('#example_next').text('Tiếp theo');
+        $('#example_previous').text('Trước đó');
+        $('#example_first').text('Trang đầu');
+        $('#example_last').text('Trang cuối');
     });
     $('#example_next').text('Tiếp theo');
     $('#example_previous').text('Trước đó');
     $('#example_first').text('Trang đầu');
     $('#example_last').text('Trang cuối');
    
+
+
 </script>
 

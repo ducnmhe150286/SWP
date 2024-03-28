@@ -792,7 +792,7 @@ form a {
                     @{
                         var userEmail = HttpContextAccessor.HttpContext.Session.GetString("USER_EMAIL");
                         var userRole = HttpContextAccessor.HttpContext.Session.GetInt32("USER_ROLE") ?? 0;
-                        string image = HttpContextAccessor.HttpContext.Session.GetString("AVATAR") ?? "";
+                       // string image = HttpContextAccessor.HttpContext.Session.GetString("AVATAR") ?? "";
                     }
 
                     @if (!string.IsNullOrEmpty(userEmail) && userRole == 2)
