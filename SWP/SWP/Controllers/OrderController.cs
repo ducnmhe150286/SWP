@@ -48,7 +48,7 @@ namespace SWP.Controllers
                         switch (sortBy.ToLower())
                         {
                             case "date":
-                                query = query.OrderBy(o => o.OrderDate);
+                                query = query.OrderByDescending(o => o.OrderDate);
                                 break;
                             case "status":
                                 query = query.OrderBy(o => o.Status);
@@ -60,7 +60,7 @@ namespace SWP.Controllers
                     }
                     else
                     {
-                        query = query.OrderBy(o => o.OrderDate);
+                        query = query.OrderByDescending(o => o.OrderDate).ThenBy(x=>x.Status);
                     }
 
                     var totalOrders = query.Count();

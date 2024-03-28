@@ -48,70 +48,63 @@
 </style>
 
 <div>
-    @{
-        var message = ViewData["message_none"];
+    <div>
+        @{
+            var message = ViewData["message_none"];
+        }
 
-    }
-
-    <p style="color:red">@message</p>
-    @if (message == null)
-    {
-        <div class="back-to-shop"><a asp-controller="Home" asp-action="Index">&leftarrow;</a><span class="text-muted">Trở về trang chủ</span></div>
-        <table id="example" class="table" cellspacing="0" width="100%">
-            <thead>
-                <tr>
-                    <th>Mã đơn hàng</th>
-                    <th>Địa chỉ</th>
-                    <th>Sđt</th>
-                    <th>Ngày đặt hàng</th>
-                    <th>Ngày nhận</th>
-                    <th>Trạng thái đơn hàng</th>
-                    <th>Chị tiết</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in listItem)
-                {
+        <p style="color:red">@message</p>
+        @if (message == null)
+        {
+            <div class="back-to-shop">
+                <a asp-controller="Home" asp-action="Index">&leftarrow;</a><span class="text-muted">Trở về trang chủ</span>
+            </div>
+            //<input type="search" id="searchInput" class="form-control" placeholder="Tìm kiếm theo mã đơn hàng">
+            <table id="example" class="table" cellspacing="0" width="100%">
+                <thead>
                     <tr>
-                        <td>@item.OrderId</td>
-                        <td>@item.ShipAddress</td>
-                        <td>@item.PhoneNumber</td>
-                        <td>@item.OrderDate</td>
-                        <td>@item.ShipDate</td>
-                        @if (@item.Status == 3)
-                        {
-                            <td>Đã nhận hàng</td>
-                        }
-                        else if (item.Status == 5)
-                        {
-                            <td>Đã hủy đơn</td>
-                        }else if(item.Status == 4)
-                        {
-                            <td>Không nhận hàng</td>
-                        }
-                        <td>
-                            <button type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2" data-bs-toggle="model" data-bs-target="#exampleModal" onclick="showOrderDetails('@item.OrderId')"><i class="fa fa-edit"></i> </button>
-
-                        </td>
-
+                        <th>Mã đơn hàng</th>
+                        <th>Địa chỉ</th>
+                        <th>Sđt</th>
+                        <th>Ngày đặt hàng</th>
+                        <th>Ngày nhận</th>
+                        <th>Trạng thái đơn hàng</th>
+                        <th>Chị tiết</th>
                     </tr>
-                }
+                </thead>
+                <tbody>
+                    @foreach (var item in listItem)
+                    {
+                        <tr>
+                            <td>@item.OrderId</td>
+                            <td>@item.ShipAddress</td>
+                            <td>@item.PhoneNumber</td>
+                            <td>@item.OrderDate</td>
+                            <td>@item.ShipDate</td>
+                            @if (@item.Status == 3)
+                            {
+                                <td>Đã nhận hàng</td>
+                            }
+                            else if (item.Status == 5)
+                            {
+                                <td>Đã hủy đơn</td>
+                            }
+                            else if (item.Status == 4)
+                            {
+                                <td>Không nhận hàng</td>
+                            }
+                            <td>
+                                <button type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2" data-bs-toggle="model" data-bs-target="#exampleModal" onclick="showOrderDetails('@item.OrderId')"><i class="fa fa-edit"></i> </button>
 
+                            </td>
 
-            </tbody>
-            @*<tfoot>
-        <tr>
-        <th>Mã đơn hàng</th>
-        <th>Địa chỉ</th>
-        <th>Sđt</th>
-        <th>Ngày đặt hàng</th>
-        <th>Thanh toán</th>
-        <th>Ngày nhận</th>
-        <th>Chị tiết</th>
-        </tr>
-        </tfoot>*@
-        </table>
-    }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
 
 </div>
 
@@ -134,9 +127,39 @@
 </div>
 
 
+<style>
+    .table-wrapper {
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 10px;
+        overflow: auto;
+    }
 
+    .dataTables_wrapper .dataTables_paginate {
+        margin-top: 20px; /* Khoảng cách giữa bảng và phân trang */
+        display: flex;
+        justify-content: center; /* Canh giữa phân trang */
+    }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border: 1px solid #ddd; /* Viền */
+            border-radius: 5px; /* Bo góc */
+            padding: 5px 10px; /* Khoảng cách nội dung và viền */
+            margin: 0 2px; /* Khoảng cách giữa các nút */
+        }
+
+            .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+            .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+                background-color: #f8f9fa; /* Màu nền khi hover hoặc nút hiện tại */
+                color: #333; /* Màu chữ khi hover hoặc nút hiện tại */
+            }
+
+            .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+                display: none; /* Ẩn nút khi bị vô hiệu hóa */
+            }
+</style>
 <script>
-    
+
     function showOrderDetails(orderId) {
         $.ajax({
             type: 'GET',
@@ -218,17 +241,17 @@
     }
 
     $(document).ready(function () {
-        $('#example').dataTable({
+        var table = $('#example').DataTable({
             "language": {
                 "paginate": {
-                    "first": "Đầu",
-                    "last": "Cuối",
-                    "next": "Tiếp",
-                    "previous": "Trước"
+                    "first": '<i class="fas fa-angle-double-left"></i> Trang đầu',
+                    "last": 'Trang cuối <i class="fas fa-angle-double-right"></i>',
+                    "next": '<i class="fas fa-angle-right"></i>',
+                    "previous": '<i class="fas fa-angle-left"></i>'
                 },
-                "search": "Tìm kiếm:",
-                "info": "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
-                "infoEmpty": "Hiển thị 0 đến 0 của 0 mục",
+                "search": ' Tìm kiếm:',
+                "info": "",
+                "infoEmpty": "Tổng đơn: 0",
                 "infoFiltered": "(được lọc từ tổng số _MAX_ mục)",
                 "lengthMenu": "Hiển thị _MENU_ mục",
                 "zeroRecords": "Không tìm thấy dữ liệu phù hợp"
@@ -241,20 +264,30 @@
             "select": {
                 "style": 'multi',
                 "selector": 'td:first-child'
-            },
+            }
+        });
+
+        // Tìm kiếm theo mã đơn hàng
+        $('#searchInput').on('keyup', function () {
+            table.column(0).search(this.value).draw();
         });
 
         // Update table navigation text
-        $('#example_next').text('Tiếp theo');
-        $('#example_previous').text('Trước đó');
-        $('#example_first').text('Trang đầu');
-        $('#example_last').text('Trang cuối');
+        $('#example_paginate').addClass('pagination'); // Thêm class pagination cho phân trang
+        $('#example_paginate .paginate_button').addClass('page-item'); // Thêm class page-item cho các nút phân trang
+        $('#example_paginate .paginate_button').children().addClass('page-link'); // Thêm class page-link cho các liên kết trong nút phân trang
+
+        // Thêm nút "Trang đầu" và "Trang cuối"
+        $('#example_paginate .previous').html('<span aria-hidden="true">&laquo;</span><span class="sr-only">Previous</span>');
+        $('#example_paginate .next').html('<span aria-hidden="true">&raquo;</span><span class="sr-only">Next</span>');
+
+        // Chuyển nút "Trước" và "Tiếp theo" vào vị trí đúng
+        $('#example_paginate .previous').appendTo($('#example_paginate .pagination'));
+        $('#example_paginate .next').appendTo($('#example_paginate .pagination'));
     });
-    $('#example_next').text('Tiếp theo');
-    $('#example_previous').text('Trước đó');
-    $('#example_first').text('Trang đầu');
-    $('#example_last').text('Trang cuối');
-   
+
+
+
 
 
 </script>
