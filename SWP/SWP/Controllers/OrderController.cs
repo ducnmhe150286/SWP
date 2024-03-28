@@ -13,46 +13,59 @@ namespace SWP.Controllers
     public class OrderController : Controller
     {
 
-        public IActionResult Index(int? searchStatus, int page = 1, int pageSize = 5)
+        public IActionResult Index(int? searchStatus, int page = 1, int pageSize = 5, string sortBy = "")
         {
-            // Lấy userId từ session
             var userId = HttpContext.Session.GetInt32("USER_ID");
 
-
-            // Kiểm tra userId có null không
             if (userId == null)
             {
-                // Nếu userId null, chuyển hướng đến trang đăng nhập
                 return RedirectToAction("Login", "Account");
             }
             else
             {
                 using (var context = new SWPContext())
                 {
-                    // Lấy RoleId của User dựa trên userId, chẳng hạn từ CSDL hoặc bất kỳ nguồn dữ liệu nào khác
                     var user = context.Users.Find(userId);
 
-                    // Kiểm tra nếu RoleId của User là 2
                     if (user != null && user.RoleId == 2)
                     {
-                        // Thực hiện các hành động nếu RoleId của User là 2
                         return RedirectToAction("Login", "Account");
                     }
                 }
+
                 using (var context = new SWPContext())
                 {
                     var query = context.Orders.AsQueryable();
 
-                    // Lọc theo trạng thái nếu được chỉ định
                     if (searchStatus.HasValue)
                     {
                         query = query.Where(o => o.Status == searchStatus);
                     }
 
+                    // Sắp xếp theo ngày và sau đó theo trạng thái nếu được chỉ định
+                    if (!string.IsNullOrEmpty(sortBy))
+                    {
+                        switch (sortBy.ToLower())
+                        {
+                            case "date":
+                                query = query.OrderBy(o => o.OrderDate);
+                                break;
+                            case "status":
+                                query = query.OrderBy(o => o.Status);
+                                break;
+                            default:
+                                query = query.OrderBy(o => o.OrderDate);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        query = query.OrderBy(o => o.OrderDate);
+                    }
+
                     var totalOrders = query.Count();
 
                     var orderList = query
-                        .OrderBy(o => o.OrderDate)
                         .Skip((page - 1) * pageSize)
                         .Take(pageSize)
                         .ToList();
@@ -61,8 +74,7 @@ namespace SWP.Controllers
 
                     ViewBag.CurrentPage = page;
                     ViewBag.TotalPages = totalPages;
-
-                    // Truyền tham số searchStatus vào view để giữ trạng thái tìm kiếm khi phân trang
+                    ViewBag.SortBy = sortBy; // Truyền tham số sortBy vào view để giữ trạng thái sắp xếp khi phân trang
                     ViewBag.SearchStatus = searchStatus;
 
                     return View(orderList);
@@ -136,7 +148,7 @@ namespace SWP.Controllers
         {
             using (var context = new SWPContext())
             {
-                var order = context.Orders.Find(orderId);
+                var order = context.Orders.Include(o => o.Orderdetails).FirstOrDefault(o => o.OrderId == orderId);
                 if (order != null)
                 {
                     byte? byteStatus = (byte?)status;
@@ -148,6 +160,43 @@ namespace SWP.Controllers
                         if (status == 3)
                         {
                             order.ShipDate = DateTime.Now;
+                        }
+                        else if (status == 1) // Nếu trạng thái là 'Xác nhận đơn hàng'
+                        {
+                            foreach (var orderDetail in order.Orderdetails)
+                            {
+                                var productDetail = context.ProductDetails.SingleOrDefault(pd => pd.DetailId == orderDetail.DetailId);
+                                if (productDetail != null)
+                                {
+                                    if (productDetail.Quantity >= orderDetail.Quantity)
+                                    {
+                                        productDetail.Quantity -= orderDetail.Quantity; // Giảm số lượng sản phẩm
+                                    }
+                                    else
+                                    {
+                                        throw new InvalidOperationException("Số lượng sản phẩm không đủ.");
+                                    }
+                                }
+                                else
+                                {
+                                    // Xử lý trường hợp sản phẩm không tồn tại
+                                }
+                            }
+                        }
+                        else if (status == 4 || status == 5) // Nếu trạng thái là 'Giao hàng không thành công'
+                        {
+                            foreach (var orderDetail in order.Orderdetails)
+                            {
+                                var productDetail = context.ProductDetails.SingleOrDefault(pd => pd.DetailId == orderDetail.DetailId);
+                                if (productDetail != null)
+                                {
+                                    productDetail.Quantity += orderDetail.Quantity; // Trả lại số lượng sản phẩm
+                                }
+                                else
+                                {
+                                    // Xử lý trường hợp sản phẩm không tồn tại
+                                }
+                            }
                         }
 
                         context.SaveChanges();
@@ -162,8 +211,6 @@ namespace SWP.Controllers
                 return Json(new { success = false, errorMessage = "Không tìm thấy đơn hàng." });
             }
         }
-
-
 
         private bool IsValidTransition(byte? currentStatus, byte? newStatus)
         {
