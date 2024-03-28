@@ -87,6 +87,7 @@
                         }*@
                         <td>
                             <button type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2" data-bs-toggle="model" data-bs-target="#exampleModal" onclick="showOrderDetails('@item.OrderId')"><i class="fa fa-edit"></i> </button>
+
                         </td>
 
                     </tr>
@@ -131,6 +132,7 @@
 
 
 <script>
+    
     function showOrderDetails(orderId) {
         $.ajax({
             type: 'GET',
@@ -220,6 +222,11 @@
         $('#example_first').text('Trang đầu');
         $('#example_last').text('Trang cuối');
     });
+    $('#example_next').text('Tiếp theo');
+    $('#example_previous').text('Trước đó');
+    $('#example_first').text('Trang đầu');
+    $('#example_last').text('Trang cuối');
+   
 
 
 </script>
