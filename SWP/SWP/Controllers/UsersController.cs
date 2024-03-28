@@ -24,14 +24,14 @@ namespace SWP.Controllers
         private readonly UsersDao usersDao;
         private readonly RoleDao roleDao;
         private readonly IWebHostEnvironment _webHostEnvironment;
-
+        SWPContext context;
 
 
         public UsersController(UsersDao usersDao, IWebHostEnvironment environment)
         {
             usersDao = new UsersDao();
             _environment = environment;
-
+            context= new SWPContext();
         }
         public async Task<List<Role>> GetAllRoles()
         {
@@ -47,6 +47,11 @@ namespace SWP.Controllers
         }
         public async Task<IActionResult> Index(int currentPage)
         {
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Email == HttpContext.Session.GetString("USER_EMAIL"));
+            if (user == null || user.RoleId != 1) // Nếu không phải là Admin
+            {
+                return RedirectToAction("Index", "Auth"); // Chuyển hướng đến trang đăng nhập
+            }
             if (TempData["ErrorMessage"] != null)
             {
                 ViewBag.ErrorMessage = TempData["ErrorMessage"];
@@ -113,7 +118,11 @@ namespace SWP.Controllers
 
         public async Task<IActionResult> Details(int userId)
         {
-            
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Email == HttpContext.Session.GetString("USER_EMAIL"));
+            if (user == null || user.RoleId != 1) // Nếu không phải là Admin
+            {
+                return RedirectToAction("Index", "Auth"); // Chuyển hướng đến trang đăng nhập
+            }
             var users = UsersDao.GetUserById(userId);
             var roles = RoleDao.GetAllRoles();
 
