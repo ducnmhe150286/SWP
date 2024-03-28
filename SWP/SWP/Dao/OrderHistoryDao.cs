@@ -14,7 +14,7 @@ namespace SWP.Dao
         {
             try
             {
-                var data = _context.Orders.Where(x => x.UserId == cusId && (x.Status == 3 ||x.Status == 4 || x.Status == 5)).ToList();
+                var data = _context.Orders.Where(x => x.UserId == cusId && (x.Status == 3 ||x.Status == 4 || x.Status == 5)).OrderByDescending(x=>x.ShipDate).ToList();
                 if(data.Count > 0)
                 {
                     return data;
