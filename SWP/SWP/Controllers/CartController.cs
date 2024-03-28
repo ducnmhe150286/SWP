@@ -15,7 +15,7 @@ namespace SWP.Controllers
             userDao = new UsersDao();
             context = new SWPContext();
         }
-        public IActionResult Index(int productId, int quantity, int size, int color)
+        public IActionResult Index(int productId,string productName, int quantity, int size, int color)
         {
             var customer = HttpContext.Session.GetString("USER_EMAIL");
 
@@ -33,7 +33,7 @@ namespace SWP.Controllers
 
                         if (item.DetailId == item1.DetailId && item.Quantity >= item1.Quantity)
                         {
-                            TempData["message"] = "Quá số lượng sản phẩm :" + productId;
+                            TempData["message"] = "Số lượng sản phẩm:" + productName + " không đủ! Vui lòng chọn sản phẩm khác.";
                             check = false;
                         }
                     }
@@ -87,7 +87,7 @@ namespace SWP.Controllers
             }
             return RedirectToAction("Index", "Auth");
         }
-        public IActionResult UpdateCartItem(int productId, int type)
+        public IActionResult UpdateCartItem(int productId, string productName, int type)
         {
             var customer = HttpContext.Session.GetString("USER_EMAIL");
             var cusId = userDao.GetUserByEmail(customer);
@@ -95,17 +95,21 @@ namespace SWP.Controllers
             var check = true;
             var cart = context.CartItems.Where(x => x.CustomerId == cusId.UserId).ToList();
             var pro = context.ProductDetails.Where(x => x.DetailId ==productId).FirstOrDefault();
-            foreach (var item in cart)
+            if(type== 1)
             {
-                
-                    if (item.DetailId == pro.DetailId&&item.Quantity>=pro.Quantity)
+                foreach (var item in cart)
+                {
+
+                    if (item.DetailId == pro.DetailId && item.Quantity >= pro.Quantity)
                     {
-                       TempData["message"] ="Quá số lượng sản phẩm :"+productId;
-                        check= false;
+                        TempData["message"] = "Số lượng sản phẩm:" + productName + " không đủ! Vui lòng chọn sản phẩm khác.";
+                        check = false;
                     }
-                
+
+                }
             }
-            if(type==0)
+            
+            if(type==0||type ==2)
             {
                 check = true;
             }

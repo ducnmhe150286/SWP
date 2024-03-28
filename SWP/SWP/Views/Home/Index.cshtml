@@ -945,18 +945,18 @@ form a {
                 <div class="col-4 product-card">
                     @if (product.ProductImages != null && product.ProductImages.Any())
                     {
-                        <a asp-controller="ProductDetail" asp-action="Index" asp-route-productId="@product.ProductId">
+                        <a asp-controller="ProductDetail" asp-action="Index" asp-route-productId="@product.ProductId" asp-route-productName="@product.ProductName">
                             <img src="/Images/@product.ProductImages.First().Path" alt="Image" class="img-thumbnail" width="180" height="240" />
                         </a>
                     }
                     else
                     {
-                        <a asp-controller="ProductDetail" asp-action="Index" asp-route-productId="@product.ProductId">
+                        <a asp-controller="ProductDetail" asp-action="Index" asp-route-productId="@product.ProductId" asp-route-productName="@product.ProductName">
                             <img src="default_image_url" alt="Default Image" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
                         </a>
                     }
 
-                    <a asp-controller="ProductDetail" asp-action="Index" asp-route-productId="@product.ProductId">
+                    <a asp-controller="ProductDetail" asp-action="Index" asp-route-productId="@product.ProductId" asp-route-productName="@product.ProductName">
                         <h4>@product.ProductName</h4>
                     </a>
 
@@ -964,7 +964,7 @@ form a {
 
                     <p>@string.Format("{0:N0}", product.Price)₫</p>
                     <!-- Add "Buy Now" button -->
-                    <a asp-controller="ProductDetail" asp-action="Index" asp-route-productId="@product.ProductId" class="btn1-buy-now">Mua ngay</a>
+                    <a asp-controller="ProductDetail" asp-action="Index" asp-route-productId="@product.ProductId" asp-route-productName="@product.ProductName" class="btn1-buy-now">Mua ngay</a>
 
                 </div>
             }

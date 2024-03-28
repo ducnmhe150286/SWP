@@ -73,25 +73,29 @@
                     <hr />
                     <form asp-controller="Cart" asp-action="Index">
                         <input type="hidden" name="productId" value="@Model.ProductId" />
+                        <input type="hidden" name="productName" value="@Model.ProductName" />
                         <div class="row mb-4">
                             <div class="col-md-4 col-6">
                                 <label class="mb-2">Kích thước</label>
-                                <select name="size" class="form-select border border-secondary" style="height: 35px;">
-                                    @foreach (var size in Model.ProductDetails.DistinctBy(x => x.SizeId))
+                                <select name="size" id="size" class="form-select border border-secondary" style="height: 35px;">
+                                    @foreach (var size in Model.ProductDetails.Select(x => x.Size).Distinct())
                                     {
-                                        <option value="@size.SizeId">@size.Size.SizeName</option>
+                                        <option value="@size.SizeId">@size.SizeName</option>
                                     }
                                 </select>
                             </div>
                             <div class="col-md-4 col-6">
                                 <label class="mb-2">Màu sắc</label>
-                                <select name="color" class="form-select border border-secondary" style="height: 35px;">
-                                    @foreach (var size in Model.ProductDetails.DistinctBy(x => x.ColorId))
+                                <select name="color" id="color" class="form-select border border-secondary" style="height: 35px;">
+                                    <option value="" selected>Chọn màu</option> <!-- Đặt mục này là mặc định và đã chọn -->
+                                    @foreach (var color in Model.ProductDetails.Select(x => x.Color).Distinct())
                                     {
-                                        <option value="@size.ColorId">@size.Color.ColorName</option>
+                                        <option value="@color.ColorId">@color.ColorName</option>
                                     }
                                 </select>
+                                <div id="colorError" class="error-message" style="color: red; display: none;">Bạn chưa chọn màu sắc.</div>
                             </div>
+
                             <!-- col.// -->
                             <div class="col-md-4 col-6 mb-3">
                                 <label class="mb-2 d-block">Số lượng</label>
@@ -156,7 +160,7 @@
                                 <input type="hidden" name="productID" value="@Model.ProductId" />
                                 <div class="form-group">
                                     <label for="reviewContent">Nội dung đánh giá</label>
-                                    <textarea class="form-control" id="reviewContent" name="reviewContent" rows="3" ></textarea>
+                                    <textarea class="form-control" id="reviewContent" name="reviewContent" rows="3"></textarea>
                                 </div>
                                 <div class="form-group">
                                     <label for="reviewRating">Đánh giá sao</label>
@@ -185,7 +189,7 @@
                     </div>
                 }
                 <div class="mt-4">
-                    
+
                     @if (ViewBag.listFeedback != null && ViewBag.listFeedback.Count > 0)
                     {
                         <div>
@@ -223,43 +227,43 @@
                                     </div>
 
 
-                                   @* @if (ViewBag.isUser)
-                                    {
-                                        <div>
-                                            <a asp-action="Delete" asp-controller="Feedback" asp-route-feedbackID="@item.FeedBackId">Xóa</a>
-                                            <a href="#" class="edit-feedback-link" data-feedback-id="@item.FeedBackId">Sửa</a>
-                                        </div>
-                                        <!-- Form chỉnh sửa -->
-                                        <form id="editForm-@item.FeedBackId" asp-controller="Feedback" asp-action="Edit" method="post" class="mt-3" style="display: none;">
-                                            <input type="hidden" name="id" value="@item.FeedBackId" />
-                                            <input type="hidden" name="rating" id="editRating" value="@item.Rating" />
-                                            <div class="form-group">
-                                                <label for="reviewContent">Nội dung đánh giá</label>
-                                                <textarea class="form-control" id="reviewContent" name="reviewContent" rows="3" >@item.Comment</textarea>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="reviewRating">Đánh giá sao</label>
-                                                <div class="rating">
-                                                    @{
-                                                        var rating = item.Rating;
-                                                    }
-                                                    @for (int i = 1; i <= 5; i++)
-                                                    {
-                                                        if (i <= rating)
-                                                        {
-                                                            <span class="fa fa-star hihi checked" data-index="@i"></span>
-                                                        }
-                                                        else
-                                                        {
-                                                            <span class="fa fa-star hihi" data-index="@i"></span>
-                                                        }
-                                                    }
-                                                </div>
-                                            </div>
+                                    @* @if (ViewBag.isUser)
+                            {
+                            <div>
+                            <a asp-action="Delete" asp-controller="Feedback" asp-route-feedbackID="@item.FeedBackId">Xóa</a>
+                            <a href="#" class="edit-feedback-link" data-feedback-id="@item.FeedBackId">Sửa</a>
+                            </div>
+                            <!-- Form chỉnh sửa -->
+                            <form id="editForm-@item.FeedBackId" asp-controller="Feedback" asp-action="Edit" method="post" class="mt-3" style="display: none;">
+                            <input type="hidden" name="id" value="@item.FeedBackId" />
+                            <input type="hidden" name="rating" id="editRating" value="@item.Rating" />
+                            <div class="form-group">
+                            <label for="reviewContent">Nội dung đánh giá</label>
+                            <textarea class="form-control" id="reviewContent" name="reviewContent" rows="3" >@item.Comment</textarea>
+                            </div>
+                            <div class="form-group">
+                            <label for="reviewRating">Đánh giá sao</label>
+                            <div class="rating">
+                            @{
+                            var rating = item.Rating;
+                            }
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                            if (i <= rating)
+                            {
+                            <span class="fa fa-star hihi checked" data-index="@i"></span>
+                            }
+                            else
+                            {
+                            <span class="fa fa-star hihi" data-index="@i"></span>
+                            }
+                            }
+                            </div>
+                            </div>
 
-                                            <button type="submit" class="btn btn-primary">Cập nhật đánh giá</button>
-                                        </form>
-                                    }*@
+                            <button type="submit" class="btn btn-primary">Cập nhật đánh giá</button>
+                            </form>
+                            }*@
 
                                 </div>
                             }
@@ -453,6 +457,79 @@
             });
         });
 
+
+        var sizeToColorsMap = {
+        @foreach (var size in Model.ProductDetails.Select(x => x.Size).Distinct())
+        {
+            <text>
+                '@size.SizeId': [
+                @foreach (var color in Model.ProductDetails.Where(x => x.Size.SizeId == size.SizeId).Select(x => x.Color).Distinct())
+                {
+                    <text>
+                        {
+                            value: '@color.ColorId',
+                            text: '@{
+                            string unicodeColorName = "";
+                            foreach (char c in color.ColorName)
+                            {
+                                unicodeColorName += "\\u" + ((int)c).ToString("X4");
+                            }
+                            @Html.Raw(unicodeColorName)
+                        }'
+                                    },
+                    </text>
+                }
+                                        ],
+            </text>
+        }
+        };
+
+        // Khi người dùng chọn kích thước, cập nhật dropdown màu sắc
+        document.getElementById('size').addEventListener('change', function () {
+            var selectedSizeId = this.value;
+            var colorSelect = document.getElementById('color');
+            colorSelect.innerHTML = '';
+
+            // Tạo option mặc định cho dropdown màu sắc
+            var defaultOption = document.createElement('option');
+            defaultOption.text = 'Chọn màu';
+            defaultOption.value = '';
+            colorSelect.appendChild(defaultOption);
+
+            // Lấy danh sách các màu sắc tương ứng với kích thước đã chọn
+            var colors = sizeToColorsMap[selectedSizeId];
+            if (colors) {
+                colors.forEach(function (color) {
+                    var option = document.createElement('option');
+                    option.value = color.value; // Lấy giá trị màu sắc từ thuộc tính value
+                    option.text = color.text; // Lấy tên màu sắc từ thuộc tính text
+                    colorSelect.appendChild(option);
+                });
+            }
+        });
+
+
+
+        var colorSelect = document.getElementById('color');
+
+
+        var colorError = document.getElementById('colorError');
+
+
+        var submitButton = document.querySelector('button[type="submit"]');
+
+        submitButton.addEventListener('click', function (event) {
+
+            if (colorSelect.value === "") {
+
+                event.preventDefault();
+
+                colorError.style.display = 'block';
+            } else {
+
+                colorError.style.display = 'none';
+            }
+        });
     </script>
 }
 

@@ -19,7 +19,7 @@ namespace SWP.Controllers
             this.usersDao = new UsersDao();
             context = new SWPContext();
         }
-        public IActionResult Index(int productId)
+        public IActionResult Index(int productId,string productName)
         {
             if(productId == 0)
             {
@@ -49,7 +49,7 @@ namespace SWP.Controllers
 
                         if (item.DetailId == item1.DetailId && item.Quantity >= item1.Quantity)
                         {
-                            TempData["message"] = "Quá số lượng sản phẩm :" + productId;
+                            TempData["message"] = "Quá số lượng sản phẩm :" + productName;
                             check1 = false;
                         }
                     }
@@ -68,7 +68,7 @@ namespace SWP.Controllers
             else
             {
                 
-                ViewBag.isUser = false; // Hoặc bất kỳ giá trị mặc định nào phù hợp
+                ViewBag.isUser = false; 
             }
 
 
