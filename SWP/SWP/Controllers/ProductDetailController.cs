@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SWP.Dao;
 using SWP.Dto;
 using SWP.Models;
+using System;
 
 namespace SWP.Controllers
 {
@@ -33,27 +34,30 @@ namespace SWP.Controllers
             ViewData["error_quantity"] = TempData["error_quantity"];
             List<FeedBack> feedBacks = context.FeedBacks.Include(n => n.User).Where(n => n.Product.ProductId == productId).ToList();
             ViewData["listPro"] = listProSimilar;
-            if (email == null)
-            {
-                //  return Redirect("Auth");
-            }
-            else
+           
+            var check1 = true;
+            if (email != null)
             {
                 var cusId = usersDao.GetUserByEmail(email);
                 var cart = context.CartItems.Where(x => x.CustomerId == cusId.UserId).ToList();
-                foreach(var item in cart) {
-                    foreach (var item1 in pro.ProductDetails)
+                var pro1 = context.ProductDetails.Where(x => x.DetailId == productId).ToList();
+                var pros = context.ProductDetails.Where(x => x.DetailId == productId).FirstOrDefault();
+                foreach (var item in cart)
+                {
+                    foreach (var item1 in pro1)
                     {
-                        if (item.DetailId == item1.DetailId)
+
+                        if (item.DetailId == item1.DetailId && item.Quantity >= item1.Quantity)
                         {
-                            ViewData["error_quantity"] = TempData["error_quantity"];
+                            TempData["message"] = "Quá số lượng sản phẩm :" + productId;
+                            check1 = false;
                         }
                     }
                 }
-
             }
           
-          
+
+
             ViewBag.check = check;
             ViewBag.listFeedback = feedBacks;
             if(feedBacks != null && feedBacks.Count() != 0)
